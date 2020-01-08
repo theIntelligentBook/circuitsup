@@ -1,6 +1,6 @@
 package circuitsup
 
-import com.wbillingsley.veautiful.Attacher
+import com.wbillingsley.veautiful.html.Attacher
 import org.scalajs.dom
 
 object Main {

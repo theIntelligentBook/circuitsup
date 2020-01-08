@@ -1,6 +1,6 @@
 package circuitsup
 
-import com.wbillingsley.veautiful.{<, VNode, ^}
+import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
 
 /**
   * Common UI components to all the views
@@ -12,13 +12,13 @@ object Common {
     CircuitsRoute -> "Currents, Voltages, & Resistances"
   )
 
-  def linkToRoute(r:ExampleRoute, s:String):VNode = <.a(
+  def linkToRoute(r:ExampleRoute, s:String):VHtmlNode = <.a(
     ^.href := Router.path(r),
     ^.cls := (if (Router.route == r) "nav-link active" else "nav-link"),
     s
   )
 
-  def leftMenu:VNode = <("nav")(^.cls := "d-none d-md-block bg-light sidebar",
+  def leftMenu:VHtmlNode = <("nav")(^.cls := "d-none d-md-block bg-light sidebar",
     <.div(^.cls := "sidebar-sticky",
       <.ul(^.cls := "nav nav-pills flex-column",
         for { (r, t) <- routes } yield <.li(
@@ -29,14 +29,14 @@ object Common {
     )
   )
 
-  def layout(ch:VNode) = shell(<.div(^.cls := "move-content-down",
+  def layout(ch:VHtmlNode) = shell(<.div(^.cls := "move-content-down",
     <.div(^.cls := "row",
       <.div(^.cls := "col-sm-3", leftMenu),
       <.div(^.cls := "col-sm-9", ch)
     )
   ))
 
-  def shell(ch:VNode) = <.div(
+  def shell(ch:VHtmlNode) = <.div(
     <("nav")(^.cls := "navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow",
       <.div(^.cls := "container",
         <.a(^.cls := "navbar-brand col-sm-3 col-md-2 mr-0", ^.href := "#", "Circuits Up!")

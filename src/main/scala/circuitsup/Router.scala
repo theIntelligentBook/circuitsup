@@ -1,7 +1,7 @@
 package circuitsup
 
+import com.wbillingsley.veautiful.PathDSL
 import com.wbillingsley.veautiful.templates.HistoryRouter
-import com.wbillingsley.veautiful.{<, ElementComponent, PathDSL}
 
 sealed trait ExampleRoute
 case object IntroRoute extends ExampleRoute
@@ -21,7 +21,7 @@ object Router extends HistoryRouter[ExampleRoute] {
   }
 
   override def path(route: ExampleRoute): String = {
-    import PathDSL._
+    import com.wbillingsley.veautiful.PathDSL._
 
     route match {
       case IntroRoute => (/# / "").stringify

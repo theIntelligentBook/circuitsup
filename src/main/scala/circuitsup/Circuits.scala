@@ -1,12 +1,12 @@
 package circuitsup
 
 import com.wbillingsley.veautiful.templates.VSlides
-import com.wbillingsley.veautiful.{<, ^}
+import com.wbillingsley.veautiful.html.{<, ^}
 
 object Circuits {
 
   def page = {
-      VSlides(width=1320, height=800)(
+      VSlides(width=1320, height=800)(Seq(
         <.div(
           <("iframe")(
             ^.attr("width") :="1280", ^.attr("height") := "720", ^.src := "https://www.youtube.com/embed/0bcvcJwUE-8",
@@ -17,7 +17,7 @@ object Circuits {
           <.h2("Slide 2"),
           <.p("Constraint propagation exercise 1 goes here...")
         )
-      )
+      ))
   }
 
 
