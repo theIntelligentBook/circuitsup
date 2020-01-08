@@ -7,18 +7,6 @@
     padding: 5px;
 }
 
-.well {
-    stroke: #fc5858;
-    stroke-width: 2;
-    fill: #f69191;
-}
-
-.asteroid {
-    fill: #76addb;
-    stroke: #0275d8;
-    stroke-width: 2;
-}
-
 svg {
     background: #d9e2e7;
 }
@@ -89,3 +77,45 @@ svg {
 }
 
 
+/**
+ * Course template
+ */
+
+
+.front-page {
+    padding-top: 48px;
+}
+
+.course-banner {
+    height: 120px;
+    border-bottom: 1px solid lightgray;
+}
+
+.topic-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.topic-container .topic-block {
+    position: relative;
+    width: 320px;
+    height: 200px;
+    margin: 20px;
+    border: 1px solid lightgray;
+}
+
+.topic-block .topic-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    color: white;
+    background: #444;
+}
+
+.topic-block .topic-image {
+    width: 100%;
+    height: 100%;
+    background: cornflowerblue;
+}

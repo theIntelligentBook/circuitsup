@@ -7,12 +7,12 @@ import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
   */
 object Common {
 
-  val routes:Seq[(ExampleRoute, String)] = Seq(
+  val routes:Seq[(Route, String)] = Seq(
     IntroRoute -> "Hello world",
     CircuitsRoute -> "Currents, Voltages, & Resistances"
   )
 
-  def linkToRoute(r:ExampleRoute, s:String):VHtmlNode = <.a(
+  def linkToRoute(r:Route, s:String):VHtmlNode = <.a(
     ^.href := Router.path(r),
     ^.cls := (if (Router.route == r) "nav-link active" else "nav-link"),
     s
@@ -39,7 +39,7 @@ object Common {
   def shell(ch:VHtmlNode) = <.div(
     <("nav")(^.cls := "navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow",
       <.div(^.cls := "container",
-        <.a(^.cls := "navbar-brand col-sm-3 col-md-2 mr-0", ^.href := "#", "Circuits Up!")
+        <.a(^.cls := "navbar-brand col-sm-3 col-md-2 mr-0", ^.href := "#", "")
       )
     ),
 
