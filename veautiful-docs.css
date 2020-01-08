@@ -119,3 +119,156 @@ svg {
     height: 100%;
     background: cornflowerblue;
 }
+
+
+/*
+ * Veautiful - Challenge layout
+ */
+
+/*
+ * Layout stuff
+ */
+
+
+:root {
+    --challenge-header-height: 50px;
+    --challenge-header-fontsize: 26px;
+    --challenge-header-background: #444;
+    --challenge-header-color: white;
+}
+
+.challenge-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    grid-template-rows: var(--challenge-header-height) 1fr 70px;
+    height: 100%;
+}
+
+.challenge-wrapper .challenge-header {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    border-bottom: 1px solid lightgrey;
+    background: var(--challenge-header-background);
+    color: var(--challenge-header-color);
+}
+
+.challenge-wrapper .challenge {
+    grid-column-start: 1;
+    grid-row-start: 2;
+}
+
+.challenge-wrapper .stage-progress {
+    grid-column-start: 2;
+    grid-row-start: 2;
+    grid-row-end: 4;
+    border-left: 1px solid lightgrey;
+    height: 100%;
+}
+
+.challenge-wrapper .countdown-box {
+    border-left: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    grid-column-start: 2;
+    grid-row-start: 1;
+    background: var(--challenge-header-background);
+}
+
+.challenge-wrapper .page-controls {
+    grid-column-start: 2;
+    grid-row-start: 3;
+    text-align: center;
+    padding: 10px;
+    border-left: 1px solid lightgray;
+}
+
+.split2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.split-top-right {
+    align-items: start;
+}
+
+/*
+ * Countdown timer
+ */
+
+.countdown {
+    text-align: center;
+    font-size: 60px;
+    font-family: MONOSPACE;
+}
+
+/*
+ * Progress block
+ */
+
+.stage-progress .stage {
+    padding: 10px;
+    border-bottom: 1px solid lightgray;
+}
+
+.stage-progress .stage.stage-active {
+    color: white;
+    background-color: #7d5177;
+}
+
+
+.stage-progress .stage-progress-label {
+    font-family: 'Michroma', sans-serif;
+}
+
+.stage-progress-label img {
+    max-height: 30px;
+}
+
+.stage-progress-label .stagenumber {
+    font-size: 20px;
+    margin-right: 5px;
+    width: 25px;
+    display: inline-flex;
+}
+
+.stage-progress-label .stagename {
+    font-size: 20px;
+}
+
+/*
+ * Challenge headers
+ */
+
+
+.challenge-header .home-link {
+    margin-right: var(--challenge-header-height);
+    font-size: var(--challenge-header-fontsize);
+    line-height: var(--challenge-header-height);
+    font-family: 'Michroma', sans-serif;
+    background: cadetblue;
+    border-right: 2px solid white;
+    float: left;
+    width: 72px;
+}
+.challenge-header .home-link:hover {
+    background: #4d7b7d;
+}
+
+.challenge-header .challenge-name {
+    font-family: 'Michroma', sans-serif;
+    font-size: var(--challenge-header-fontsize);
+    line-height: var(--challenge-header-height);
+}
+
+
+.circuits-up-symbol {
+    stroke: var(--challenge-header-color);
+    fill: none;
+    stroke-width: 4px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    max-height: var(--challenge-header-height);
+    max-width: 64px;
+    padding: 4px;
+    background: none
+}

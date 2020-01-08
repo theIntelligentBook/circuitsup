@@ -2,7 +2,7 @@ package circuitsup.templates
 
 import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
 
-class Topic(name:String, image:VHtmlNode, content:VHtmlNode, cssClass:String = "") {
+case class Topic(name:String, image:VHtmlNode, content:VHtmlNode, cssClass:String = "") {
 
   def block(path:String):VHtmlNode = <.div(^.cls := s"topic-block $cssClass",
     <.a(^.href := path,

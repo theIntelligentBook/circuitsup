@@ -43,7 +43,7 @@ object Router extends HistoryRouter[Route] {
   def render() = {
     route match {
       case IntroRoute => frontPage.layout
-      case CircuitsRoute => Circuits.page
+      case CircuitsRoute => Analog.challenge
     }
   }
 
