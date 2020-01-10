@@ -205,22 +205,22 @@ svg {
  * Progress block
  */
 
-.stage-progress .stage {
+.stage-progress .progress-level {
     padding: 10px;
     border-bottom: 1px solid lightgray;
 }
 
-.stage-progress .stage.stage-active {
+.stage-progress .progress-level.level-active {
     color: white;
     background-color: #7d5177;
 }
 
 
-.stage-progress .stage-progress-label {
+.stage-progress .level-name {
     font-family: 'Michroma', sans-serif;
 }
 
-.stage-progress-label img {
+.level-label img {
     max-height: 30px;
 }
 
