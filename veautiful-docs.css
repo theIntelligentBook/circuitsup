@@ -210,6 +210,20 @@ svg {
     border-bottom: 1px solid lightgray;
 }
 
+.stage-progress .progress-level a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.stage-progress .progress-level a:hover {
+    color: cadetblue;
+}
+
+.stage-progress .progress-level.level-active a {
+    color: white;
+}
+
+
 .stage-progress .progress-level.level-active {
     color: white;
     background-color: #7d5177;

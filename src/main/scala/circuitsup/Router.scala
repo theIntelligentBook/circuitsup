@@ -8,7 +8,7 @@ import com.wbillingsley.veautiful.templates.HistoryRouter
 
 sealed trait Route
 case object IntroRoute extends Route
-case object CircuitsRoute extends Route
+case class CircuitsRoute(l:Int, s:Int) extends Route
 
 object Router extends HistoryRouter[Route] {
 
@@ -34,7 +34,7 @@ object Router extends HistoryRouter[Route] {
       )
     ),
     Seq(
-      CircuitsRoute -> Analog.topic
+      CircuitsRoute(0, 0) -> Analog.topic
     )
   )
 
@@ -43,7 +43,7 @@ object Router extends HistoryRouter[Route] {
   def render() = {
     route match {
       case IntroRoute => frontPage.layout
-      case CircuitsRoute => Analog.challenge
+      case CircuitsRoute(l, s) => Analog.challenge.show(l, s)
     }
   }
 
@@ -52,13 +52,21 @@ object Router extends HistoryRouter[Route] {
 
     route match {
       case IntroRoute => (/# / "").stringify
-      case CircuitsRoute => (/# / "circuits").stringify
+      case CircuitsRoute(l, s) => (/# / "circuits" / l.toString / s.toString).stringify
     }
   }
 
+
+  def parseInt(s:String, or:Int):Int = {
+    try {
+      s.toInt
+    } catch {
+      case n:NumberFormatException => or
+    }
+  }
   override def routeFromLocation(): Route = PathDSL.hashPathArray() match {
     case Array("") => IntroRoute
-    case Array("circuits") => CircuitsRoute
+    case Array("circuits", l, s) => CircuitsRoute(parseInt(l, 0), parseInt(s, 0))
     case x =>
       println(s"path was ${x}")
       IntroRoute

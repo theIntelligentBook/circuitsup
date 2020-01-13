@@ -9,7 +9,7 @@ object Common {
 
   val routes:Seq[(Route, String)] = Seq(
     IntroRoute -> "Hello world",
-    CircuitsRoute -> "Currents, Voltages, & Resistances"
+    CircuitsRoute(0, 0) -> "Currents, Voltages, & Resistances"
   )
 
   def linkToRoute(r:Route, s:String):VHtmlNode = <.a(

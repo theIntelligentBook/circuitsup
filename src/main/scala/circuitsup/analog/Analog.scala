@@ -1,7 +1,7 @@
 package circuitsup.analog
 
 import circuitsup.{CircuitsRoute, IntroRoute, Router}
-import circuitsup.templates.{Topic, YouTubeStage}
+import circuitsup.templates.{ExerciseStage, Topic, YouTubeStage}
 import com.wbillingsley.veautiful.html.{<, SVG, VHtmlNode, ^}
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.{Level, Stage}
@@ -32,49 +32,22 @@ object Analog {
 
   val levels = Seq(
     Level("Intro to Circuits", Seq(YouTubeStage("0bcvcJwUE-8"))),
-    Level("Kirchoff's Current Law", Seq.empty),
+    Level("Kirchoff's Current Law", Seq(
+      {
+        ExerciseStage(() => <.p("Oi"), () => <.p("There"))
+      }
+    )),
     Level("Ohm's Law", Seq.empty),
     Level("Kirchoff's Voltage Law", Seq.empty),
     Level("Voltage Dividers", Seq.empty),
   )
 
-  val challenge = new Challenge(
+  val challenge:Challenge = Challenge(
     levels,
-    <.div(
-      <.a(^.cls := "home-link", ^.href := Router.path(IntroRoute), symbol),
-      <.span(^.cls := "challenge-name", topic.name)
-    ),
-    <.div(),
-    progessBlock()
+    homePath = (_) => Router.path(IntroRoute),
+    levelPath = (_, i) => Router.path(CircuitsRoute(i, 0)),
+    stagePath = (_, i, j) => Router.path(CircuitsRoute(i, j)),
+    homeIcon = symbol
   )
-
-
-  def progressTile(level:Level, i:Int):VHtmlNode = {
-    <.div(^.cls := "progress-level",
-      <.div(^.cls := "level-name", level.name),
-      <.div(^.cls := "stage-links",
-        for {
-          (s, j) <- level.stages.zipWithIndex
-        } yield {
-          <.a(^.cls := "stage-link",
-            <("i")(^.cls := "material-icons",
-              s.kind match {
-                case "video" => "videocam"
-                case _ => "lens"
-              }
-            )
-          )
-        }
-      )
-    )
-  }
-
-  def progessBlock():VHtmlNode = {
-    <.div(^.cls := "progress-block",
-      for {
-        (l, i) <- levels.zipWithIndex
-      } yield progressTile(l, i)
-    )
-  }
 
 }
