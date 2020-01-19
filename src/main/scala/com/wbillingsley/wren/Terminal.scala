@@ -47,9 +47,10 @@ case class Junction(pos:(Int, Int)) extends Connector with Component {
     terminal
   )
 
-  override def constraints: Seq[Constraint] = Seq(
-    EquationConstraint("Junction's terminal current is zero", Seq(terminal.current -> (() => Some(0))))
-  )
+  override def constraints: Seq[Constraint] = {
+    EquationConstraint("Junction's terminal current is zero", Seq(terminal.current -> (() => Some(0)))) +: terminal.constraints
+  }
+
 
   override def render: VHtmlDiffNode = {
     val (x, y) = pos

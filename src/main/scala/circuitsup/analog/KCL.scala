@@ -5,8 +5,8 @@ import circuitsup.templates.ExerciseStage
 import com.wbillingsley.veautiful.html.{<, ^}
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.{Complete, Completion, Open}
-import com.wbillingsley.wren.Orientation.South
-import com.wbillingsley.wren.{Circuit, ConstraintPropagator, CurrentSource, Orientation, Resistor, Terminal, ValueLabel, ValueSlider, VoltageSource, Wire}
+import com.wbillingsley.wren.Orientation.{East, South}
+import com.wbillingsley.wren.{Circuit, ConstraintPropagator, CurrentSource, Junction, Orientation, Resistor, Terminal, UserSet, ValueLabel, ValueSlider, VoltageSource, Wire}
 
 object KCL {
 
@@ -207,7 +207,7 @@ object KCL {
               <.p(
                 "Again, if 50mA is coming in, 50mA must be going out."
               ),
-              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 2)), s"Next")
+              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 3)), s"Next")
             )
           case _ => <.div()
         }
@@ -220,4 +220,87 @@ object KCL {
 
   }
 
+
+  object page4 extends ExerciseStage {
+
+    val r1 = new Resistor((100, 160), South)
+    val r2 = new Resistor((100, 240), South)
+    val r3 = new Resistor((140, 200), East)
+    val j = new Junction((100, 200))
+    val t1 = new Terminal((100, 100))
+    val t2 = new Terminal((100, 300))
+    val t3 = new Terminal((200, 200))
+
+    t1.current.value = Some((-0.1, UserSet))
+
+    val w1 = new Wire(t1, r1.t1)
+    val w1j = new Wire(r1.t2, j.terminal)
+    val w2j = new Wire(j.terminal, r2.t1)
+    val w3j = new Wire(j.terminal, r3.t1)
+    val w2 = new Wire(r2.t2, t2)
+    val w3 = new Wire(r3.t2, t3)
+
+    val i1 = new ValueLabel("I" -> "1", w1.t1current, (120, 100), symbol = Seq(ValueLabel.currentArrow((110, 100), Orientation.South)))
+    val i2 = new ValueLabel("I" -> "2", t2.current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.South)))
+    val i3 = new ValueLabel("I" -> "3", t3.current, (180, 175), symbol = Seq(ValueLabel.currentArrow((190, 190), Orientation.East)))
+    val i2slider = new ValueSlider(t2.current, (120, 320), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+
+    val circuit = new Circuit(Seq(t1, t2, t3, j, w1, w2, w3, w1j, w2j, w3j, i1, i2, i3, r1, r2, r3, i2slider), 300, 400)
+
+    val propagator = ConstraintPropagator(circuit.components.flatMap(_.constraints))
+    propagator.resolve()
+
+    def checkCompletion = {
+      t3.current.value match {
+        case Some((i, _)) if Math.abs(i - 0.05) < 0.002 => true
+        case _ => false
+      }
+    }
+
+    def onUpdate():Unit = {
+      propagator.clearCalculations()
+      propagator.resolve()
+      if (checkCompletion) {
+        completion = Complete(Some(1), None)
+      }
+
+      Router.rerender()
+    }
+
+    var completion:Completion = Open
+
+    def render = <.div(Challenge.textAndEx(
+      <.div(
+        <.h3("KCL with three paths"),
+        <.p(
+          """
+            |In our examples so far, there have only been two currents into (or out of) the circuit fragment to deal with.
+            |Let's try one with three.
+            |""".stripMargin
+        ),
+        <.p(
+          "This time, on the right hand side, we now have three resistors connected to a junction."
+        ),
+        <.p(
+          "You've been given a slider to set I",
+          <("sub")("2"), " and your task is to make I", <("sub")("3"), " 50mA"
+        ),
+        completion match {
+          case Complete(_, _) =>
+            <.div(
+              <.p(
+                "Well done. Adjusting I", <("sub")("2"), " has left 50mA over for I", <("sub")("3")
+              ),
+              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 2)), s"Next")
+            )
+          case _ => <.div()
+        }
+      )
+    )(
+      <.div(
+        circuit
+      )
+    ))
+
+  }
 }
