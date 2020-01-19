@@ -33,9 +33,7 @@ object Analog {
   val levels = Seq(
     Level("Intro to Circuits", Seq(YouTubeStage("0bcvcJwUE-8"))),
     Level("Kirchoff's Current Law", Seq(
-      {
-        ExerciseStage(() => <.p("Oi"), () => <.p("There"))
-      }
+      KCL.page1, KCL.page2, KCL.page3
     )),
     Level("Ohm's Law", Seq.empty),
     Level("Kirchoff's Voltage Law", Seq.empty),

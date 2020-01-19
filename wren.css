@@ -26,3 +26,13 @@
     fill: black;
     r: 2;
 }
+
+.current-arrow {
+    stroke: black;
+    fill: none;
+}
+
+.voltage-markers {
+    text-anchor: middle;
+    dominant-baseline: middle;
+}

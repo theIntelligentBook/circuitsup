@@ -286,3 +286,38 @@ svg {
     padding: 4px;
     background: none
 }
+
+/*
+ * Layouts within Challenge pages
+ */
+
+.text-column {
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Michroma', sans-serif;
+    margin-bottom: 1rem;
+}
+
+
+@keyframes pulse-purple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(142, 68, 173, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(142, 68, 173, 0);
+    }
+}
+
+
+.pulse-link {
+    animation: pulse-purple 2s infinite;
+}

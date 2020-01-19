@@ -7,7 +7,19 @@ import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge._
 import org.scalajs.dom.{Element, Node}
 
-case class ExerciseStage(left: () => VHtmlNode, right: () => VHtmlNode) extends Stage {
+
+trait ExerciseStage extends Stage {
+
+  val kind = "exercise"
+
+  def isComplete:Boolean = completion match {
+    case Complete(_, _) => true
+    case _ => false
+  }
+
+}
+
+case class OExerciseStage(left: () => VHtmlNode, right: () => VHtmlNode) extends Stage {
   override def completion: Challenge.Completion = Open
 
   override def kind: String = "exercise"

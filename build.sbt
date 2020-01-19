@@ -15,5 +15,5 @@ libraryDependencies ++= Seq(
   "com.github.wbillingsley.veautiful" %%% "veautiful" % "master-SNAPSHOT",
   "com.github.wbillingsley.veautiful" %%% "veautiful-templates" % "master-SNAPSHOT",
 	"com.github.wbillingsley.veautiful" %%% "scatter" % "master-SNAPSHOT",
-	"com.github.wbillingsley.veautiful" %%% "wren" % "master-SNAPSHOT"
+	//"com.github.wbillingsley.veautiful" %%% "wren" % "master-SNAPSHOT"
 )
