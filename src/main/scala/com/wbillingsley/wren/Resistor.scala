@@ -26,6 +26,11 @@ class Resistor(pos:(Int,Int), orientation:Orientation = East, i: Option[Double] 
       t1.current -> (() => for { (r, _) <- resistance.value; (v, _) <- voltage.value } yield v / r ),
       voltage -> (() => for { (i, _) <- t1.current.value; (r, _) <- resistance.value } yield i * r ),
       resistance -> (() => for { (i, _) <- t1.current.value; (v, _) <- voltage.value } yield v / i )
+    )),
+    EquationConstraint("Kirchhoff's Voltage Law", Seq(
+      t2.potential -> (() => for { (v1, _) <- t1.potential.value; (v, _) <- voltage.value } yield v1 - v),
+      t1.potential -> (() => for { (v2, _) <- t2.potential.value; (v, _) <- voltage.value } yield v2 + v),
+      voltage -> (() => for { (v1, _) <- t1.potential.value; (v2, _) <- t2.potential.value } yield v1 - v2),
     ))
   )
 

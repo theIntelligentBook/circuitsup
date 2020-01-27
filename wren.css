@@ -17,6 +17,10 @@
     text-anchor: middle;
 }
 
+.wren-component text.right {
+    text-anchor: end;
+}
+
 .wren-component .current-source-arrow {
     font-size: 36px;
     font-weight: bolder;

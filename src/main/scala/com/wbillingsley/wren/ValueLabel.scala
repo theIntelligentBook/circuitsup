@@ -9,7 +9,7 @@ class ValueLabel(name:(String, String), v:Value, pos:(Int, Int), anchorClass:Str
     val (x, y) = pos
     val (n, sub) = name
 
-    SVG.g(
+    SVG.g(^.cls := "wren-component value-label",
       v.value match {
         case Some((value, provenance)) =>
           SVG.text(^.attr("x") := x, ^.attr("y") := y, ^.cls := anchorClass,

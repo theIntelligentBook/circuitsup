@@ -35,7 +35,9 @@ object Analog {
     Level("Kirchoff's Current Law", Seq(
       KCL.page1, KCL.page2, KCL.page3, KCL.page4, KCL.page5
     )),
-    Level("Ohm's Law", Seq.empty),
+    Level("Ohm's Law", Seq(
+      Ohms.page1, Ohms.page3
+    )),
     Level("Kirchoff's Voltage Law", Seq.empty),
     Level("Voltage Dividers", Seq.empty),
   )
