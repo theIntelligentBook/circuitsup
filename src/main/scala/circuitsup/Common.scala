@@ -1,6 +1,9 @@
 package circuitsup
 
+import circuitsup.templates.Markup
 import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
+
+import scala.scalajs.js
 
 /**
   * Common UI components to all the views
@@ -45,6 +48,8 @@ object Common {
 
     <.div(^.cls := "container", ch)
   )
+
+  def marked(text: => String) = Markup.marked.MarkupNode(() => text)
 
 
 }

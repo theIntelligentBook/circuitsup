@@ -11,7 +11,7 @@ class Value(val units:String, var value:Option[(Double, Provenance)] = None) {
   def stringify:String = value match {
     case Some((x, prov)) =>
       val (d, p) = prefix(x)
-      f"$d%.02f$p$units"
+      f"$d%.3g$p$units"
     case _ => ""
   }
 

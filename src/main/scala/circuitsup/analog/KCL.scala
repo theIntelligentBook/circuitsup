@@ -1,6 +1,6 @@
 package circuitsup.analog
 
-import circuitsup.{CircuitsRoute, Router}
+import circuitsup.{CircuitsRoute, Common, Router}
 import circuitsup.templates.ExerciseStage
 import com.wbillingsley.veautiful.html.{<, ^}
 import com.wbillingsley.veautiful.templates.Challenge
@@ -290,6 +290,124 @@ object KCL {
             <.div(
               <.p(
                 "Well done. Adjusting I", <("sub")("2"), " has left 50mA over for I", <("sub")("3")
+              ),
+              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 4)), s"Next")
+            )
+          case _ => <.div()
+        }
+      )
+    )(
+      <.div(
+        circuit
+      )
+    ))
+
+  }
+
+
+  object page5 extends ExerciseStage {
+
+    val xa = 100
+    val xb = 250
+    val xc = 400
+    val xd = 500
+
+    val ta1 = new Terminal((xa, 100))
+    val ta2 = new Terminal((xa, 300))
+    val tb1 = new Terminal((xb, 100))
+    val tb2 = new Terminal((xb, 300))
+    val tc1 = new Terminal((xc, 100))
+    val tc2 = new Terminal((xc, 300))
+    val tout = new Terminal((xd, 200))
+
+    val ra1 = new Resistor((xa, 160), South)
+    val ra2 = new Resistor((xa, 240), South)
+    val rb1 = new Resistor((xb, 160), South)
+    val rb2 = new Resistor((xb, 240), South)
+    val rc1 = new Resistor((xc, 160), South)
+    val rc2 = new Resistor((xc, 240), South)
+
+
+    val rout = new Resistor((440, 200), East)
+    val ja = new Junction((xa, 200))
+    val jb = new Junction((xb, 200))
+    val jc = new Junction((xc, 200))
+
+
+
+    val wjab = new Wire(ja.terminal, jb.terminal)
+    val wjbc = new Wire(jb.terminal, jc.terminal)
+    val wires:Seq[Wire] = Seq(wjab, wjbc) ++ Seq(
+      ta1 -> ra1.t1, ra1.t2 -> ja.terminal, ja.terminal -> ra2.t1, ra2.t2 -> ta2,
+      tb1 -> rb1.t1, rb1.t2 -> jb.terminal, jb.terminal -> rb2.t1, rb2.t2 -> tb2,
+      tc1 -> rc1.t1, rc1.t2 -> jc.terminal, jc.terminal -> rc2.t1, rc2.t2 -> tc2,
+      jc.terminal -> rout.t1, rout.t2 -> tout
+    ).map { case (a, b) => new Wire(a, b) }
+
+
+
+    val ia1 = new ValueLabel("I" -> "1", ra1.t1.current, (xa + 20, 100), symbol = Seq(ValueLabel.currentArrow((xa + 10, 100), Orientation.South)))
+    val ia2 = new ValueLabel("I" -> "2", ta2.current, (xa + 20, 300), symbol = Seq(ValueLabel.currentArrow((xa + 10, 300), Orientation.South)))
+    val ib1 = new ValueLabel("I" -> "4", rb1.t1.current, (xb + 20, 100), symbol = Seq(ValueLabel.currentArrow((xb + 10, 100), Orientation.South)))
+    val ib2 = new ValueLabel("I" -> "5", tb2.current, (xb + 20, 300), symbol = Seq(ValueLabel.currentArrow((xb + 10, 300), Orientation.South)))
+    val ic1 = new ValueLabel("I" -> "7", rc1.t1.current, (xc + 20, 100), symbol = Seq(ValueLabel.currentArrow((xc + 10, 100), Orientation.South)))
+    val ic2 = new ValueLabel("I" -> "8", tc2.current, (xc + 20, 300), symbol = Seq(ValueLabel.currentArrow((xc + 10, 300), Orientation.South)))
+
+    val iab = new ValueLabel("I" -> "3", wjab.t1current, (xa + 20, 180), symbol = Seq(ValueLabel.currentArrow((xa + 20, 190), Orientation.East)))
+    val ibc = new ValueLabel("I" -> "6", wjbc.t1current, (xb + 20, 180), symbol = Seq(ValueLabel.currentArrow((xb + 20, 190), Orientation.East)))
+
+    val iout = new ValueLabel("I" -> "out", tout.current, (xd, 175), symbol = Seq(ValueLabel.currentArrow((xd, 190), Orientation.East)))
+    val currents = Seq(ia1, ia2, ib1, ib2, ic1, ic2, iout, iab, ibc)
+
+    val i2slider = new ValueSlider(ta2.current, (xa + 20, 320), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+    val i3slider = new ValueSlider(rb1.t1.current, (xb + 20, 120), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+    ta1.current.value = Some((-0.1, UserSet))
+    tb2.current.value = Some((0.050, UserSet))
+    tc1.current.value = Some((-0.050, UserSet))
+    tc2.current.value = Some((0.150, UserSet))
+    val sliders = Seq(i2slider, i3slider)
+
+    val circuit = new Circuit(Seq(ta1, ta2, tb1, tb2, tc1, tc2, tout, ja, jb, jc, ra1, ra2, rb1, rb2, rc1, rc2, rout) ++ wires ++ currents ++ sliders, 600, 400)
+
+    val propagator = ConstraintPropagator(circuit.components.flatMap(_.constraints))
+    propagator.resolve()
+
+    def checkCompletion:Boolean = {
+      (for {
+        (i, _) <- wjab.t1current.value if Math.abs(i - 0.05) < 0.002
+        (j, _) <- tout.current.value if Math.abs(j - 0.1) < 0.002
+      } yield true).contains(true)
+    }
+
+    def onUpdate():Unit = {
+      propagator.clearCalculations()
+      propagator.resolve()
+      if (checkCompletion) {
+        completion = Complete(Some(1), None)
+      }
+
+      Router.rerender()
+    }
+
+    var completion:Completion = Open
+
+    def render = <.div(Challenge.textAndEx(
+      <.div(
+        Common.marked(
+          """
+            |### Something more complex
+            |
+            |This time, let's give you more than one slider and a slightly more complex circuit fragment.
+            |Again, you should just have to consider the currents flowing in and out.
+            |
+            |Your goal is to set I<sub>3</sub> to 50mA and set I<sub>out</sub> to 100mA
+            |
+            |""".stripMargin),
+        completion match {
+          case Complete(_, _) =>
+            <.div(
+              <.p(
+                "Well done. And if you look at each junction in the circuit, the currents in and out should sum to zero."
               ),
               <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 2)), s"Next")
             )
