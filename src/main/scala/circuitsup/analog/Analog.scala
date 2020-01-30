@@ -8,6 +8,15 @@ import com.wbillingsley.veautiful.templates.Challenge.{Level, Stage}
 
 object Analog {
 
+  implicit val onCompletionUpdate: () => Unit = () => Analog.challenge.rerender()
+
+  implicit val nextButton: () => VHtmlNode = () => {
+    Analog.challenge.next match {
+      case Some((l, s)) => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(l, s)), s"Next")
+      case _ => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(0, 0)), s"Start")
+    }
+  }
+
   def symbol = {
     <.svg(^.cls := "circuits-up-symbol", ^.attr("viewBox") := "0 6 100 80",
       SVG.path(^.attr("d") := "M 80 16 l 0 -8 l -64 0 l 0 16 l 16 4 l -32 8 l 32 8 l -32 8 l 16 4 l 0 16 l 64 0 l 0 -8"),

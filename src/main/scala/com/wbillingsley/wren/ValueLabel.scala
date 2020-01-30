@@ -1,15 +1,16 @@
 package com.wbillingsley.wren
 import com.wbillingsley.veautiful.html.{<, DElement, SVG, VHtmlDiffNode, VHtmlNode, ^}
+import com.wbillingsley.wren.Component.ColouringRule
 
 import scala.scalajs.js.|
 
-class ValueLabel(name:(String, String), v:Value, pos:(Int, Int), anchorClass:String = "left ", symbol:Seq[VHtmlNode] = Seq.empty) extends Component {
+class ValueLabel(name:(String, String), v:Value, pos:(Int, Int), anchorClass:String = "left ", symbol:Seq[VHtmlNode] = Seq.empty, colouringRule:ColouringRule = () => "") extends Component {
 
   def render: VHtmlDiffNode = {
     val (x, y) = pos
     val (n, sub) = name
 
-    SVG.g(^.cls := "wren-component value-label",
+    SVG.g(^.cls := "wren-component value-label " + colouringRule(),
       v.value match {
         case Some((value, provenance)) =>
           SVG.text(^.attr("x") := x, ^.attr("y") := y, ^.cls := anchorClass,

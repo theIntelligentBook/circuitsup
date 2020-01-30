@@ -9,10 +9,17 @@ case class Because(constraint: Constraint, values:Seq[Value]) extends Provenance
 class Value(val units:String, var value:Option[(Double, Provenance)] = None) {
 
   def stringify:String = value match {
-    case Some((x, prov)) =>
+    case Some((x, _)) => stringify(x)
+    case _ => ""
+  }
+
+  def stringify(x:Double):String = {
+    if (x == 0d) {
+      s"0$units"
+    } else {
       val (d, p) = prefix(x)
       f"$d%.3g$p$units"
-    case _ => ""
+    }
   }
 
   def prefix(d:Double):(Double, String) = {

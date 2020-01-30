@@ -12,4 +12,10 @@ trait Component extends VHtmlComponent {
 
 }
 
+object Component {
+
+  type ColouringRule = () => String
+
+}
+
 

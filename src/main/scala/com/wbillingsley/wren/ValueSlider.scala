@@ -23,7 +23,7 @@ class ValueSlider(v:Value, pos:(Int, Int), orientation: Orientation = Orientatio
     onUpdate()
   }
 
-  def slider = <.input(
+  def slider = <.input(^.cls := "value-slider",
     ^.attr("type") := "range",
     ^.attr("min") := min,
     ^.attr("max") := max,

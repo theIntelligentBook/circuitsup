@@ -1,10 +1,13 @@
 package circuitsup.analog
 
+import circuitsup.analog.KCL.page1.checkCompletion
+import circuitsup.analog.Ohms.page1.{onCompletionUpdate, rerender}
 import circuitsup.{CircuitsRoute, Common, Router}
 import circuitsup.templates.ExerciseStage
-import com.wbillingsley.veautiful.html.{<, ^}
+import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.{Complete, Completion, Open}
+import com.wbillingsley.wren.Component.ColouringRule
 import com.wbillingsley.wren.Orientation.{East, South}
 import com.wbillingsley.wren.{Circuit, ConstraintPropagator, CurrentSource, Junction, Orientation, Resistor, Terminal, UserSet, ValueLabel, ValueSlider, VoltageSource, Wire}
 
@@ -12,12 +15,14 @@ object KCL {
 
   val vd = new VoltageDivider()
 
+  import Analog.{onCompletionUpdate, nextButton}
+
   object page1 extends ExerciseStage {
 
     val junction = new OneWireFragment((100, 100), 200)
     val i1 = new ValueLabel("I" -> "1", junction.wire.t1current, (120, 100), symbol = Seq(ValueLabel.currentArrow((110, 100), Orientation.South)))
-    val i2 = new ValueLabel("I" -> "2", junction.t2.current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.South)))
-    val i1slider = new ValueSlider(junction.wire.t1current, (120, 120), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+    val i2 = new ValueLabel("I" -> "2", junction.t2.current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.South)), colouringRule = () => if (checkCompletion) "green" else "")
+    val i1slider = new ValueSlider(junction.wire.t1current, (120, 120), min = "0", max = "0.1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
 
     val circuit = new Circuit(i1 +: i1slider +: i2 +: junction.components, 300, 400)
 
@@ -35,9 +40,10 @@ object KCL {
       propagator.resolve()
       if (checkCompletion) {
         completion = Complete(Some(1), None)
+        onCompletionUpdate()
+      } else {
+        rerender()
       }
-
-      Router.rerender()
     }
 
     var completion:Completion = Open
@@ -68,7 +74,7 @@ object KCL {
                 "That was easy enough! Kirchhoff's Current Law implies that if there's 20mA coming into the wire, there must be 20mA going out of it too.",
                 "Let's move on to the next exercise"
               ),
-              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 1)), s"Next")
+              nextButton()
             )
           case _ => <.div()
         }
@@ -85,8 +91,8 @@ object KCL {
 
     val junction = new OneWireFragment((100, 100), 200)
     val i1 = new ValueLabel("I" -> "1", junction.wire.t1current, (120, 100), symbol = Seq(ValueLabel.currentArrow((110, 100), Orientation.South)))
-    val i2 = new ValueLabel("I" -> "2", junction.wire.t2current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.North)))
-    val i1slider = new ValueSlider(junction.wire.t1current, (120, 120), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+    val i2 = new ValueLabel("I" -> "2", junction.wire.t2current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.North)), colouringRule = () => if (checkCompletion) "green" else "")
+    val i1slider = new ValueSlider(junction.wire.t1current, (120, 120), min = "0", max = "0.1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
 
     val circuit = new Circuit(i1 +: i1slider +: i2 +: junction.components, 300, 400)
 
@@ -104,9 +110,10 @@ object KCL {
       propagator.resolve()
       if (checkCompletion) {
         completion = Complete(Some(1), None)
+        onCompletionUpdate()
+      } else {
+        rerender()
       }
-
-      Router.rerender()
     }
 
     var completion:Completion = Open
@@ -135,7 +142,7 @@ object KCL {
                 "So, if 50mA is going into the wire, -50mA into the wire at the other end would sum to zero.",
                 "-50mA heading into the wire is equivalent to 50mA heading out of the wire."
               ),
-              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 2)), s"Next")
+              nextButton()
             )
           case _ => <.div()
         }
@@ -159,8 +166,8 @@ object KCL {
     val w2 = new Wire(r1.t2, r2.t1)
     val w3 = new Wire(r2.t2, t2)
     val i1 = new ValueLabel("I" -> "1", w1.t1current, (120, 100), symbol = Seq(ValueLabel.currentArrow((110, 100), Orientation.South)))
-    val i2 = new ValueLabel("I" -> "2", r1.t1.current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.South)))
-    val i1slider = new ValueSlider(t2.current, (120, 120), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+    val i2 = new ValueLabel("I" -> "2", r1.t1.current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.South)), colouringRule = () => if (checkCompletion) "green" else "")
+    val i1slider = new ValueSlider(t2.current, (120, 120), min = "0", max = "0.1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
 
     val circuit = new Circuit(Seq(t1, t2, w1, w2, w3, i1, i2, r1, r2, i1slider), 300, 400)
 
@@ -178,9 +185,10 @@ object KCL {
       propagator.resolve()
       if (checkCompletion) {
         completion = Complete(Some(1), None)
+        onCompletionUpdate()
+      } else {
+        rerender()
       }
-
-      Router.rerender()
     }
 
     var completion:Completion = Open
@@ -207,7 +215,7 @@ object KCL {
               <.p(
                 "Again, if 50mA is coming in, 50mA must be going out."
               ),
-              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 3)), s"Next")
+              nextButton()
             )
           case _ => <.div()
         }
@@ -242,8 +250,8 @@ object KCL {
 
     val i1 = new ValueLabel("I" -> "1", w1.t1current, (120, 100), symbol = Seq(ValueLabel.currentArrow((110, 100), Orientation.South)))
     val i2 = new ValueLabel("I" -> "2", t2.current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.South)))
-    val i3 = new ValueLabel("I" -> "3", t3.current, (180, 175), symbol = Seq(ValueLabel.currentArrow((190, 190), Orientation.East)))
-    val i2slider = new ValueSlider(t2.current, (120, 320), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+    val i3 = new ValueLabel("I" -> "3", t3.current, (180, 175), symbol = Seq(ValueLabel.currentArrow((190, 190), Orientation.East)), colouringRule = () => if (checkCompletion) "green" else "")
+    val i2slider = new ValueSlider(t2.current, (120, 320), min = "0", max = "0.1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
 
     val circuit = new Circuit(Seq(t1, t2, t3, j, w1, w2, w3, w1j, w2j, w3j, i1, i2, i3, r1, r2, r3, i2slider), 300, 400)
 
@@ -262,9 +270,10 @@ object KCL {
       propagator.resolve()
       if (checkCompletion) {
         completion = Complete(Some(1), None)
+        onCompletionUpdate()
+      } else {
+        rerender()
       }
-
-      Router.rerender()
     }
 
     var completion:Completion = Open
@@ -291,7 +300,7 @@ object KCL {
               <.p(
                 "Well done. Adjusting I", <("sub")("2"), " has left 50mA over for I", <("sub")("3")
               ),
-              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 4)), s"Next")
+              nextButton()
             )
           case _ => <.div()
         }
@@ -353,14 +362,24 @@ object KCL {
     val ic1 = new ValueLabel("I" -> "7", rc1.t1.current, (xc + 20, 100), symbol = Seq(ValueLabel.currentArrow((xc + 10, 100), Orientation.South)))
     val ic2 = new ValueLabel("I" -> "8", tc2.current, (xc + 20, 300), symbol = Seq(ValueLabel.currentArrow((xc + 10, 300), Orientation.South)))
 
-    val iab = new ValueLabel("I" -> "3", wjab.t1current, (xa + 20, 180), symbol = Seq(ValueLabel.currentArrow((xa + 20, 190), Orientation.East)))
+    val iab = new ValueLabel("I" -> "3", wjab.t1current, (xa + 20, 180), symbol = Seq(ValueLabel.currentArrow((xa + 20, 190), Orientation.East)),
+      colouringRule = () => wjab.t1current.value match {
+        case Some((i, _)) if Math.abs(i - 0.05) < 0.002 => "green"
+        case _ => ""
+      }
+    )
     val ibc = new ValueLabel("I" -> "6", wjbc.t1current, (xb + 20, 180), symbol = Seq(ValueLabel.currentArrow((xb + 20, 190), Orientation.East)))
 
-    val iout = new ValueLabel("I" -> "out", tout.current, (xd, 175), symbol = Seq(ValueLabel.currentArrow((xd, 190), Orientation.East)))
+    val iout = new ValueLabel("I" -> "out", tout.current, (xd, 175), symbol = Seq(ValueLabel.currentArrow((xd, 190), Orientation.East)),
+      colouringRule = () => tout.current.value match {
+        case Some((i, _)) if Math.abs(i - 0.1) < 0.002 => "green"
+        case _ => ""
+      }
+    )
     val currents = Seq(ia1, ia2, ib1, ib2, ic1, ic2, iout, iab, ibc)
 
-    val i2slider = new ValueSlider(ta2.current, (xa + 20, 320), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
-    val i3slider = new ValueSlider(rb1.t1.current, (xb + 20, 120), min = "0", max = "1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+    val i2slider = new ValueSlider(ta2.current, (xa + 20, 320), min = "0", max = "0.1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
+    val i3slider = new ValueSlider(rb1.t1.current, (xb + 20, 120), min = "0", max = "0.5", step = "0.05")(onUpdate = onUpdate, enabled = !this.isComplete )
     ta1.current.value = Some((-0.1, UserSet))
     tb2.current.value = Some((0.050, UserSet))
     tc1.current.value = Some((-0.050, UserSet))
@@ -384,9 +403,10 @@ object KCL {
       propagator.resolve()
       if (checkCompletion) {
         completion = Complete(Some(1), None)
+        onCompletionUpdate()
+      } else {
+        rerender()
       }
-
-      Router.rerender()
     }
 
     var completion:Completion = Open
@@ -409,7 +429,7 @@ object KCL {
               <.p(
                 "Well done. And if you look at each junction in the circuit, the currents in and out should sum to zero."
               ),
-              <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(1, 2)), s"Next")
+              nextButton()
             )
           case _ => <.div()
         }
