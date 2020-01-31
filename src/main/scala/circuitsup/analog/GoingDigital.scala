@@ -88,6 +88,11 @@ object GoingDigital {
              |to the "reference ground" (the little downwards-facing triangle in the bottom left).
              |
              |Your task is to set the logic probe into all three different states.
+             |
+             |* Set it to 0: ${if (done0) "Done" else "Not done"}
+             |* Set it to ?: ${if (doneUnk) "Done" else "Not done"}
+             |* Set it to 1:${if (done1) "Done" else "Not done"}
+             |
              |""".stripMargin
         ),
         if (isComplete) nextButton() else <.div()
@@ -170,6 +175,10 @@ object GoingDigital {
              |two positions: 1kΩ or 100kΩ.
              |
              |Toggle the slider and see how this means we'll only get a 1 or a 0 on the logic probe.
+             |
+             |* Set it to 0: ${if (done0) "Done" else "Not done"}
+             |* Set it to 1:${if (done1) "Done" else "Not done"}
+             |
              |""".stripMargin
         ),
         if (isComplete) Common.marked(

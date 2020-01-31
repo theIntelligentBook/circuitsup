@@ -4,7 +4,7 @@ import circuitsup.{CircuitsRoute, IntroRoute, Router}
 import circuitsup.templates.{ExerciseStage, Topic, YouTubeStage}
 import com.wbillingsley.veautiful.html.{<, SVG, VHtmlNode, ^}
 import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Level, Stage}
+import com.wbillingsley.veautiful.templates.Challenge.{Complete, Level, Stage}
 
 object Analog {
 
@@ -32,11 +32,22 @@ object Analog {
   val topic = new Topic(
     name = "Currents, Voltages, and Resistances",
 
-    image = <.p("VIR"),
+    image = <.div(),
 
     content = <.div("Hello!"),
 
-    cssClass = "circuits"
+    cssClass = "circuits",
+
+    completion = () => {
+      val allStages = Analog.challenge.levels.flatMap(_.stages)
+
+      val done = (100.0 * allStages.count(_.completion match {
+        case Complete(_, _) => true
+        case _ => false
+      }) / allStages.length.toDouble).toInt
+
+      s"${done}%"
+    }
   )
 
   val levels = Seq(

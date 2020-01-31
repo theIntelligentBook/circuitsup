@@ -120,6 +120,29 @@ svg {
     background: cornflowerblue;
 }
 
+.topic-block .topic-image {
+    background-image: url("circuit.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.topic-block a:hover .topic-image {
+    box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.7);
+}
+
+.topic-block .topic-completion {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 5px;
+    color: white;
+    font-family: monospace;
+    font-size: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid white;
+}
+
 
 /*
  * Veautiful - Challenge layout
