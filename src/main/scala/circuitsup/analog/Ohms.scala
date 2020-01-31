@@ -7,7 +7,7 @@ import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.{<, ^}
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.{Complete, Open}
-import com.wbillingsley.wren.{Circuit, Constraint, ConstraintPropagator, CurrentSource, Ground, Orientation, Resistor, Value, ValueLabel, ValueSlider, VoltageSource, Wire}
+import com.wbillingsley.wren.{Circuit, Constraint, ConstraintPropagator, CurrentSource, EquationConstraint, Ground, Orientation, Resistor, Value, ValueLabel, ValueSlider, VoltageSource, Wire}
 import org.scalajs.dom.{Element, Node}
 
 import scala.collection.mutable
@@ -97,7 +97,7 @@ object Ohms {
     ))
   }
 
-  object page3 extends ExerciseStage {
+  object page2 extends ExerciseStage {
 
     var completion: Challenge.Completion = Open
 
@@ -136,15 +136,15 @@ object Ohms {
       <.div(
         Common.marked(
           s"""
-            |### Ohm's Law with a Current Source
-            |
-            |This time we've changed the circuit so you have a Current Source: a component that will emit the same
-            |current regardless of what is connected to it.
-            |
-            |Again, adjust the resistance R<sub>1</sub>, and this time see what happens to the voltage across the
-            |resistor.
-            |
-            |""".stripMargin),
+             |### Ohm's Law with a Current Source
+             |
+             |This time we've changed the circuit so you have a Current Source: a component that will emit the same
+             |current regardless of what is connected to it.
+             |
+             |Again, adjust the resistance R<sub>1</sub>, and this time see what happens to the voltage across the
+             |resistor.
+             |
+             |""".stripMargin),
         completion match {
           case Complete(_, _) =>
             <.div(
@@ -167,5 +167,77 @@ object Ohms {
       )
     ))
   }
+
+  object page3 extends ExerciseStage {
+
+    var completion: Challenge.Completion = Open
+
+    def onUpdate():Unit = {
+      propagator.clearCalculations()
+      propagator.resolve()
+
+      plotData.update()
+      if (plotData.dataValues().length > 50) {
+        completion = Challenge.Complete(Some(1), None)
+        onCompletionUpdate()
+      } else {
+        rerender()
+      }
+    }
+
+    val vs = new VoltageSource((100, 150), orientation = Orientation.North, initial = Some(5))
+    val cs = new CurrentSource((400,150), orientation = Orientation.South)
+    val gnd = Ground(100 -> 200)
+
+    val w1 = new Wire(vs.t2, cs.t1, 100 -> 100, 400 -> 100)
+    val w2 = new Wire(vs.t1, gnd.terminal)
+    val w3 = new Wire(gnd.terminal, cs.t2, 400-> 200)
+
+    val effectiveR = new Value("Ω")
+
+    val il = new ValueLabel("I" -> " ", cs.current, (370, 150), "right")
+    val rl = new ValueLabel("R" -> "1", effectiveR, (430, 150), "left")
+    val vl = new ValueLabel("V" -> "1", vs.voltage, (130, 150))
+    val cslider = new ValueSlider(cs.current, (280, 160), min="0.00001", max="0.001", step="0.00001")(onUpdate=onUpdate)
+
+    val circuit = Circuit(Seq(gnd, vs, vl, cs, rl, il, w1, w2, w3, cslider), 600, 400)
+    val propagator = new ConstraintPropagator(
+      circuit.components.flatMap(_.constraints) :+
+        EquationConstraint("Ohm's Law", Seq(
+          effectiveR -> (() => vs.voltage / vs.t1.current)
+        ))
+    )
+
+    val plotData = new ScatterPlotData(cs.current, effectiveR)
+
+    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+      <.div(
+        Common.marked(
+          s"""
+             |### Charting Resistance against Current
+             |
+             |Normally, we just think of a component (e.g., a resistor) as having a resistance.
+             |
+             |In this example, though we've supposed there's an ideal voltage source connected to an ideal current source.
+             |So, the voltage is fixed and the current is what you set. In which case, what is the *effective resistance* of the current source
+             |as you vary what current it passes?
+             |
+             |This isn't something we'd really do, but it gives us an excuse to chart resistance against current this time.
+             |
+             |""".stripMargin),
+        completion match {
+          case Complete(_, _) =>
+            nextButton()
+          case _ => <.div()
+        }
+      )
+    )(
+      <.div(
+        circuit,
+        ScatterPlot(600, 300, "Current", "Effective Resistance", (d) => cs.current.stringify(d), (d) => effectiveR.stringify(d), 0.001,500000).plot(plotData.dataValues())
+      )
+    ))
+  }
+
 
 }

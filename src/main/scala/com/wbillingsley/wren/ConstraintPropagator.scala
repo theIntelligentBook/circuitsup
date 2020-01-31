@@ -8,9 +8,61 @@ case class Because(constraint: Constraint, values:Seq[Value]) extends Provenance
 
 class Value(val units:String, var value:Option[(Double, Provenance)] = None) {
 
-  def stringify:String = value match {
+  def >=(d:Double):Boolean = value match {
+    case Some((vv, _)) if vv >= d => true
+    case _ => false
+  }
+
+  def <=(d:Double):Boolean = value match {
+    case Some((vv, _)) if vv <= d => true
+    case _ => false
+  }
+
+
+  def +(v:Value):Option[Double] = {
+    for {
+      (my, _) <- value
+      (their, _) <- v.value
+    } yield my + their
+  }
+
+  def -(v:Value):Option[Double] = {
+    for {
+      (my, _) <- value
+      (their, _) <- v.value
+    } yield my - their
+  }
+
+  def *(v:Value):Option[Double] = {
+    for {
+      (my, _) <- value
+      (their, _) <- v.value
+    } yield my * their
+  }
+
+  def /(v:Value):Option[Double] = {
+    for {
+      (my, _) <- value
+      (their, _) <- v.value
+    } yield my / their
+  }
+
+  def is(v:Double):Boolean = value match {
+    case Some((vv, _)) if vv == v => true
+    case _ => false
+  }
+
+  def is(v:Double, epsilon:Double):Boolean = value match {
+    case Some((vv, _)) if Math.abs(vv - v) <= epsilon => true
+    case _ => false
+  }
+
+
+  def stringify:String = stringify("")
+
+  def stringify(or:String):String = value match {
     case Some((x, _)) => stringify(x)
-    case _ => ""
+    case _ => or
   }
 
   def stringify(x:Double):String = {
@@ -118,9 +170,9 @@ case class EquationConstraint(name:String, eqs:Seq[(Value, () => Option[Double])
 
   def values = eqs.map(_._1)
 
-  override def calculable: Boolean = eqs.count({ case (v, eq) =>
+  override def calculable: Boolean = eqs.exists({ case (v, eq) =>
     v.value.isEmpty && eq().nonEmpty
-  }) == 1
+  })
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
 

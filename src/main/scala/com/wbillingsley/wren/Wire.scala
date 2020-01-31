@@ -45,3 +45,24 @@ class Wire(t1:Terminal, t2:Terminal, via:(Int,Int)*) extends Component {
     )
   }
 }
+
+object Wire {
+
+  implicit class Wireable(val pair:(Terminal, Terminal)) extends AnyVal {
+    def wire = new Wire(pair._1, pair._2)
+
+    def wireVia(s:(Int, Int)*) = new Wire(pair._1, pair._2, s:_*)
+  }
+
+  def apply(pairs:(Terminal, Terminal)*):Seq[Wire] = {
+    for {
+      (t1, t2) <- pairs
+    } yield new Wire(t1, t2)
+  }
+
+
+  /*
+
+  wires(r1.t1 -> cs.rt2 via
+   */
+}

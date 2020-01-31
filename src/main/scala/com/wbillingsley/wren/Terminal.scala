@@ -14,10 +14,10 @@ sealed trait Connector {
   def pos:(Int, Int)
 }
 
-class Terminal(val pos:(Int, Int)) extends Connector with Component {
+class Terminal(val pos:(Int, Int), i: Option[Double] = None) extends Connector with Component {
 
   /** The current into this terminal */
-  val current = new Value("A", None)
+  val current = new Value("A", i.map((_, QuestionSet)))
 
   /** The potential of this terminal, with respect to the circuit's reference potential */
   val potential = new Value(units = "A", None)

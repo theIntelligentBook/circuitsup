@@ -1,21 +1,16 @@
 package circuitsup.analog
 
-import circuitsup.analog.KCL.page1.checkCompletion
-import circuitsup.analog.Ohms.page1.{onCompletionUpdate, rerender}
-import circuitsup.{CircuitsRoute, Common, Router}
+import circuitsup.Common
 import circuitsup.templates.ExerciseStage
-import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
+import com.wbillingsley.veautiful.html.<
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.{Complete, Completion, Open}
-import com.wbillingsley.wren.Component.ColouringRule
 import com.wbillingsley.wren.Orientation.{East, South}
-import com.wbillingsley.wren.{Circuit, ConstraintPropagator, CurrentSource, Junction, Orientation, Resistor, Terminal, UserSet, ValueLabel, ValueSlider, VoltageSource, Wire}
+import com.wbillingsley.wren._
 
 object KCL {
 
-  val vd = new VoltageDivider()
-
-  import Analog.{onCompletionUpdate, nextButton}
+  import Analog.{nextButton, onCompletionUpdate}
 
   object page1 extends ExerciseStage {
 

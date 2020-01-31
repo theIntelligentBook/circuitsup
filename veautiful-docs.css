@@ -229,10 +229,17 @@ svg {
     background-color: #7d5177;
 }
 
-
 .stage-progress .level-name {
     font-family: 'Michroma', sans-serif;
 }
+
+.stage-progress .progress-level a.stage-link.stage-active {
+    color: cadetblue;
+}
+.stage-progress .progress-level a.stage-link.complete {
+    color: goldenrod;
+}
+
 
 .level-label img {
     max-height: 30px;
