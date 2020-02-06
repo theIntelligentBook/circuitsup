@@ -9,6 +9,9 @@ import com.wbillingsley.wren.Orientation.{East, _}
  */
 class NMOSSwitch(pos:(Int, Int), orientation: Orientation = East) extends Component {
 
+  def x:Int = pos._1
+  def y:Int = pos._2
+
   val gate = new Terminal(orientation.rotate((-50, 0)) + pos, Some(0))
   val source = new Terminal(orientation.rotate((0, 40)) + pos)
   val drain = new Terminal(orientation.rotate((0, -40)) + pos)

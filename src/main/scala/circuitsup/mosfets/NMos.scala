@@ -80,21 +80,21 @@ object NMos {
       <.div(
         Common.marked(
           s"""
-             |### n-Channel MOSFET
+             |### N-Channel MOSFET
              |
              |In a digital circuit, MOSFETs act like digitally controlled switches. They are intriguing devices on their
              |own, however.
              |
-             |On the right, we have a model of an "n-Channel enhancement mode MOSFET" wired up so we can play with
+             |On the right, we have a model of an "N-Channel enhancement mode MOSFET" wired up so we can play with
              |what happens to the the current through it.
              |
-             |Because this is an "n-Channel" MOSFET, the carriers are **n**egatively charged electrons.
+             |Because this is an "N-Channel" MOSFET, the charge carriers flowing through it are **n**egatively charged electrons.
              |The "source" terminal is the source of these electons, and it is connected to the low voltage.
-             |Here, that's the reference ground, sometimes called "V<sub>SS</sub>" because it's connected to the source terminal in nMOS circuits.
+             |Here, that's the reference ground, sometimes called "V<sub>SS</sub>" because it's connected to the **s**ource terminal in nMOS circuits.
              |The semiconductor at the source terminal is "n-doped" (here, shown in pink).
              |
              |The "drain" terminal is where the electrons drain out of the MOSFET. Here, that's connected to the high voltage, V<sub>DD</sub>.
-             |(The "DD" in V<sub>DD</sub> comes from it being connected to the drain in nMOS circuits). It also uses "n-doped" semiconductor (pink).
+             |(The "DD" in V<sub>DD</sub> comes from it being connected to the **d**rain in NMOS circuits). It also uses "n-doped" semiconductor (pink).
              |
              |The body of the MOSFET, shown in grey, is un-doped semiconductor (grey). We've connected it to the low voltage (ground).
              |

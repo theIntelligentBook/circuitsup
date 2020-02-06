@@ -48,6 +48,9 @@ object Topic2 {
     )),
     Level("PMOS", Seq(
       PMos.Page1, PMos.Page2, PMos.Page3, PMos.Page4
+    )),
+    Level("CMOS", Seq(
+      CMos.Page1, CMos.Page2
     ))
   )
 
