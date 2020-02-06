@@ -18,6 +18,9 @@ class Value(val units:String, var value:Option[(Double, Provenance)] = None) {
     case _ => false
   }
 
+  def -(d:Double):Option[Double] = for {
+    (my, _) <- value
+  } yield my - d
 
   def +(v:Value):Option[Double] = {
     for {

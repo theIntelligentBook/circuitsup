@@ -57,3 +57,26 @@
     font-size: 24px;
     font-family: monospace;
 }
+
+/*
+ * MOSFETS
+ */
+
+.semiconductor {
+    fill: lightgray;
+}
+.semiconductor.ndoped {
+    fill: pink;
+}
+.semiconductor.pdoped {
+    fill: yellowgreen;
+}
+.semiconductor.glass {
+    fill: cadetblue;
+}
+.semiconductor.channel {
+    stroke: none;
+}
+.semiconductor-connector {
+    stroke-width: 5px;
+}

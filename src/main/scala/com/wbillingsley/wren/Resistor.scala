@@ -6,6 +6,9 @@ import com.wbillingsley.wren.Orientation.{East, _}
 
 class Resistor(pos:(Int,Int), orientation:Orientation = East, i: Option[Double] = None, r: Option[Double] = None) extends Component {
 
+  def x:Int = pos._1
+  def y:Int = pos._2
+
   val rot = 20
 
   val current = new Value("A", i.map((_, QuestionSet)))

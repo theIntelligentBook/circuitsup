@@ -5,6 +5,10 @@ import com.wbillingsley.wren.Orientation.{East, _}
 
 class VoltageSource(pos:(Int,Int), orientation:Orientation = East, initial: Option[Double] = None) extends Component {
 
+  def x:Int = pos._1
+
+  def y:Int = pos._2
+
   val r = 20
 
   val voltage = new Value("V", initial.map((_, QuestionSet)))

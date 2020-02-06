@@ -1,6 +1,6 @@
 package circuitsup.analog
 
-import circuitsup.{CircuitsRoute, IntroRoute, Router}
+import circuitsup.{CircuitsRoute, Common, IntroRoute, Router}
 import circuitsup.templates.{ExerciseStage, Topic, YouTubeStage}
 import com.wbillingsley.veautiful.html.{<, SVG, VHtmlNode, ^}
 import com.wbillingsley.veautiful.templates.Challenge
@@ -15,15 +15,6 @@ object Analog {
       case Some((l, s)) => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(l, s)), s"Next")
       case _ => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(0, 0)), s"Start")
     }
-  }
-
-  def symbol = {
-    <.svg(^.cls := "circuits-up-symbol", ^.attr("viewBox") := "0 6 100 80",
-      SVG.path(^.attr("d") := "M 80 16 l 0 -8 l -64 0 l 0 16 l 16 4 l -32 8 l 32 8 l -32 8 l 16 4 l 0 16 l 64 0 l 0 -8"),
-      SVG.circle(^.attr("cx") := 80, ^.attr("cy") := 16, ^.attr("r") := 3),
-      SVG.circle(^.attr("cx") := 80, ^.attr("cy") := 64, ^.attr("r") := 3),
-      SVG.path(^.attr("d") := "M 64 40 l 16 -8 l 16 8 m -16 -8 l 0 16")
-    )
   }
 
   val f = List(1, 2, 3).prependedAll[Int](Array(1, 2, 3))
@@ -71,7 +62,7 @@ object Analog {
     homePath = (_) => Router.path(IntroRoute),
     levelPath = (_, i) => Router.path(CircuitsRoute(i, 0)),
     stagePath = (_, i, j) => Router.path(CircuitsRoute(i, j)),
-    homeIcon = symbol
+    homeIcon = Common.symbol
   )
 
 }
