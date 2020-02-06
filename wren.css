@@ -17,7 +17,9 @@
     dominant-baseline: middle;
     text-anchor: middle;
 }
-
+.wren-component text.centre {
+    text-anchor: middle;
+}
 .wren-component text.right {
     text-anchor: end;
 }

@@ -43,8 +43,11 @@ object Topic2 {
 
   val levels = Seq(
     Level("MOSFETs and Logic", Seq(YouTubeStage("0bcvcJwUE-8"))),
-    Level("nMOS", Seq(
+    Level("NMOS", Seq(
       NMos.Page1, NMos.Page2, NMos.Page3, NMos.Page4
+    )),
+    Level("PMOS", Seq(
+      PMos.Page1, PMos.Page2, PMos.Page3, PMos.Page4
     ))
   )
 
