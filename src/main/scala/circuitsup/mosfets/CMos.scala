@@ -169,7 +169,7 @@ object CMos {
     val vg = new VoltageSource(200 ->250, North)
     val pmos = new PMOSSwitch(350 -> 125)
     val nmos = new NMOSSwitch(350 -> 225)
-    
+
     val j = new Terminal(250 -> 200, Some(0))
     val j2 = new Terminal(vg.t1.x -> gnd.terminal.y, Some(0))
     val tout = new Terminal((pmos.drain.x + 30 -> pmos.drain.y), i=Some(0))

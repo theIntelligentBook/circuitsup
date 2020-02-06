@@ -386,3 +386,13 @@ h1, h2, h3, h4 {
     stroke: blueviolet;
     fill: darkviolet;
 }
+
+
+/* Topic  block css */
+
+.topic-block.circuits .topic-image {
+    background-image: url("circuit.png");
+}
+.topic-block.mosfets .topic-image {
+    background-image: url("pmos.png");
+}
