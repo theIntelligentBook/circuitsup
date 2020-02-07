@@ -1,6 +1,6 @@
 package circuitsup.analog
 
-import circuitsup.{CircuitsRoute, Common, IntroRoute, Router}
+import circuitsup.{CircuitsRoute, Common, IntroRoute, Main, Router}
 import circuitsup.templates.{ExerciseStage, Topic, YouTubeStage}
 import com.wbillingsley.veautiful.html.{<, SVG, VHtmlNode, ^}
 import com.wbillingsley.veautiful.templates.Challenge
@@ -62,7 +62,8 @@ object Analog {
     homePath = (_) => Router.path(IntroRoute),
     levelPath = (_, i) => Router.path(CircuitsRoute(i, 0)),
     stagePath = (_, i, j) => Router.path(CircuitsRoute(i, j)),
-    homeIcon = Common.symbol
+    homeIcon = Common.symbol,
+    scaleToWindow = Main.scaleChallengesToWindow
   )
 
 }

@@ -1,6 +1,6 @@
 package circuitsup.mosfets
 
-import circuitsup.{CircuitsRoute, Common, IntroRoute, MosfetsRoute, Router}
+import circuitsup.{CircuitsRoute, Common, IntroRoute, Main, MosfetsRoute, Router}
 import circuitsup.templates.{Topic, YouTubeStage}
 import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
 import com.wbillingsley.veautiful.templates.Challenge
@@ -59,7 +59,8 @@ object Topic2 {
     homePath = (_) => Router.path(IntroRoute),
     levelPath = (_, i) => Router.path(MosfetsRoute(i, 0)),
     stagePath = (_, i, j) => Router.path(MosfetsRoute(i, j)),
-    homeIcon = Common.symbol
+    homeIcon = Common.symbol,
+    scaleToWindow = Main.scaleChallengesToWindow
   )
 
 }
