@@ -1,6 +1,6 @@
 package circuitsup.templates
 
-import com.wbillingsley.veautiful.html.{<, DElement, VHtmlNode, ^}
+import com.wbillingsley.veautiful.html.{<, DElement, SVG, VHtmlNode, ^}
 
 case class ScatterPlot(plotWidth:Int, plotHeight:Int, xName:String, yName:String, xLabel:(Double) => String, yLabel:(Double) => String, defaultxMax:Double, defaultyMax:Double) {
 
@@ -63,7 +63,7 @@ case class ScatterPlot(plotWidth:Int, plotHeight:Int, xName:String, yName:String
 
     def yAxis(ticks:Int, name:String):VHtmlNode = {
 
-      <("g", ns=DElement.svgNS)(
+      SVG.g(
         <("line", ns=DElement.svgNS)(
           ^.attr("x1") := "0", ^.attr("x2") := "0", ^.attr("y1") := "0", ^.attr("y2") := plotHeight.toString
         ),
@@ -76,7 +76,7 @@ case class ScatterPlot(plotWidth:Int, plotHeight:Int, xName:String, yName:String
           val v = i * yInterval
           val y = yScale(v)
 
-          <("g", ns=DElement.svgNS)(
+          SVG.g(
             <("line", ns=DElement.svgNS)(
               ^.attr("x1") := "0", ^.attr("x2") := "-10", ^.attr("y1") := y.toString, ^.attr("y2") := y.toString, ^.cls := "tick-line"
             ),
@@ -92,7 +92,7 @@ case class ScatterPlot(plotWidth:Int, plotHeight:Int, xName:String, yName:String
       val cx = xScale(x)
       val cy = yScale(y)
 
-      <.circle(
+      SVG.circle(
         ^.attr("cx") := cx.toString, ^.attr("cy") := cy.toString, ^.attr("r") := "3", ^.cls := "plot-point"
       )
     }
