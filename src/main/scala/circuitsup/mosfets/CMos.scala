@@ -8,7 +8,7 @@ import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.<
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.{Complete, Open}
-import com.wbillingsley.wren.Orientation.{North, South}
+import com.wbillingsley.wren.Orientation.{East, North, South}
 import com.wbillingsley.wren.Wire._
 import com.wbillingsley.wren._
 import org.scalajs.dom.{Element, Node}
@@ -235,9 +235,7 @@ object CMos {
              |
              |* If the voltage is high, the PMOSFET is off and the NMOSFET is on. V<sub>out</sub> is connected to ground, so it is 0V
              |
-             |* If the voltage is high, the PMOSFET is on and the NMOSFET is off. V<sub>out</sub> is connected to V<sub>DD</sub>, so it is 5V
-             |
-             |Try both, and see that in either case, the current through the circuit is zero.
+             |The logic input will toggle between 5V and 0V, depending on whether you set it to show a 1 or a 0.
              |
              |""".stripMargin
         ), if (isComplete) <.div(
@@ -258,5 +256,114 @@ object CMos {
       circuit
     )))
   }
+
+  object Page3 extends ExerciseStage {
+
+    implicit val wireCol = Wire.voltageColoring
+    implicit val nMosCol = NMOSSwitch.voltageColouring
+    implicit val pMosCol = PMOSSwitch.voltageColouring
+
+    var completion: Challenge.Completion = Open
+
+    val vdd = new VoltageSource(50 ->100, North, Some(5d))
+    val gnd = new Ground(50, 300)
+    val in = new LogicInput(200 ->200, East)(onUpdate)
+
+    val pmos = new PMOSSwitch(350 -> 125)
+    val nmos = new NMOSSwitch(350 -> 225)
+
+    val j = new Terminal(250 -> 200, Some(0))
+    val out = new LogicProbe(pmos.drain.x + 30 -> pmos.drain.y, East)
+
+    val wires:Seq[Wire] = Seq(
+      (vdd.t2 -> pmos.source).wireVia(vdd.t2.x -> 50, pmos.source.x -> 50),
+      (vdd.t1 -> gnd.terminal).wire,
+      (gnd.terminal -> nmos.source).wireVia(nmos.source.x -> gnd.terminal.y),
+      (in.t -> j).wire, (j -> pmos.gate).wireVia(j.x-> pmos.gate.y), (j -> nmos.gate).wireVia(j.x -> nmos.gate.y),
+      (pmos.drain -> out.t).wire, (pmos.drain -> nmos.drain).wire
+    )
+
+    val labels = Seq(
+      new ValueLabel("V" -> "DD", vdd.voltage, (vdd.x + 30) -> vdd.y),
+      new ValueLabel("I" -> " ", pmos.source.current, (pmos.source.x + 30) -> 75, symbol=Seq(ValueLabel.currentArrow((pmos.source.x + 20) -> 75, South))),
+      new ValueLabel("V" -> "out", out.t.potential, (out.t.x + 10) -> nmos.y),
+    )
+
+    val circuit = new Circuit(Seq(vdd, in, j, pmos, nmos, out, gnd) ++ wires ++ labels, 600, 400)
+    val propagator = new ConstraintPropagator(circuit.components.flatMap(_.constraints))
+    propagator.resolve()
+
+    def checkCompletion:Boolean = truthTable.size >= 2
+
+    var truthTable = Map.empty[Boolean, Boolean]
+
+    def stringify(o:Option[Boolean]):String = o match {
+      case Some(true) => "1"
+      case Some(false) => "0"
+      case _ => "?"
+    }
+
+    def onUpdate():Unit = {
+      propagator.clearCalculations()
+      propagator.resolve()
+
+      for {
+        a <- in.value
+        b <- out.value
+      } truthTable = truthTable.updated(a, b)
+
+      if (checkCompletion) {
+        completion = Complete(Some(1), None)
+        onCompletionUpdate()
+      } else {
+        rerender()
+      }
+    }
+
+    val watts = new Value("W")
+
+    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+      <.div(
+        Common.marked(
+          s"""
+             |### Our first CMOS Gate
+             |
+             |Let's replace the voltage source at the gate with a logic input.
+             |I've shown it as a box with a double rounded border. At the moment, it's not set.
+             |
+             |Let's also attach a logic probe at the output (the square box with a '?')
+             |
+             |Your task in this exercise is to toggle the logic input to 0 and to 1 (by clicking on it). When it is
+             |0, its terminal will be set to 0V, and when it is 1 its terminal will be set to V<sub>DD</sub>.
+             |The voltages and currents will propagate through the circuit and we'll see what happens to the logic
+             |probe on the output.
+             |
+             |The table below will update with the *truth table* of what output corresponded to what input.
+             |
+             |<table class="truth-table">
+             |<thead><tr><th>Input</th><th>Output</th></tr></thead>
+             |<tbody>
+             |  <tr><th>1</th><th>${stringify(truthTable.get(true))}</th></tr>
+             |  <tr><th>0</th><th>${stringify(truthTable.get(false))}</th></tr>
+             |</tbody>
+             |</table>
+             |
+             |It's time to click the logic input button to toggle it!
+             |""".stripMargin
+        ), if (isComplete) <.div(
+          Common.marked(
+            s"""
+               | Now that we've filled in the truth table, we can see this makes a *NOT* gate. An input of `1` becomes
+               | `0` and an input of `0` becomes `1`.
+               |""".stripMargin
+          ), nextButton()
+        )else <.div()
+      )
+    )(<.div(
+      circuit
+    )))
+  }
+
+
 
 }

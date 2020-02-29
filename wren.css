@@ -53,11 +53,21 @@
     stroke: green;
 }
 
+/*
+ * Logic Probe
+ */
+
 .logic-probe text {
     text-anchor: middle;
     dominant-baseline: middle;
     font-size: 24px;
     font-family: monospace;
+}
+.logic-probe path.red {
+    stroke: red;
+}
+.logic-probe path.blue {
+    stroke: blue;
 }
 
 /*
@@ -109,4 +119,43 @@
 }
 .wire.blue {
     stroke: blue;
+}
+
+/*
+ * Logic Input
+ */
+.logic-input button {
+    box-sizing: border-box;
+    width: 30px;
+    height: 40px;
+    border: 4px double black;
+    border-radius: 8px;
+}
+.logic-input button:hover {
+    background: powderblue;
+}
+.logic-input path.red {
+    stroke: red;
+}
+.logic-input path.blue {
+    stroke: blue;
+}
+
+/*
+ * Truth Tables
+ */
+table.truth-table {
+  border: 1px solid black;
+  margin-bottom: 1rem;
+}
+table.truth-table th {
+  text-align: center;
+  line-height: 1.5rem;
+  padding: 5px;
+}
+table.truth-table tbody tr {
+  border-top: 1px solid gray;
+}
+table.truth-table tbody tr:nth-child(2n) {
+  background: gainsboro;
 }
