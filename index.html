@@ -17,10 +17,14 @@
 <body>
 
 <div id="render-here">
-    <p>Loading. This site has been tested with Chrome, Safari, and Firefox.</p>
+    <p>Loading...</p>
 </div>
-<!-- Include Scala.js compiled code -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- Include Scala.js compiled code -->
+<!-- When deployed to GitHub Pages -->
+<script type="text/javascript" src="./deployscripts/compiled.js"></script>
+<!-- In development on your own machine after fullOptJS -->
 <script type="text/javascript" src="./target/scala-2.13/circuits-up-opt.js"></script>
 
 </body>

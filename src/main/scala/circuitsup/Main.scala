@@ -10,7 +10,9 @@ object Main {
   }
 
   def main(args:Array[String]): Unit = {
-    val root = Attacher.newRoot(dom.document.getElementById("render-here"))
+    val node = dom.document.getElementById("render-here")
+    node.innerHTML = ""
+    val root = Attacher.newRoot(node)
     root.render(Router)
   }
 
