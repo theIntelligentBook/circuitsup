@@ -24,7 +24,7 @@ object KCL {
     val propagator = ConstraintPropagator(circuit.components.flatMap(_.constraints))
 
     def checkCompletion = {
-      junction.t2.current.value match {
+      junction.t2.current.content match {
         case Some((i, _)) if Math.abs(i - 0.02) < 0.002 => true
         case _ => false
       }
@@ -94,7 +94,7 @@ object KCL {
     val propagator = ConstraintPropagator(circuit.components.flatMap(_.constraints))
 
     def checkCompletion = {
-      junction.wire.t2current.value match {
+      junction.wire.t2current.content match {
         case Some((i, _)) if Math.abs(i + 0.05) < 0.002 => true
         case _ => false
       }
@@ -153,13 +153,15 @@ object KCL {
 
   object page3 extends ExerciseStage {
 
+    import Wire._
+
     val r1 = new Resistor((100, 160), South)
     val r2 = new Resistor((100, 240), South)
     val t1 = new Terminal((100, 100))
     val t2 = new Terminal((100, 300))
-    val w1 = new Wire(t1, r1.t1)
-    val w2 = new Wire(r1.t2, r2.t1)
-    val w3 = new Wire(r2.t2, t2)
+    val w1 = (t1, r1.t1).wire
+    val w2 = (r1.t2, r2.t1).wire
+    val w3 = (r2.t2, t2).wire
     val i1 = new ValueLabel("I" -> "1", w1.t1current, (120, 100), symbol = Seq(ValueLabel.currentArrow((110, 100), Orientation.South)))
     val i2 = new ValueLabel("I" -> "2", r1.t1.current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.South)), colouringRule = () => if (checkCompletion) "green" else "")
     val i1slider = new ValueSlider(t2.current, (120, 120), min = "0", max = "0.1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
@@ -169,7 +171,7 @@ object KCL {
     val propagator = ConstraintPropagator(circuit.components.flatMap(_.constraints))
 
     def checkCompletion = {
-      t2.current.value match {
+      t2.current.content match {
         case Some((i, _)) if Math.abs(i - 0.05) < 0.002 => true
         case _ => false
       }
@@ -226,6 +228,8 @@ object KCL {
 
   object page4 extends ExerciseStage {
 
+    import Wire._
+
     val r1 = new Resistor((100, 160), South)
     val r2 = new Resistor((100, 240), South)
     val r3 = new Resistor((140, 200), East)
@@ -234,14 +238,14 @@ object KCL {
     val t2 = new Terminal((100, 300))
     val t3 = new Terminal((200, 200))
 
-    t1.current.value = Some((-0.1, UserSet))
+    t1.current.content = Some((-0.1, UserSet))
 
-    val w1 = new Wire(t1, r1.t1)
-    val w1j = new Wire(r1.t2, j.terminal)
-    val w2j = new Wire(j.terminal, r2.t1)
-    val w3j = new Wire(j.terminal, r3.t1)
-    val w2 = new Wire(r2.t2, t2)
-    val w3 = new Wire(r3.t2, t3)
+    val w1 = (t1, r1.t1).wire
+    val w1j = (r1.t2, j.terminal).wire
+    val w2j = (j.terminal, r2.t1).wire
+    val w3j = (j.terminal, r3.t1).wire
+    val w2 = (r2.t2, t2).wire
+    val w3 = (r3.t2, t3).wire
 
     val i1 = new ValueLabel("I" -> "1", w1.t1current, (120, 100), symbol = Seq(ValueLabel.currentArrow((110, 100), Orientation.South)))
     val i2 = new ValueLabel("I" -> "2", t2.current, (120, 300), symbol = Seq(ValueLabel.currentArrow((110, 300), Orientation.South)))
@@ -254,7 +258,7 @@ object KCL {
     propagator.resolve()
 
     def checkCompletion = {
-      t3.current.value match {
+      t3.current.content match {
         case Some((i, _)) if Math.abs(i - 0.05) < 0.002 => true
         case _ => false
       }
@@ -338,15 +342,16 @@ object KCL {
     val jc = new Junction((xc, 200))
 
 
+    import Wire._
 
-    val wjab = new Wire(ja.terminal, jb.terminal)
-    val wjbc = new Wire(jb.terminal, jc.terminal)
+    val wjab = (ja.terminal, jb.terminal).wire
+    val wjbc = (jb.terminal, jc.terminal).wire
     val wires:Seq[Wire] = Seq(wjab, wjbc) ++ Seq(
       ta1 -> ra1.t1, ra1.t2 -> ja.terminal, ja.terminal -> ra2.t1, ra2.t2 -> ta2,
       tb1 -> rb1.t1, rb1.t2 -> jb.terminal, jb.terminal -> rb2.t1, rb2.t2 -> tb2,
       tc1 -> rc1.t1, rc1.t2 -> jc.terminal, jc.terminal -> rc2.t1, rc2.t2 -> tc2,
       jc.terminal -> rout.t1, rout.t2 -> tout
-    ).map { case (a, b) => new Wire(a, b) }
+    ).map { case (a, b) => (a, b).wire }
 
 
 
@@ -358,7 +363,7 @@ object KCL {
     val ic2 = new ValueLabel("I" -> "8", tc2.current, (xc + 20, 300), symbol = Seq(ValueLabel.currentArrow((xc + 10, 300), Orientation.South)))
 
     val iab = new ValueLabel("I" -> "3", wjab.t1current, (xa + 20, 180), symbol = Seq(ValueLabel.currentArrow((xa + 20, 190), Orientation.East)),
-      colouringRule = () => wjab.t1current.value match {
+      colouringRule = () => wjab.t1current.content match {
         case Some((i, _)) if Math.abs(i - 0.05) < 0.002 => "green"
         case _ => ""
       }
@@ -366,7 +371,7 @@ object KCL {
     val ibc = new ValueLabel("I" -> "6", wjbc.t1current, (xb + 20, 180), symbol = Seq(ValueLabel.currentArrow((xb + 20, 190), Orientation.East)))
 
     val iout = new ValueLabel("I" -> "out", tout.current, (xd, 175), symbol = Seq(ValueLabel.currentArrow((xd, 190), Orientation.East)),
-      colouringRule = () => tout.current.value match {
+      colouringRule = () => tout.current.content match {
         case Some((i, _)) if Math.abs(i - 0.1) < 0.002 => "green"
         case _ => ""
       }
@@ -375,10 +380,10 @@ object KCL {
 
     val i2slider = new ValueSlider(ta2.current, (xa + 20, 320), min = "0", max = "0.1", step = "0.01")(onUpdate = onUpdate, enabled = !this.isComplete )
     val i3slider = new ValueSlider(rb1.t1.current, (xb + 20, 120), min = "0", max = "0.5", step = "0.05")(onUpdate = onUpdate, enabled = !this.isComplete )
-    ta1.current.value = Some((-0.1, UserSet))
-    tb2.current.value = Some((0.050, UserSet))
-    tc1.current.value = Some((-0.050, UserSet))
-    tc2.current.value = Some((0.150, UserSet))
+    ta1.current.content = Some((-0.1, UserSet))
+    tb2.current.content = Some((0.050, UserSet))
+    tc1.current.content = Some((-0.050, UserSet))
+    tc2.current.content = Some((0.150, UserSet))
     val sliders = Seq(i2slider, i3slider)
 
     val circuit = new Circuit(Seq(ta1, ta2, tb1, tb2, tc1, tc2, tout, ja, jb, jc, ra1, ra2, rb1, rb2, rc1, rc2, rout) ++ wires ++ currents ++ sliders, 600, 400)
@@ -388,8 +393,8 @@ object KCL {
 
     def checkCompletion:Boolean = {
       (for {
-        (i, _) <- wjab.t1current.value if Math.abs(i - 0.05) < 0.002
-        (j, _) <- tout.current.value if Math.abs(j - 0.1) < 0.002
+        (i, _) <- wjab.t1current.content if Math.abs(i - 0.05) < 0.002
+        (j, _) <- tout.current.content if Math.abs(j - 0.1) < 0.002
       } yield true).contains(true)
     }
 

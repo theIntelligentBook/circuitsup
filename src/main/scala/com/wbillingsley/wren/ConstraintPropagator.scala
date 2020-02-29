@@ -6,66 +6,68 @@ case object QuestionSet extends Provenance
 case object Unknown extends Provenance
 case class Because(constraint: Constraint, values:Seq[Value]) extends Provenance
 
-class Value(val units:String, var value:Option[(Double, Provenance)] = None) {
+class Value(val units:String, var content:Option[(Double, Provenance)] = None) {
 
-  def >=(d:Double):Boolean = value match {
+  def value:Option[Double] = content.map(_._1)
+
+  def >=(d:Double):Boolean = content match {
     case Some((vv, _)) if vv >= d => true
     case _ => false
   }
 
-  def <=(d:Double):Boolean = value match {
+  def <=(d:Double):Boolean = content match {
     case Some((vv, _)) if vv <= d => true
     case _ => false
   }
 
-  def >(d:Double):Boolean = value match {
+  def >(d:Double):Boolean = content match {
     case Some((vv, _)) if vv > d => true
     case _ => false
   }
 
-  def <(d:Double):Boolean = value match {
+  def <(d:Double):Boolean = content match {
     case Some((vv, _)) if vv < d => true
     case _ => false
   }
 
   def -(d:Double):Option[Double] = for {
-    (my, _) <- value
+    (my, _) <- content
   } yield my - d
 
   def +(v:Value):Option[Double] = {
     for {
-      (my, _) <- value
-      (their, _) <- v.value
+      (my, _) <- content
+      (their, _) <- v.content
     } yield my + their
   }
 
   def -(v:Value):Option[Double] = {
     for {
-      (my, _) <- value
-      (their, _) <- v.value
+      (my, _) <- content
+      (their, _) <- v.content
     } yield my - their
   }
 
   def *(v:Value):Option[Double] = {
     for {
-      (my, _) <- value
-      (their, _) <- v.value
+      (my, _) <- content
+      (their, _) <- v.content
     } yield my * their
   }
 
   def /(v:Value):Option[Double] = {
     for {
-      (my, _) <- value
-      (their, _) <- v.value
+      (my, _) <- content
+      (their, _) <- v.content
     } yield my / their
   }
 
-  def is(v:Double):Boolean = value match {
+  def is(v:Double):Boolean = content match {
     case Some((vv, _)) if vv == v => true
     case _ => false
   }
 
-  def is(v:Double, epsilon:Double):Boolean = value match {
+  def is(v:Double, epsilon:Double):Boolean = content match {
     case Some((vv, _)) if Math.abs(vv - v) <= epsilon => true
     case _ => false
   }
@@ -73,7 +75,7 @@ class Value(val units:String, var value:Option[(Double, Provenance)] = None) {
 
   def stringify:String = stringify("")
 
-  def stringify(or:String):String = value match {
+  def stringify(or:String):String = content match {
     case Some((x, _)) => stringify(x)
     case _ => or
   }
@@ -115,21 +117,21 @@ trait Constraint {
 
   def failed:Boolean
 
-  def satisfied:Boolean = values.forall(_.value.nonEmpty) && !failed
+  def satisfied:Boolean = values.forall(_.content.nonEmpty) && !failed
 
 }
 
 case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint {
 
-  override def calculable: Boolean = values.exists(_.value.nonEmpty)
+  override def calculable: Boolean = values.exists(_.content.nonEmpty)
 
   override def calculate(): Seq[Value] = {
-    values.find(_.value.nonEmpty) match {
+    values.find(_.content.nonEmpty) match {
       case Some(set) =>
         for {
-          v <- values.filter(_.value.isEmpty)
+          v <- values.filter(_.content.isEmpty)
         } yield {
-          v.value = set.value.map({ case (vv, _) => (vv, Because(this, Seq(v))) })
+          v.content = set.content.map({ case (vv, _) => (vv, Because(this, Seq(v))) })
           v
         }
       case _ => Seq.empty
@@ -137,7 +139,7 @@ case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint
   }
 
   override def failed: Boolean = {
-    val set = values.filter(_.value.nonEmpty).map(_.value.map(_._1))
+    val set = values.filter(_.content.nonEmpty).map(_.content.map(_._1))
     // Error if there are two values that differ by more than 1%
     set.zip(set.tail).exists{ case (Some(x), Some(y)) => Math.abs(x - y) > (x + y) / 100 }
   }
@@ -147,7 +149,7 @@ case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint
 
 case class SumConstraint(name:String, values:Seq[Value], result:Double, tolerance:Double = 0.01) extends Constraint {
 
-  override def calculable: Boolean = values.count(_.value.isEmpty) == 1
+  override def calculable: Boolean = values.count(_.content.isEmpty) == 1
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
 
@@ -155,13 +157,13 @@ case class SumConstraint(name:String, values:Seq[Value], result:Double, toleranc
     if (calculable) {
       val s = (for {
         v <- values
-        (num, _) <- v.value
+        (num, _) <- v.content
       } yield num).sum
 
       for {
-        v <- values if v.value.isEmpty
+        v <- values if v.content.isEmpty
       } yield {
-        v.value = Some((result - s, Because(this, values.filter(_.value.isEmpty))))
+        v.content = Some((result - s, Because(this, values.filter(_.content.isEmpty))))
         v
       }
     } else Seq.empty
@@ -169,10 +171,10 @@ case class SumConstraint(name:String, values:Seq[Value], result:Double, toleranc
   }
 
   override def failed: Boolean = {
-    values.forall(_.value.nonEmpty) && {
+    values.forall(_.content.nonEmpty) && {
       !withinTolerance(result, (for {
         v <- values
-        (num, _) <- v.value
+        (num, _) <- v.content
       } yield num).sum)
     }
   }
@@ -184,7 +186,7 @@ case class EquationConstraint(name:String, eqs:Seq[(Value, () => Option[Double])
   def values = eqs.map(_._1)
 
   override def calculable: Boolean = eqs.exists({ case (v, eq) =>
-    v.value.isEmpty && eq().nonEmpty
+    v.content.isEmpty && eq().nonEmpty
   })
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
@@ -192,10 +194,10 @@ case class EquationConstraint(name:String, eqs:Seq[(Value, () => Option[Double])
   override def calculate(): Seq[Value] = {
     if (calculable) {
       for {
-        (v, eq) <- eqs if v.value.isEmpty
+        (v, eq) <- eqs if v.content.isEmpty
         newVal <- eq()
       } yield {
-        v.value = Some(newVal -> Because(this, values.filter(_.value.nonEmpty)))
+        v.content = Some(newVal -> Because(this, values.filter(_.content.nonEmpty)))
         v
       }
     } else Seq.empty
@@ -216,19 +218,19 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
     for {
       c <- constraints
       v <- c.values
-      (_, Because(_, _)) <- v.value
+      (_, Because(_, _)) <- v.content
     } {
-      v.value = None
+      v.content = None
     }
   }
 
   def canStep:Boolean = constraints.exists({ c =>
-    c.values.exists(_.value.isEmpty) && c.calculable
+    c.values.exists(_.content.isEmpty) && c.calculable
   })
 
   def step():Seq[Value] = {
     for {
-      c <- constraints if c.values.exists(_.value.isEmpty) && c.calculable
+      c <- constraints if c.values.exists(_.content.isEmpty) && c.calculable
       v <- c.calculate()
     } yield v
   }

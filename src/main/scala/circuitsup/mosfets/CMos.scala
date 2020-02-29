@@ -120,7 +120,7 @@ object CMos {
           s"""
              |### The problem with NMOS and PMOS
              |
-             |On the right hand side, we've put an NMOS inverter and a CMOS inverter.
+             |On the right hand side, we've put an NMOS inverter and a PMOS inverter.
              |
              |In the NMOS inverter, if the input is low (the MOSFET is off), there's no current. But if the input is
              |high, a current will flow. That current will generate heat, and we don't want that to happen or our chip will get hot.
@@ -133,10 +133,10 @@ object CMos {
              |The power consumed (turned into heat) is equal to current times voltage. So, in each resistor we have
              |
              |* In the PMOS inverter: ${pmos.r1.t1.current.stringify("?")} &times; ${pmos.r1.voltage.stringify("?")} =
-             |  ${(pmos.r1.t1.current * pmos.r1.voltage).map(watts.stringify(_)).getOrElse("?")}
+             |  ${(pmos.r1.t1.current * pmos.r1.voltage).map(watts.stringify).getOrElse("?")}
              |
              |* In the NMOS inverter: ${ nmos.r1.t1.current.stringify("?")} &times; ${ nmos.r1.voltage.stringify("?")} =
-             |  ${ (nmos.r1.t1.current * nmos.r1.voltage).map(watts.stringify(_)).getOrElse("?") }
+             |  ${ (nmos.r1.t1.current * nmos.r1.voltage).map(watts.stringify).getOrElse("?") }
              |
              |
              |""".stripMargin
@@ -162,6 +162,10 @@ object CMos {
 
   object Page2 extends ExerciseStage {
 
+    implicit val wireCol = Wire.voltageColoring
+    implicit val nMosCol = NMOSSwitch.voltageColouring
+    implicit val pMosCol = PMOSSwitch.voltageColouring
+
     var completion: Challenge.Completion = Open
 
     val vdd = new VoltageSource(50 ->100, North, Some(5d))
@@ -173,6 +177,7 @@ object CMos {
     val j = new Terminal(250 -> 200, Some(0))
     val j2 = new Terminal(vg.t1.x -> gnd.terminal.y, Some(0))
     val tout = new Terminal((pmos.drain.x + 30 -> pmos.drain.y), i=Some(0))
+
 
     val wires:Seq[Wire] = Seq(
       (vdd.t2 -> pmos.source).wireVia(vdd.t2.x -> 50, pmos.source.x -> 50),
@@ -221,6 +226,10 @@ object CMos {
              |### Complementary MOS (CMOS)
              |
              |On the right hand side, we've now got an inverter that uses *both* an N-Channel MOSFET and a P-Channel MOSFET.
+             |
+             |We've also set it so that it'll colour the wires: blue if they are below 1.2V and red if they are above 1.2V.
+             |The MOSFTETs will only colour their channel if they are conducting, so it should be visible which MOSFET is
+             |on and which is off.
              |
              |Remember that the circle on the P-Channel MOSFET's gate means "set the voltage low to make this conduct".
              |

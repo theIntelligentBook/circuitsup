@@ -2,7 +2,7 @@ package com.wbillingsley.wren
 
 import com.wbillingsley.veautiful.html.{SVG, ^}
 
-class Wire(t1:Terminal, t2:Terminal, via:(Int,Int)*) extends Component {
+class Wire(t1:Terminal, t2:Terminal, via:(Int,Int)*)(implicit colouringRule: Wire.ColouringRule = Wire.defaultColouring) extends Component {
 
   t1.connect(this)
   t2.connect(this)
@@ -40,7 +40,7 @@ class Wire(t1:Terminal, t2:Terminal, via:(Int,Int)*) extends Component {
 
   override def render = {
 
-    SVG.g(^.cls := "wren-component wire",
+    SVG.g(^.cls := s"wren-component wire ${colouringRule(t1current, potential)}",
       SVG.path(^.attr("d") := path)
     )
   }
@@ -49,15 +49,28 @@ class Wire(t1:Terminal, t2:Terminal, via:(Int,Int)*) extends Component {
 object Wire {
 
   implicit class Wireable(val pair:(Terminal, Terminal)) extends AnyVal {
-    def wire = new Wire(pair._1, pair._2)
+    def wire(implicit r:Wire.ColouringRule = Wire.defaultColouring) = new Wire(pair._1, pair._2)(r)
 
-    def wireVia(s:(Int, Int)*) = new Wire(pair._1, pair._2, s:_*)
+    def wireVia(s:(Int, Int)*)(implicit r:Wire.ColouringRule = Wire.defaultColouring) = new Wire(pair._1, pair._2, s:_*)(r)
   }
 
   def apply(pairs:(Terminal, Terminal)*):Seq[Wire] = {
     for {
       (t1, t2) <- pairs
     } yield new Wire(t1, t2)
+  }
+
+  type ColouringRule = (Value, Value) => String
+
+  val defaultColouring:ColouringRule = (_, _) => "default"
+
+  val voltageColoring:ColouringRule = { (current, voltage) =>
+    voltage.value match {
+      case Some(v) if v <= NMOSSwitch.vt => "blue"
+      case Some(v) if v >= PMOSSwitch.vt => "red"
+      case _ => "nocol"
+    }
+
   }
 
 

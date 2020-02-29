@@ -16,7 +16,7 @@ class ValueSlider(v:Value, pos:(Int, Int), orientation: Orientation = Orientatio
   override def constraints: Seq[Constraint] = Seq.empty
 
   val updateValue: Event => Unit = (e:Event) => {
-    v.value = e.target match {
+    v.content = e.target match {
       case i:HTMLInputElement => Some(i.value.toDouble, UserSet)
       case _ => None
     }

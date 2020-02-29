@@ -54,7 +54,7 @@ object PMos {
     var completion: Challenge.Completion = Open
 
     val nmc = new PMOSFETCircuit()
-    nmc.vgb.voltage.value = Some(0d -> QuestionSet)
+    nmc.vgb.voltage.content = Some(0d -> QuestionSet)
 
     val circuit = new Circuit(nmc.components :+
       new ValueSlider(nmc.vdd.voltage, nmc.vdd.x + 30 -> (nmc.vdd.y + 10), max="5", min="0", step="0.1")(() => onUpdate())
@@ -125,8 +125,8 @@ object PMos {
     var completion: Challenge.Completion = Open
 
     val nmc = new PMOSFETCircuit()
-    nmc.vgb.voltage.value = Some(4d -> QuestionSet)
-    nmc.vdd.voltage.value = Some(5d -> UserSet)
+    nmc.vgb.voltage.content = Some(4d -> QuestionSet)
+    nmc.vdd.voltage.content = Some(5d -> UserSet)
 
     val circuit = new Circuit(nmc.components :+
       new ValueSlider(nmc.vdd.voltage, nmc.vdd.x + 30 -> (nmc.vdd.y + 10), max="5", min="0", step="0.1")(() => onUpdate()),600, 400)
@@ -190,8 +190,8 @@ object PMos {
     var completion: Challenge.Completion = Open
 
     val nmc = new PMOSFETCircuit()
-    nmc.vdd.voltage.value = Some(3d -> UserSet)
-    nmc.vgb.voltage.value = Some(3d -> UserSet)
+    nmc.vdd.voltage.content = Some(3d -> UserSet)
+    nmc.vgb.voltage.content = Some(3d -> UserSet)
 
     val vg = new ValueLabel("V" -> "g", nmc.pMosfet.gate.potential, 200 -> 275, "centre", symbol=Seq(ValueLabel.voltageMarkers(200 -> 220, 200 -> 330)))
 

@@ -4,8 +4,8 @@ import com.wbillingsley.veautiful.html.{SVG, VHtmlDiffNode, ^}
 case class Ground(pos:(Int,Int)) extends Component {
 
   val terminal = new Terminal(pos)
-  terminal.current.value = Some(0d -> UserSet)
-  terminal.potential.value = Some(0d -> UserSet)
+  terminal.current.content = Some(0d -> UserSet)
+  terminal.potential.content = Some(0d -> UserSet)
 
   override def terminals: Seq[Terminal] = Seq(terminal)
 

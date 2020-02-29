@@ -22,8 +22,8 @@ object Ohms {
 
     def update():Unit = {
       for {
-        (xx, _) <- x.value
-        (yy, _) <- y.value
+        (xx, _) <- x.content
+        (yy, _) <- y.content
       } data(xx) = yy
     }
 

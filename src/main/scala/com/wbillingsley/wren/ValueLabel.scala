@@ -11,7 +11,7 @@ class ValueLabel(name:(String, String), v:Value, pos:(Int, Int), anchorClass:Str
     val (n, sub) = name
 
     SVG.g(^.cls := "wren-component value-label " + colouringRule(),
-      v.value match {
+      v.content match {
         case Some((value, provenance)) =>
           SVG.text(^.attr("x") := x, ^.attr("y") := y, ^.cls := anchorClass,
             n, SVG.tspan(^.attr("dy") := 5, sub), SVG.tspan(^.attr("dy") := -5, " = ", v.stringify)

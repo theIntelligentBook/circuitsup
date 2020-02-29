@@ -22,9 +22,9 @@ class VoltageSource(pos:(Int,Int), orientation:Orientation = East, initial: Opti
   override def constraints: Seq[Constraint] = Seq(
     SumConstraint("Kirchhoff's Current Law", Seq(t1.current, t2.current), 0),
     EquationConstraint("Kirchhoff's Voltage Law", Seq(
-      t2.potential -> (() => for { (v1, _) <- t1.potential.value; (v, _) <- voltage.value } yield v1 + v),
-      t1.potential -> (() => for { (v2, _) <- t2.potential.value; (v, _) <- voltage.value } yield v2 - v),
-      voltage -> (() => for { (v1, _) <- t1.potential.value; (v2, _) <- t2.potential.value } yield v2 - v1),
+      t2.potential -> (() => for {(v1, _) <- t1.potential.content; (v, _) <- voltage.content} yield v1 + v),
+      t1.potential -> (() => for {(v2, _) <- t2.potential.content; (v, _) <- voltage.content} yield v2 - v),
+      voltage -> (() => for {(v1, _) <- t1.potential.content; (v2, _) <- t2.potential.content} yield v2 - v1),
     ))
   ) ++ t1.constraints ++ t2.constraints
 

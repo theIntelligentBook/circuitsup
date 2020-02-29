@@ -82,3 +82,31 @@
 .semiconductor-connector {
     stroke-width: 5px;
 }
+
+/*
+ * MOSFET switches
+ */
+
+.nmos-switch path.red,circle.red {
+    stroke: red;
+}
+.nmos-switch path.blue,circle.blue {
+    stroke: blue;
+}
+
+.pmos-switch path.red,circle.red {
+    stroke: red;
+}
+.pmos-switch path.blue,circle.blue {
+    stroke: blue;
+}
+
+/*
+ * Wires
+ */
+.wire.red {
+    stroke: red;
+}
+.wire.blue {
+    stroke: blue;
+}

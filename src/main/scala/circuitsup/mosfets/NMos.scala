@@ -53,7 +53,7 @@ object NMos {
     var completion: Challenge.Completion = Open
 
     val nmc = new NMOSFETCircuit()
-    nmc.vgb.voltage.value = Some(0d -> QuestionSet)
+    nmc.vgb.voltage.content = Some(0d -> QuestionSet)
 
     val circuit = new Circuit(nmc.components :+
       new ValueSlider(nmc.vdd.voltage, nmc.vdd.x + 30 -> (nmc.vdd.y + 10), max="5", min="0", step="0.1")(() => onUpdate())
@@ -124,7 +124,7 @@ object NMos {
     var completion: Challenge.Completion = Open
 
     val nmc = new NMOSFETCircuit()
-    nmc.vgb.voltage.value = Some(4d -> QuestionSet)
+    nmc.vgb.voltage.content = Some(4d -> QuestionSet)
 
     val circuit = new Circuit(nmc.components :+
       new ValueSlider(nmc.vdd.voltage, nmc.vdd.x + 30 -> (nmc.vdd.y + 10), max="5", min="0", step="0.1")(() => onUpdate())
@@ -188,8 +188,8 @@ object NMos {
     var completion: Challenge.Completion = Open
 
     val nmc = new NMOSFETCircuit()
-    nmc.vdd.voltage.value = Some(3d -> UserSet)
-    nmc.vgb.voltage.value = Some(3d -> UserSet)
+    nmc.vdd.voltage.content = Some(3d -> UserSet)
+    nmc.vgb.voltage.content = Some(3d -> UserSet)
 
     val circuit = new Circuit(nmc.components :+
       new ValueSlider(nmc.vdd.voltage, nmc.vdd.x + 30 -> (nmc.vdd.y + 10), max="5", min="0", step="0.1")(() => onUpdate()) :+

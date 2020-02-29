@@ -26,14 +26,14 @@ class Resistor(pos:(Int,Int), orientation:Orientation = East, i: Option[Double] 
   override def constraints: Seq[Constraint] = t1.constraints ++ t2.constraints ++ Seq(
     SumConstraint("Kirchhoff's Current Law", Seq(t1.current, t2.current), 0),
     EquationConstraint("Ohm's Law", Seq(
-      t1.current -> (() => for { (r, _) <- resistance.value; (v, _) <- voltage.value } yield v / r ),
-      voltage -> (() => for { (i, _) <- t1.current.value; (r, _) <- resistance.value } yield i * r ),
-      resistance -> (() => for { (i, _) <- t1.current.value; (v, _) <- voltage.value } yield v / i )
+      t1.current -> (() => for {(r, _) <- resistance.content; (v, _) <- voltage.content} yield v / r ),
+      voltage -> (() => for {(i, _) <- t1.current.content; (r, _) <- resistance.content} yield i * r ),
+      resistance -> (() => for {(i, _) <- t1.current.content; (v, _) <- voltage.content} yield v / i )
     )),
     EquationConstraint("Kirchhoff's Voltage Law", Seq(
-      t2.potential -> (() => for { (v1, _) <- t1.potential.value; (v, _) <- voltage.value } yield v1 - v),
-      t1.potential -> (() => for { (v2, _) <- t2.potential.value; (v, _) <- voltage.value } yield v2 + v),
-      voltage -> (() => for { (v1, _) <- t1.potential.value; (v2, _) <- t2.potential.value } yield v1 - v2),
+      t2.potential -> (() => for {(v1, _) <- t1.potential.content; (v, _) <- voltage.content} yield v1 - v),
+      t1.potential -> (() => for {(v2, _) <- t2.potential.content; (v, _) <- voltage.content} yield v2 + v),
+      voltage -> (() => for {(v1, _) <- t1.potential.content; (v2, _) <- t2.potential.content} yield v1 - v2),
     ))
   )
 
