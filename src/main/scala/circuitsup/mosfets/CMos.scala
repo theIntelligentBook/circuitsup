@@ -365,5 +365,91 @@ object CMos {
   }
 
 
+  object Page4 extends ExerciseStage {
+
+    implicit val wireCol = Wire.voltageColoring
+
+    var completion: Challenge.Completion = Open
+
+    val in = new LogicInput(200 ->200, East)(onUpdate)
+    val out = new LogicProbe(300 -> 200, East)
+    val not = new NotGate(250 -> 200, East)
+
+    val wires:Seq[Wire] = Seq(
+      (in.t -> not.in).wire,
+      (not.out -> out.t).wire
+    )
+
+    val circuit = new Circuit(Seq(in, not, out) ++ wires, 600, 400)
+    val propagator = new ConstraintPropagator(circuit.components.flatMap(_.constraints))
+    propagator.resolve()
+
+    def checkCompletion:Boolean = truthTable.size >= 2
+
+    var truthTable = Map.empty[Boolean, Boolean]
+
+    def stringify(o:Option[Boolean]):String = o match {
+      case Some(true) => "1"
+      case Some(false) => "0"
+      case _ => "?"
+    }
+
+    def onUpdate():Unit = {
+      propagator.clearCalculations()
+      propagator.resolve()
+
+      for {
+        a <- in.value
+        b <- out.value
+      } truthTable = truthTable.updated(a, b)
+
+      if (checkCompletion) {
+        completion = Complete(Some(1), None)
+        onCompletionUpdate()
+      } else {
+        rerender()
+      }
+    }
+
+    val watts = new Value("W")
+
+    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+      <.div(
+        Common.marked(
+          s"""
+             |### Our CMOS Not Gate
+             |
+             |Now that we know the circuit is a NOT gate, let's remove the detail of the circuitry and replace it
+             |just with the gate symbol for a NOT gate.
+             |
+             |Toggle the input again, and you'll see we're still colouring the wires with the voltage level, but in
+             |practice we're more interested in the logical operation of the gate. We've abstracted away from
+             |MOSFETs and voltages.
+             |
+             |<table class="truth-table">
+             |<thead><tr><th>Input</th><th>Output</th></tr></thead>
+             |<tbody>
+             |  <tr><th>1</th><th>${stringify(truthTable.get(true))}</th></tr>
+             |  <tr><th>0</th><th>${stringify(truthTable.get(false))}</th></tr>
+             |</tbody>
+             |</table>
+             |
+             |It's time to click the logic input button to toggle it!
+             |""".stripMargin
+        ), if (isComplete) <.div(
+          Common.marked(
+            s"""
+               | You might notice there's a circle on the output of the NOT gate, and there was a circle on the input
+               | gate of a p-type MOSFET (which turned on if the input was low rather than high). Where you see that circle, think
+               | "inversion".
+               |""".stripMargin
+          ), nextButton()
+        )else <.div()
+      )
+    )(<.div(
+      circuit
+    )))
+  }
+
 
 }
