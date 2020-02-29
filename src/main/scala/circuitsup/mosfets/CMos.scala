@@ -265,7 +265,7 @@ object CMos {
 
     val vdd = new VoltageSource(50 ->100, North, Some(5d))
     val gnd = new Ground(50, 300)
-    val in = new LogicInput(200 ->200, East)(onUpdate)
+    val in = new LogicInput(200 ->200, East)(_ => onUpdate())
 
     val pmos = new PMOSSwitch(350 -> 125)
     val nmos = new NMOSSwitch(350 -> 225)
@@ -363,7 +363,7 @@ object CMos {
 
     var completion: Challenge.Completion = Open
 
-    val in = new LogicInput(200 ->200, East)(onUpdate)
+    val in = new LogicInput(200 ->200, East, "A")(_ => onUpdate())
     val out = new LogicProbe(300 -> 200, East)
     val not = new NotGate(250 -> 200, East)
 
@@ -417,6 +417,12 @@ object CMos {
              |Toggle the input again, and you'll see we're still colouring the wires with the voltage level, but in
              |practice we're more interested in the logical operation of the gate. We've abstracted away from
              |MOSFETs and voltages.
+             |
+             |We can also write the NOT operation symbolically. There are three different notations you're likely to come across
+             |
+             |* <code>&not;A</code> - the symbol you're likely to see on mathematical logic courses
+             |* <code style="text-decoration: overline">A</code> - engineers use an overbar
+             |* <code>\\~A</code> - many programming languages use `~` as the *bitwise NOT* operator
              |
              |${TruthTable(Seq("Input"), truthTable, in.value.toSeq).htmlString}
              |

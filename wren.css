@@ -140,6 +140,10 @@
 .logic-input path.blue {
     stroke: blue;
 }
+.logic-input text.input-name {
+    text-anchor: end;
+    dominant-baseline: middle;
+}
 
 /*
  * Truth Tables

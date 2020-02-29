@@ -2,6 +2,7 @@ package circuitsup
 
 import circuitsup.templates.Markup
 import com.wbillingsley.veautiful.html.{<, SVG, VHtmlNode, ^}
+import com.wbillingsley.veautiful.templates.Challenge
 
 import scala.scalajs.js
 
@@ -60,6 +61,20 @@ object Common {
       SVG.circle(^.attr("cx") := 80, ^.attr("cy") := 64, ^.attr("r") := 3),
       SVG.path(^.attr("d") := "M 64 40 l 16 -8 l 16 8 m -16 -8 l 0 16")
     )
+  }
+
+  def makeChallenge(routeFunction: (Int, Int) => Route, levels:Seq[Challenge.Level]):Challenge = {
+
+    Challenge(
+      levels,
+      homePath = (_) => Router.path(IntroRoute),
+      levelPath = (_, i) => Router.path(routeFunction(i, 0)),
+      stagePath = (_, i, j) => Router.path(routeFunction(i, j)),
+      homeIcon = Common.symbol,
+      scaleToWindow = Main.scaleChallengesToWindow
+    )
+
+
   }
 
 }
