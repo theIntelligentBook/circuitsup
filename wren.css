@@ -148,7 +148,7 @@ table.truth-table {
   border: 1px solid black;
   margin-bottom: 1rem;
 }
-table.truth-table th {
+table.truth-table th,td {
   text-align: center;
   line-height: 1.5rem;
   padding: 5px;
@@ -158,4 +158,7 @@ table.truth-table tbody tr {
 }
 table.truth-table tbody tr:nth-child(2n) {
   background: gainsboro;
+}
+table.truth-table tbody tr.active {
+  background: moccasin;
 }

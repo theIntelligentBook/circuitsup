@@ -201,13 +201,17 @@ object CMos {
     val propagator = new ConstraintPropagator(circuit.components.flatMap(_.constraints))
     propagator.resolve()
 
-    def checkCompletion:Boolean = false
+    def checkCompletion:Boolean = doneLow && doneHigh
+
+    var doneLow = false
+    var doneHigh = false
 
     def onUpdate():Unit = {
       propagator.clearCalculations()
       propagator.resolve()
 
-
+      doneLow = doneLow || vg.voltage <= LogicProbe.max0
+      doneHigh = doneHigh || vg.voltage >= LogicProbe.min1
 
       if (checkCompletion) {
         completion = Complete(Some(1), None)
@@ -233,21 +237,15 @@ object CMos {
              |
              |Remember that the circle on the P-Channel MOSFET's gate means "set the voltage low to make this conduct".
              |
-             |* If the voltage is high, the PMOSFET is off and the NMOSFET is on. V<sub>out</sub> is connected to ground, so it is 0V
-             |
-             |The logic input will toggle between 5V and 0V, depending on whether you set it to show a 1 or a 0.
+             |* If the voltage is low, ${ if (doneLow) "the PMOSFET is on and the NMOSFET is off. V<sub>out</sub> is connected to V<sub>DD</sub>, so it is 5V" else "..?" }
+             |* If the voltage is high, ${if (doneHigh) "the PMOSFET is off and the NMOSFET is on. V<sub>out</sub> is connected to ground, so it is 0V" else "..?" }
              |
              |""".stripMargin
         ), if (isComplete) <.div(
           Common.marked(
             s"""
-               | That might not seem a lot, but multiply it by billions of MOSFET circuits in a processor, and it starts
-               | to add up to a lot of heat.
-               |
-               | In the next stage, we're going to solve this problem by using *both* N-Channel *and* P-Channel MOSFETs.
-               | Instead of using a pull-up resistor, we'll use a P-Channel MOSFET. Instead of using a pull-down resistor,
-               | we'll use an N-Channel MOSFET. One of them will always be turned off, and that means we won't see current
-               | flowing through resistors generating so much heat.
+               | In the next stage, we're going to start transitioning away from thinking about the voltage, and start
+               | thinking about a low voltage as being logical `0` and a high voltage being logical `1`
                |""".stripMargin
           ), nextButton()
         )else <.div()
@@ -295,7 +293,7 @@ object CMos {
 
     def checkCompletion:Boolean = truthTable.size >= 2
 
-    var truthTable = Map.empty[Boolean, Boolean]
+    var truthTable = Map.empty[Seq[Boolean], Boolean]
 
     def stringify(o:Option[Boolean]):String = o match {
       case Some(true) => "1"
@@ -310,7 +308,7 @@ object CMos {
       for {
         a <- in.value
         b <- out.value
-      } truthTable = truthTable.updated(a, b)
+      } truthTable = truthTable.updated(Seq(a), b)
 
       if (checkCompletion) {
         completion = Complete(Some(1), None)
@@ -340,13 +338,7 @@ object CMos {
              |
              |The table below will update with the *truth table* of what output corresponded to what input.
              |
-             |<table class="truth-table">
-             |<thead><tr><th>Input</th><th>Output</th></tr></thead>
-             |<tbody>
-             |  <tr><th>1</th><th>${stringify(truthTable.get(true))}</th></tr>
-             |  <tr><th>0</th><th>${stringify(truthTable.get(false))}</th></tr>
-             |</tbody>
-             |</table>
+             |${TruthTable(Seq("Input"), truthTable, in.value.toSeq).htmlString}
              |
              |It's time to click the logic input button to toggle it!
              |""".stripMargin
@@ -386,7 +378,7 @@ object CMos {
 
     def checkCompletion:Boolean = truthTable.size >= 2
 
-    var truthTable = Map.empty[Boolean, Boolean]
+    var truthTable = Map.empty[Seq[Boolean], Boolean]
 
     def stringify(o:Option[Boolean]):String = o match {
       case Some(true) => "1"
@@ -401,7 +393,7 @@ object CMos {
       for {
         a <- in.value
         b <- out.value
-      } truthTable = truthTable.updated(a, b)
+      } truthTable = truthTable.updated(Seq(a), b)
 
       if (checkCompletion) {
         completion = Complete(Some(1), None)
@@ -426,13 +418,7 @@ object CMos {
              |practice we're more interested in the logical operation of the gate. We've abstracted away from
              |MOSFETs and voltages.
              |
-             |<table class="truth-table">
-             |<thead><tr><th>Input</th><th>Output</th></tr></thead>
-             |<tbody>
-             |  <tr><th>1</th><th>${stringify(truthTable.get(true))}</th></tr>
-             |  <tr><th>0</th><th>${stringify(truthTable.get(false))}</th></tr>
-             |</tbody>
-             |</table>
+             |${TruthTable(Seq("Input"), truthTable, in.value.toSeq).htmlString}
              |
              |It's time to click the logic input button to toggle it!
              |""".stripMargin
