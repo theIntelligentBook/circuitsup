@@ -15,49 +15,30 @@ object CountingInBinary extends ExerciseStage {
 
   override def completion: Challenge.Completion = Challenge.Open
 
-  object Clock extends VHtmlComponent {
+  val clock = new Clock(false)
 
-    var counter:Byte = 0
-
-    val tick: () => Unit = { ()=>
-      counter = (counter + 1).toByte
-      rerender()
-    }
-
-    var timer:Option[Int] = None
-
-    override protected def render: DiffNode[Element, Node] = <.div(Binary.unsigned8bit(counter))
-
-    override def afterAttach(): Unit = {
-      super.afterAttach()
-      timer = Some(dom.window.setInterval(tick, 500))
-    }
-
-    override def afterDetach(): Unit = {
-      for { t <- timer } {
-        timer = None
-        dom.window.clearTimeout(t)
-      }
-      super.afterDetach()
-    }
-
-  }
-
-  override protected def render: DiffNode[Element, Node] = {
-    <.div(Challenge.textAndEx(
-      <.div(
-        Common.marked(
-          """
-            | # Counting in Binary
-            |
-            | Still being built...
-            |""".stripMargin
-        ),
+  override protected def render: DiffNode[Element, Node] = <.div(
+    Challenge.textAndEx(
+      Common.marked(
+        """
+          |# Counting in Binary
+          |
+          |Sometimes, counting is easier to understand just by watching it. So, let's show a
+          |counter incrementing every half-second, in 8-bit binary.
+          |""".stripMargin
+      ),
+      clock,
+      Common.marked(
+        """
+          |When we count in decimals, we have the digits `0` to `9`. Go past `9` and we run out of symbols and have to
+          |move to the next column: `10`.
+          |
+          |So, children are taught the columns of decimal. The 1s, the 10s, the 100s, the 1000s -- each power of 10.
+          |
+          |""".stripMargin
       )
-    )(
-      Challenge.textColumn(
-        Clock
-      )
-    ))
-  }
+
+    )(Challenge.textColumn(<.div()))
+  )
+
 }
