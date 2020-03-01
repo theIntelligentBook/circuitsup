@@ -46,7 +46,7 @@ object BooleanTopic {
       NandGateLogic, NandGateMosfets, NorGateLogic, NorGateMosfets
     )),
     Level("XOR and XNOR", Seq(
-      XorGateLogic
+      XorGateLogic, XnorGateLogic
     )),
   )
 
