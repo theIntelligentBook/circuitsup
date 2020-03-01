@@ -57,12 +57,16 @@
  * Logic Probe
  */
 
-.logic-probe text {
+.logic-probe text.display {
     text-anchor: middle;
     dominant-baseline: middle;
     font-size: 24px;
     font-family: monospace;
 }
+.logic-probe text.output-name {
+    dominant-baseline: middle;
+}
+
 .logic-probe path.red {
     stroke: red;
 }

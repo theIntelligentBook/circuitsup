@@ -61,7 +61,7 @@ object NandGateMosfets extends ExerciseStage {
 
   def checkCompletion:Boolean = truthTable.size >= 4
 
-  var truthTable = Map.empty[Seq[Boolean], Boolean]
+  var truthTable = Map.empty[Seq[Boolean], Seq[Boolean]]
 
   def stringify(o:Option[Boolean]):String = o match {
     case Some(true) => "1"
@@ -77,7 +77,7 @@ object NandGateMosfets extends ExerciseStage {
       a <- a1.value
       b <- b1.value
       out <- out.value
-    } truthTable = truthTable.updated(Seq(a, b), out)
+    } truthTable = truthTable.updated(Seq(a, b), Seq(out))
 
     if (checkCompletion) {
       completion = Complete(Some(1), None)
@@ -104,7 +104,7 @@ object NandGateMosfets extends ExerciseStage {
              |
              |Go on, click back to [the OR gate](#/boolean/0/2) and watch the circles swap. (Then click the browser back button to come back here).
              |
-             |${TruthTable(Seq("A", "B"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
+             |${TruthTable(Seq("A", "B"), Seq("Output"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
              |
              |It's time to click the logic input buttons to toggle them!
              |""".stripMargin

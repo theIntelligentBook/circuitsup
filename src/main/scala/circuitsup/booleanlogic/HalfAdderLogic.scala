@@ -12,7 +12,7 @@ import com.wbillingsley.wren.Wire._
 import com.wbillingsley.wren._
 import org.scalajs.dom.{Element, Node}
 
-object NandGateLogic extends ExerciseStage {
+object HalfAdderLogic extends ExerciseStage {
 
   implicit val wireCol = Wire.voltageColoring
 
@@ -20,27 +20,25 @@ object NandGateLogic extends ExerciseStage {
 
   val a1:LogicInput = new LogicInput(100 ->350, East, name="A")({ v => a2.value = v; onUpdate() })
   val b1:LogicInput = new LogicInput(100 ->450, East, name="B")({ v => b2.value = v; onUpdate() })
-  val nand = new NandGate(200 -> 400, East)
-  val out = new LogicProbe(300 -> 400, East)
+  val and = new AndGate(200 -> 400, East)
+  val carry = new LogicProbe(300 -> 400, East, "Carry")
 
   val a2:LogicInput = new LogicInput(100 ->150, East, name="A")({ v => a1.value = v; onUpdate() })
   val b2:LogicInput = new LogicInput(100 ->250, East, name="B")({ v => b1.value = v; onUpdate() })
-  val and = new AndGate(200 -> 200, East)
-  val not = new NotGate(300 -> 200)
-  val out2 = new LogicProbe(400 -> 200, East)
+  val xor = new XorGate(200 -> 200, East)
+  val result = new LogicProbe(300 -> 200, East, "Result")
 
   val wires:Seq[Wire] = Seq(
-    (a1.t -> nand.ta).wireVia(nand.ta.x -> a1.t.y),
-    (b1.t -> nand.tb).wireVia(nand.tb.x -> b1.t.y),
-    (nand.out -> out.t).wire,
+    (a1.t -> and.ta).wireVia(and.ta.x -> a1.t.y),
+    (b1.t -> and.tb).wireVia(and.tb.x -> b1.t.y),
+    (and.out -> carry.t).wire,
 
-    (a2.t -> and.ta).wireVia(and.ta.x -> a2.t.y),
-    (b2.t -> and.tb).wireVia(and.tb.x -> b2.t.y),
-    (and.out -> not.in).wire,
-    (not.out -> out2.t).wire
+    (a2.t -> xor.ta).wireVia(xor.ta.x -> a2.t.y),
+    (b2.t -> xor.tb).wireVia(xor.tb.x -> b2.t.y),
+    (xor.out -> result.t).wire
   )
 
-  val circuit = new Circuit(Seq(a1, b1, nand, out) ++ Seq(a2, b2, and, not, out2) ++ wires, 600, 600)
+  val circuit = new Circuit(Seq(a1, b1, and, carry) ++ Seq(a2, b2, xor, result) ++ wires, 600, 600)
   val propagator = new ConstraintPropagator(circuit.components.flatMap(_.constraints))
   propagator.resolve()
 
@@ -61,8 +59,9 @@ object NandGateLogic extends ExerciseStage {
     for {
       a <- a1.value
       b <- b1.value
-      out <- out.value
-    } truthTable = truthTable.updated(Seq(a, b), Seq(out))
+      c <- carry.value
+      r <- result.value
+    } truthTable = truthTable.updated(Seq(a, b), Seq(c, r))
 
     if (checkCompletion) {
       completion = Complete(Some(1), None)
@@ -76,23 +75,34 @@ object NandGateLogic extends ExerciseStage {
     <.div(
       Common.marked(
         s"""
-           |### NAND gate in logic
+           |### Half adder
            |
-           |Let's take an AND gate and put a NOT gate on its output.
+           |So far, we've shown logic gates just to show what they do. Now let's do something small but useful
            |
-           |This produces a "NAND" gate. The logic circuit symbol for it is underneath -- you'll see the negation
-           |circle gets added to the AND gate's output.
+           |In binary, we count using only the digits `0` and `1`. If we suppose we have two "bits", we could count from
+           |0 to 3 like so:
            |
-           |Let's fill in the truth table.
+           |* `0`: `00`
+           |* `1`: `01`
+           |* `2`: `10`
+           |* `3`: `11`
            |
-           |${TruthTable(Seq("A", "B"), Seq("Output"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
+           |Let's say we have two one-bit numbers `A` and `B`. How can we implement addition of these bits?
+           |
+           |The circuit on the right is a *half-adder* that can add two bits. You'll see we have two circuits producing
+           |two outputs, that I've labelled "Carry" and "Result". This is because `1` + `1` = `10` - we need two bits
+           |to store the output.
+           |
+           |Toggle the inputs to try out the different possibilites and hopefully the result will make sense in the truth
+           |table for the *Carry* and *Result* bits below.
+           |
+           |${TruthTable(Seq("A", "B"), Seq("Carry", "Result"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
            |""".stripMargin
       ), if (isComplete) <.div(
         Common.marked(
           s"""
-             | If you look at the truth table, you'll notice that the output is `0` if A or B is `0`.
-             |
-             | In other words, `~(AB)` = `(A' + B')`. This is one of [De Morgan's Laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws)
+             | It's probably less common to see an XNOR gate. Many programming languages do not have a bitwise XNOR
+             | operator. For instance in C-like languages you have to write `~(A^B)` to perform a bitwise XNOR.
              |""".stripMargin
         ), nextButton()
       )else <.div()

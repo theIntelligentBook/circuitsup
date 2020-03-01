@@ -46,7 +46,7 @@ object NorGateLogic extends ExerciseStage {
 
   def checkCompletion:Boolean = truthTable.size >= 4
 
-  var truthTable = Map.empty[Seq[Boolean], Boolean]
+  var truthTable = Map.empty[Seq[Boolean], Seq[Boolean]]
 
   def stringify(o:Option[Boolean]):String = o match {
     case Some(true) => "1"
@@ -62,7 +62,7 @@ object NorGateLogic extends ExerciseStage {
       a <- a1.value
       b <- b1.value
       out <- out.value
-    } truthTable = truthTable.updated(Seq(a, b), out)
+    } truthTable = truthTable.updated(Seq(a, b), Seq(out))
 
     if (checkCompletion) {
       completion = Complete(Some(1), None)
@@ -85,7 +85,7 @@ object NorGateLogic extends ExerciseStage {
            |
            |Let's fill in the truth table by setting the inputs in the circuit on the right.
            |
-           |${TruthTable(Seq("A", "B"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
+           |${TruthTable(Seq("A", "B"), Seq("Output"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
            |""".stripMargin
       ), if (isComplete) <.div(
         Common.marked(

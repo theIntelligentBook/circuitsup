@@ -63,7 +63,7 @@ object OrGateMosfets extends ExerciseStage {
 
   def checkCompletion:Boolean = truthTable.size >= 4
 
-  var truthTable = Map.empty[Seq[Boolean], Boolean]
+  var truthTable = Map.empty[Seq[Boolean], Seq[Boolean]]
 
   def stringify(o:Option[Boolean]):String = o match {
     case Some(true) => "1"
@@ -79,7 +79,7 @@ object OrGateMosfets extends ExerciseStage {
       a <- a1.value
       b <- b1.value
       out <- out.value
-    } truthTable = truthTable.updated(Seq(a, b), out)
+    } truthTable = truthTable.updated(Seq(a, b), Seq(out))
 
     if (checkCompletion) {
       completion = Complete(Some(1), None)
@@ -106,7 +106,7 @@ object OrGateMosfets extends ExerciseStage {
              |Complementing them, ${notS{"A"}} and ${notS("B")} are connected to ground in series, so *both* A and B must
              |be low to make a connection low.
              |
-             |${TruthTable(Seq("A", "B"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
+             |${TruthTable(Seq("A", "B"), Seq("Output"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
              |
              |It's time to click the logic input buttons to toggle them!
              |""".stripMargin

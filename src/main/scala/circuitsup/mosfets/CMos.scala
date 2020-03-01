@@ -293,7 +293,7 @@ object CMos {
 
     def checkCompletion:Boolean = truthTable.size >= 2
 
-    var truthTable = Map.empty[Seq[Boolean], Boolean]
+    var truthTable = Map.empty[Seq[Boolean], Seq[Boolean]]
 
     def stringify(o:Option[Boolean]):String = o match {
       case Some(true) => "1"
@@ -308,7 +308,7 @@ object CMos {
       for {
         a <- in.value
         b <- out.value
-      } truthTable = truthTable.updated(Seq(a), b)
+      } truthTable = truthTable.updated(Seq(a), Seq(b))
 
       if (checkCompletion) {
         completion = Complete(Some(1), None)
@@ -338,7 +338,7 @@ object CMos {
              |
              |The table below will update with the *truth table* of what output corresponded to what input.
              |
-             |${TruthTable(Seq("Input"), truthTable, in.value.toSeq).htmlString}
+             |${TruthTable(Seq("Input"), Seq("Output"), truthTable, in.value.toSeq).htmlString}
              |
              |It's time to click the logic input button to toggle it!
              |""".stripMargin
@@ -378,7 +378,7 @@ object CMos {
 
     def checkCompletion:Boolean = truthTable.size >= 2
 
-    var truthTable = Map.empty[Seq[Boolean], Boolean]
+    var truthTable = Map.empty[Seq[Boolean], Seq[Boolean]]
 
     def stringify(o:Option[Boolean]):String = o match {
       case Some(true) => "1"
@@ -393,7 +393,7 @@ object CMos {
       for {
         a <- in.value
         b <- out.value
-      } truthTable = truthTable.updated(Seq(a), b)
+      } truthTable = truthTable.updated(Seq(a), Seq(b))
 
       if (checkCompletion) {
         completion = Complete(Some(1), None)
@@ -435,7 +435,7 @@ object CMos {
              |  `AB'C`. As the "combining overbar" doesn't render correctly in some browsers (and can be hard to distinguish in web
              |  text anyway), we'll use the `A'` notation here too when we want to talk about the complement of a single input.
              |
-             |${TruthTable(Seq("Input"), truthTable, in.value.toSeq).htmlString}
+             |${TruthTable(Seq("Input"), Seq("Output"), truthTable, in.value.toSeq).htmlString}
              |
              |It's time to click the logic input button to toggle it!
              |""".stripMargin

@@ -3,7 +3,7 @@ package com.wbillingsley.wren
 import com.wbillingsley.veautiful.html.{SVG, VHtmlDiffNode, ^}
 import com.wbillingsley.wren.Orientation.East
 
-class LogicProbe(pos:(Int,Int), orientation:Orientation = East)(implicit colouringRule: Wire.ColouringRule = Wire.defaultColouring) extends Component {
+class LogicProbe(pos:(Int,Int), orientation:Orientation = East, name:String="")(implicit colouringRule: Wire.ColouringRule = Wire.defaultColouring) extends Component {
 
   val t = new Terminal(pos, Some(0))
 
@@ -24,11 +24,12 @@ class LogicProbe(pos:(Int,Int), orientation:Orientation = East)(implicit colouri
     SVG.g(^.cls := "wren-component logic-probe", ^.attr("transform") := s"translate($x, $y) rotate(${orientation.deg})",
       SVG.path(^.cls := wireCol, ^.attr("d") := "M 0 0 l 10 0"),
       SVG.rect(^.attr("x") := "10", ^.attr("y") := "-20", ^.attr("width") := 40, ^.attr("height") := 40),
-      SVG.text(^.attr("x") := 30, ^.attr("y") := 0,
+      SVG.text(^.cls := "display", ^.attr("x") := 30, ^.attr("y") := 0,
         if (t.potential >= LogicProbe.min1) "1"
         else if (t.potential<= LogicProbe.max0) "0"
         else "?"
-      )
+      ),
+      SVG.text(^.cls := "output-name", ^.attr("x") := "55", ^.attr("y") := 0, name)
     )
   }
 }

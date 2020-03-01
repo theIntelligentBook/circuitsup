@@ -48,6 +48,9 @@ object BooleanTopic {
     Level("XOR and XNOR", Seq(
       XorGateLogic, XnorGateLogic
     )),
+    Level("Half and Full Adders", Seq(
+      HalfAdderLogic
+    )),
   )
 
   val challenge:Challenge = Common.makeChallenge(BooleanRoute.apply, levels)
