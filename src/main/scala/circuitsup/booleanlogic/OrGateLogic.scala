@@ -9,11 +9,11 @@ import com.wbillingsley.veautiful.html.<
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.{Complete, Open}
 import com.wbillingsley.wren.Orientation.{East, North, South}
-import com.wbillingsley.wren.{AndGate, Circuit, ConstraintPropagator, Ground, LogicInput, LogicProbe, NMOSSwitch, PMOSSwitch, Terminal, TruthTable, ValueLabel, VoltageSource, Wire}
+import com.wbillingsley.wren.{AndGate, Circuit, ConstraintPropagator, Ground, LogicInput, LogicProbe, NMOSSwitch, OrGate, PMOSSwitch, Terminal, TruthTable, ValueLabel, VoltageSource, Wire}
 import org.scalajs.dom.{Element, Node}
 import Wire._
 
-object AndGateLogic extends ExerciseStage {
+object OrGateLogic extends ExerciseStage {
 
   implicit val wireCol = Wire.voltageColoring
 
@@ -22,17 +22,17 @@ object AndGateLogic extends ExerciseStage {
   val a1:LogicInput = new LogicInput(100 ->150, East, name="A")({ _ => onUpdate() })
   val b1:LogicInput = new LogicInput(100 ->250, East, name="B")({ _ => onUpdate() })
 
-  val and = new AndGate(200 -> 200, East)
+  val or = new OrGate(200 -> 200, East)
 
   val out = new LogicProbe(300 -> 200, East)
 
   val wires:Seq[Wire] = Seq(
-    (a1.t -> and.ta).wireVia(and.ta.x -> a1.t.y),
-    (b1.t -> and.tb).wireVia(and.tb.x -> b1.t.y),
-    (and.out -> out.t).wire
+    (a1.t -> or.ta).wireVia(or.ta.x -> a1.t.y),
+    (b1.t -> or.tb).wireVia(or.tb.x -> b1.t.y),
+    (or.out -> out.t).wire
   )
 
-  val circuit = new Circuit(Seq(a1, b1, and, out) ++ wires, 600, 600)
+  val circuit = new Circuit(Seq(a1, b1, or, out) ++ wires, 600, 600)
   val propagator = new ConstraintPropagator(circuit.components.flatMap(_.constraints))
   propagator.resolve()
 
@@ -68,17 +68,19 @@ object AndGateLogic extends ExerciseStage {
     <.div(
       Common.marked(
         s"""
-           |### AND gate in logic
+           |### OR gate in logic
            |
            |Let's replace the circuit with the logic circuit representation.
            |
            |We can also just write the equation. There are a few different ways of doing this, depending on the
            |notational system you use.
            |
-           |* <code>A&and;B</code> - the "conjunction" operator you'd see on many modern mathematical courses. A common mnemonic is to think of it like the "n" in "and".
-           |* <code>A&middot;B</code> or just `AB` - engineers like to write it like a multiplication. Remember, anything times 0 is 0.
-           |  The mid-dot notation <code>A&middot;B</code> is also the one used in [Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica).
-           |* <code>A&amp;B</code>  - the *bitwise AND* operator in many programming languages.
+           |* <code>A&or;B</code> - this is the "alternation" or "disjunction" operator from [Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica).
+           |  It's also what you'd see on mathematical logic courses. Trivia: the modern conjunction (and) symbol <code>&and;</code> comes from it being an upside-down <code>&or;</code>.
+           |* <code>A+B</code> - engineers like to write it like an addition. Trivia: this notation is also useful for remembering the *precendce* rules. In
+           |  <code>A+B&middot;C</code>, the conjunction (and) takes precedence, so it's <code>A+(B&middot;C)</code>. That'll be useful because it lets us write things such as
+           |  `AB' + A'B` if we want to consider only the cases `10` and `01`.
+           |* <code>A|B</code>  - the *bitwise OR* operator in many programming languages.
            |
            |Let's fill in the truth table.
            |
@@ -89,9 +91,9 @@ object AndGateLogic extends ExerciseStage {
       ), if (isComplete) <.div(
         Common.marked(
           s"""
-             | You might notice that on the logic gate, we showed the output going to zero if either input was low *even if the other
-             | input wasn't set*. That's to mimic the circuit behaviour - of our MOSFET circuit. Even if one input
-             | was totally disconnected, putting a zero into the other input would produce a zero output.
+             | It might have been easy to miss, but we've modelled the OR gate so that if one input is left floating, a `1` at the other input can still drive it to `1`.
+             | That mimics the MOSFET circuit we saw on the previous page.
+             |
              |""".stripMargin
         ), nextButton()
       )else <.div()

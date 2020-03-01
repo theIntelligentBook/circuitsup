@@ -40,7 +40,7 @@ object BooleanTopic {
 
   val levels = Seq(
     Level("And and Or", Seq(
-      AndGateMosfets, AndGateLogic
+      AndGateMosfets, AndGateLogic, OrGateMosfets, OrGateLogic
     )),
   )
 

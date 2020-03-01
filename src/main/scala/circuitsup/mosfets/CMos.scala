@@ -405,8 +405,10 @@ object CMos {
 
     val watts = new Value("W")
 
-    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
-      <.div(
+    override protected def render: DiffNode[Element, Node] = {
+      import Common.notS
+
+      <.div(Challenge.textAndEx(<.div(
         Common.marked(
           s"""
              |### Our CMOS Not Gate
@@ -418,11 +420,20 @@ object CMos {
              |practice we're more interested in the logical operation of the gate. We've abstracted away from
              |MOSFETs and voltages.
              |
-             |We can also write the NOT operation symbolically. There are three different notations you're likely to come across
+             |We can also write the NOT operation symbolically.
+             |There are different notations you're likely to come across, most of which have their origins in the 1800s.
              |
-             |* <code>&not;A</code> - the symbol you're likely to see on mathematical logic courses
-             |* <code style="text-decoration: overline">A</code> - engineers use an overbar
-             |* <code>\\~A</code> - many programming languages use `~` as the *bitwise NOT* operator
+             |* <code>&not;A</code> - this is the symbol you're likely to see on mathematical logic courses.
+             |  Quine's famous textbook "Methods of Logic" refers to this as "a deviant sign", but mathematicians like it anyway!
+             |* <code>\\~A</code> - This notation became popular in Whitehead and Russell's [Principia Mathematica](https://en.wikipedia.org/wiki/Principia_Mathematica).
+             |  You might like it for the fact that there is a `~` key on your keyboard. Consequently, many programming languages use `~` as the *bitwise NOT* operator.
+             |* <code style="text-decoration: overline">A</code> - engineers use an overbar.
+             |  This notiation comes from C.S. Pierce in 1870, but it's useful for its compactness. For example, if you have
+             |  three inputs `A`, `B`, and `C`, and you want to discuss the case of `1`, `0`, and `1`, you can compactly write
+             |  <code>A${notS("B")}C</code>
+             |* <code>A'</code> - an overbar is difficult to type, so engineers will often use this to type it instead. e.g.
+             |  `AB'C`. As the "combining overbar" doesn't render correctly in some browsers (and can be hard to distinguish in web
+             |  text anyway), we'll use the `A'` notation here too when we want to talk about the complement of a single input.
              |
              |${TruthTable(Seq("Input"), truthTable, in.value.toSeq).htmlString}
              |
@@ -436,11 +447,11 @@ object CMos {
                | "inversion".
                |""".stripMargin
           ), nextButton()
-        )else <.div()
-      )
-    )(<.div(
-      circuit
-    )))
+        ) else <.div()
+      ))(<.div(
+        circuit
+      )))
+    }
   }
 
 

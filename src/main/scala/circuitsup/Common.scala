@@ -63,6 +63,11 @@ object Common {
     )
   }
 
+  def notS(s:String):String = {
+    //s"<span style='text-decoration: overline;'>$s</span>"
+    s"${s}&#773;"
+  }
+
   def makeChallenge(routeFunction: (Int, Int) => Route, levels:Seq[Challenge.Level]):Challenge = {
 
     Challenge(
