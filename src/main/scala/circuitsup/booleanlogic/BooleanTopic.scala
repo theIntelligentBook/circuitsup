@@ -42,6 +42,9 @@ object BooleanTopic {
     Level("And and Or", Seq(
       AndGateMosfets, AndGateLogic, OrGateMosfets, OrGateLogic
     )),
+    Level("Nand and Nor", Seq(
+      NandGateLogic, NandGateMosfets
+    )),
   )
 
   val challenge:Challenge = Common.makeChallenge(BooleanRoute.apply, levels)
