@@ -49,7 +49,7 @@ object BooleanTopic {
       XorGateLogic, XnorGateLogic
     )),
     Level("Half and Full Adders", Seq(
-      HalfAdderLogic
+      HalfAdderLogic, FullAdderLogic
     )),
   )
 

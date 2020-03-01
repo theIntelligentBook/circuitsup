@@ -101,8 +101,7 @@ object HalfAdderLogic extends ExerciseStage {
       ), if (isComplete) <.div(
         Common.marked(
           s"""
-             | It's probably less common to see an XNOR gate. Many programming languages do not have a bitwise XNOR
-             | operator. For instance in C-like languages you have to write `~(A^B)` to perform a bitwise XNOR.
+             | As should be apparent in the circuit diagram, Result = `A⊕B` and Carry = `A·B`
              |""".stripMargin
         ), nextButton()
       )else <.div()
