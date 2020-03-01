@@ -12,35 +12,25 @@ import com.wbillingsley.wren.Wire._
 import com.wbillingsley.wren._
 import org.scalajs.dom.{Element, Node}
 
-object NorGateLogic extends ExerciseStage {
+object XorGateLogic extends ExerciseStage {
 
   implicit val wireCol = Wire.voltageColoring
 
   var completion: Challenge.Completion = Open
 
-  val a1:LogicInput = new LogicInput(100 ->350, East, name="A")({ v => a2.value = v; onUpdate() })
-  val b1:LogicInput = new LogicInput(100 ->450, East, name="B")({ v => b2.value = v; onUpdate() })
-  val nor = new NorGate(200 -> 400, East)
-  val out = new LogicProbe(300 -> 400, East)
+  val a1:LogicInput = new LogicInput(100 ->150, East, name="A")({ _ => onUpdate() })
+  val b1:LogicInput = new LogicInput(100 ->250, East, name="B")({ _ => onUpdate() })
+  val nor = new XorGate(200 -> 200, East)
+  val out = new LogicProbe(300 -> 200, East)
 
-  val a2:LogicInput = new LogicInput(100 ->150, East, name="A")({ v => a1.value = v; onUpdate() })
-  val b2:LogicInput = new LogicInput(100 ->250, East, name="B")({ v => b1.value = v; onUpdate() })
-  val or = new OrGate(200 -> 200, East)
-  val not = new NotGate(300 -> 200)
-  val out2 = new LogicProbe(400 -> 200, East)
 
   val wires:Seq[Wire] = Seq(
     (a1.t -> nor.ta).wireVia(nor.ta.x -> a1.t.y),
     (b1.t -> nor.tb).wireVia(nor.tb.x -> b1.t.y),
     (nor.out -> out.t).wire,
-
-    (a2.t -> or.ta).wireVia(or.ta.x -> a2.t.y),
-    (b2.t -> or.tb).wireVia(or.tb.x -> b2.t.y),
-    (or.out -> not.in).wire,
-    (not.out -> out2.t).wire
   )
 
-  val circuit = new Circuit(Seq(a1, b1, nor, out) ++ Seq(a2, b2, or, not, out2) ++ wires, 600, 600)
+  val circuit = new Circuit(Seq(a1, b1, nor, out) ++ wires, 600, 600)
   val propagator = new ConstraintPropagator(circuit.components.flatMap(_.constraints))
   propagator.resolve()
 
@@ -76,12 +66,20 @@ object NorGateLogic extends ExerciseStage {
     <.div(
       Common.marked(
         s"""
-           |### NOR gate in logic
+           |### XOR gate in logic
            |
-           |Now let's take an OR gate and put a NOT gate on its output.
+           |Earlier, we met an *inclusive* OR gate. Let's now meet the *exclusive OR* gate XOR.
            |
-           |This produces a "NOR" gate. The logic circuit symbol for it is underneath -- you'll see the negation
-           |circle gets added to the OR gate's output.
+           |XOR produces `1` if exactly one of A and B are `1`. Or, effectively, A is not equal to B.
+           |
+           |The circuit symbol is like an OR gate, but with a double curved line on the input side.
+           |
+           |As with the other gates, there are different notations for writing it down mathematically:
+           |
+           |* `A⊻B` - like the disjunction operator but with an extra underline. This one tends to be used in mathematics books.
+           |* `A⊕B` - where the engineers use `+` for or, they use plus with a circle around it for XOR
+           |* `A^B` - in many C-like programming languages, the caret `^` is used as the bitwise XOR operator. We'll avoid this
+           |  in these notes because it's too easy to mistake it for the mathematical conjunction symbol `∧` when written on paper.
            |
            |Let's fill in the truth table by setting the inputs in the circuit on the right.
            |
@@ -90,9 +88,11 @@ object NorGateLogic extends ExerciseStage {
       ), if (isComplete) <.div(
         Common.marked(
           s"""
-             | If you look at the truth table, you'll notice that the output is only `0` if A and B are both `0`.
+             | If we were just to read the lines on the truth table, we'd see that the two rows that are `1` are
+             | `AB' + A'B`.
              |
-             | In other words, `~(A + B)` = `(A'B')`. This is the other of [De Morgan's Laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws)
+             | We'll also later find that if we XOR multiple inputs together, for instance `A⊕B⊕C`, it'll produce a `1`
+             | if there are an *odd* number of `1`s in the input.
              |""".stripMargin
         ), nextButton()
       )else <.div()
