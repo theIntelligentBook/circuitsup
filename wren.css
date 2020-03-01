@@ -170,3 +170,45 @@ table.truth-table tbody tr:nth-child(2n) {
 table.truth-table tbody tr.active {
   background: moccasin;
 }
+
+/*
+ * Binary
+ */
+
+.binary-table {
+  border: 1px solid black;
+  padding: 5px;
+  border-radius: 5px;
+}
+.binary-table th {
+  background: lightgray;
+  padding: 10px;
+  text-align: center;
+  min-width: 40px;
+}
+.binary-table td {
+  font-family: monospace;
+  padding: 5px;
+  font-size: 20px;
+}
+
+.binary-table th.hex-string,td.hex-string {
+  background: bisque;
+  border-left: 1px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.binary-table td.hex-string {
+  font-style: italic;
+}
+
+.binary-table th.decimal-string,td.decimal-string {
+  background: lightblue;
+  border-left: 1px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.binary-table td.decimal-string {
+  font-style: italic;
+  color: gray;
+}
