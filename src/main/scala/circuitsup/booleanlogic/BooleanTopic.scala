@@ -43,7 +43,7 @@ object BooleanTopic {
       AndGateMosfets, AndGateLogic, OrGateMosfets, OrGateLogic
     )),
     Level("Nand and Nor", Seq(
-      NandGateLogic, NandGateMosfets
+      NandGateLogic, NandGateMosfets, NorGateLogic, NorGateMosfets
     )),
   )
 
