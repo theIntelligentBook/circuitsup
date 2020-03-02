@@ -97,7 +97,7 @@ object NorGateMosfets extends ExerciseStage {
            |
            |If `~(A+B) = (A'B')`, then we just need to take an AND gate and swap NMOS for PMOS and PMOS for NMOS.
            |
-           |Go ahead - click back to the [AND gate in MOSFETs](#/boolean/0/0) and watch the negation circles on the
+           |Go ahead - click back to the [AND gate in MOSFETs](#/boolean/1/0) and watch the negation circles on the
            |MOSFETs swap. Then click your browser back button to come back here.
            |
            |${TruthTable(Seq("A", "B"), Seq("Output"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}

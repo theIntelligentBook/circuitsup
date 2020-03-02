@@ -99,10 +99,10 @@ object NandGateMosfets extends ExerciseStage {
              |Rather than connecting an AND gate to a NOT gate, we can also design a NAND gate directly using MOSFETs.
              |
              |Here, De Morgan's law helps us do it simply. if `~(AB) = (A' + B')`, then we can just take the [design
-             |for an OR gate](#/boolean/0/2), and swap every PMOS for an NMOS and every NMOS for a PMOS. Remember, that little circle
+             |for an OR gate](#/boolean/1/2), and swap every PMOS for an NMOS and every NMOS for a PMOS. Remember, that little circle
              |on the gate of a PMOS is like "negating the input".
              |
-             |Go on, click back to [the OR gate](#/boolean/0/2) and watch the circles swap. (Then click the browser back button to come back here).
+             |Go on, click back to [the OR gate](#/boolean/1/2) and watch the circles swap. (Then click the browser back button to come back here).
              |
              |${TruthTable(Seq("A", "B"), Seq("Output"), truthTable, a1.value.toSeq ++ b1.value.toSeq).htmlString}
              |

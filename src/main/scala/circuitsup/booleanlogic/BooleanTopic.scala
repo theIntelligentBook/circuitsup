@@ -39,6 +39,9 @@ object BooleanTopic {
   )
 
   val levels = Seq(
+    Level(("Boolean Logic"), Seq(
+      YouTubeStage("t1hImyElbzk")
+    )),
     Level("And and Or", Seq(
       AndGateMosfets, AndGateLogic, OrGateMosfets, OrGateLogic
     )),

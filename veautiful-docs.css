@@ -114,7 +114,7 @@ svg {
     width: 100%;
     padding: 10px;
     color: white;
-    background: #444;
+    background: rgba(0,0,0,0.75);
 }
 
 .topic-block .topic-image {
@@ -124,7 +124,7 @@ svg {
 }
 
 .topic-block .topic-image {
-    background-image: url("circuit.png");
+    background: seagreen;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -394,8 +394,11 @@ h1, h2, h3, h4 {
 /* Topic  block css */
 
 .topic-block.circuits .topic-image {
-    background-image: url("circuit.png");
+    background-image: url("images/circuit.png");
 }
 .topic-block.mosfets .topic-image {
-    background-image: url("pmos.png");
+    background-image: url("images/pmos.png");
+}
+.topic-block.boolean .topic-image {
+    background-image: url("images/adder.png");
 }
