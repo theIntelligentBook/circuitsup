@@ -214,3 +214,17 @@ table.truth-table tbody tr.active {
   font-style: italic;
   color: gray;
 }
+
+.binary-table th.target-string,td.target-string {
+    background: orange;
+    border-left: 1px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.binary-table th.target-string.complete,td.target-string.complete {
+    background: lightgreen;
+}
+.binary-table td.target-string.complete {
+    font-style: italic;
+    color: gray;
+}
