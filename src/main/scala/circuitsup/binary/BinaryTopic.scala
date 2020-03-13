@@ -43,7 +43,7 @@ object BinaryTopic {
       CountingInBinary, CountingInHexadecimal,
     )),
     Level("Adders", Seq(
-      HalfAdderBox
+      HalfAdderBox, FullAdderBox
     ))
   )
 
