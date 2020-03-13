@@ -1,6 +1,6 @@
 package circuitsup.binary
 
-import circuitsup.{BooleanRoute, CircuitsRoute, Common, IntroRoute, Main, MosfetsRoute, Router}
+import circuitsup.{BinaryRoute, BooleanRoute, CircuitsRoute, Common, IntroRoute, Main, MosfetsRoute, Router}
 import circuitsup.templates.{Topic, YouTubeStage}
 import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
 import com.wbillingsley.veautiful.templates.Challenge
@@ -12,7 +12,7 @@ object BinaryTopic {
 
   implicit val nextButton: () => VHtmlNode = () => {
     challenge.next match {
-      case Some((l, s)) => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(BooleanRoute(l, s)), s"Next")
+      case Some((l, s)) => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(BinaryRoute(l, s)), s"Next")
       case _ => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(IntroRoute), s"Home")
     }
   }
@@ -40,10 +40,10 @@ object BinaryTopic {
 
   val levels = Seq(
     Level("Binary Numbers", Seq(
-      CountingInBinary
+      CountingInBinary, CountingInHexadecimal
     )),
   )
 
-  val challenge:Challenge = Common.makeChallenge(BooleanRoute.apply, levels)
+  val challenge:Challenge = Common.makeChallenge(BinaryRoute.apply, levels)
 
 }

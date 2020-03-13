@@ -4,37 +4,47 @@ import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
 
 object Binary {
 
-  def powersHeader(base:String):Seq[VHtmlNode] = {
-    for { i <- Seq("7", "6", "5", "5", "3", "2", "1", "0") } yield <.th(^.cls := "number-column", base, <("sup")(i)),
+  def unsignedNibble(num:Byte, showHex:Boolean = true):VHtmlNode = {
+    unsignedBinary(num, 4, showHex)
   }
 
-  def literal2sHeader:Seq[VHtmlNode] = for {
-    s <- Seq("128", "64", "32", "16", "8", "4", "2", "1")
-  } yield <.th(^.cls := "number-column", s)
-
-  def unsigned8bit(num:Byte, header:Seq[VHtmlNode] = literal2sHeader, showHex:Boolean = true):VHtmlNode = {
+  def unsignedBinary(num:Int, bits:Int, powers:Boolean=false, showHex:Boolean = true, divideNibble:Boolean=false):VHtmlNode = {
     <.table(^.cls := "binary-table",
       <.tr(
-        header,
+        if (powers) {
+          for { i <- (0 until bits).reverse } yield <.th(
+            ^.cls := (if (divideNibble && i % 4 == 0) "number-column nibble-end" else "number-column"),
+            "2", <("sup")(i.toString)
+          )
+        } else {
+          for { i <- (0 until bits).reverse } yield <.th(
+            ^.cls := (if (divideNibble && i % 4 == 0) "number-column nibble-end" else "number-column"),
+            (1 << i).toString
+          )
+        },
         if (showHex) <.th(^.cls := "hex-string", "Hex") else "",
         <.th(^.cls := "decimal-string", "Decimal")
       ),
       <.tr(
-        for { i <- Seq(128, 64, 32, 16, 8, 4, 2, 1) } yield <.td(
-          if (num.&(i) != 0) "1" else "0"
+        for { i <- (0 until bits).reverse } yield <.td(
+          ^.cls := (if (divideNibble && i % 4 == 0) "number-column nibble-end" else "number-column"),
+          if (num.&(1 << i) != 0) "1" else "0"
         ),
-        if (showHex) <.td(^.cls := "hex-string", (0xff & num).formatted("%02X")) else "",
+        if (showHex) <.td(^.cls := "hex-string", (0xff & num).formatted(s"%0${bits / 4}X")) else "",
         <.td(^.cls := "decimal-string", (0xff & num).toString)
       )
     )
   }
 
-  def unsignedDecimal(num:Int):VHtmlNode = {
+  def unsignedDecimal(num:Int, digits:Int = 8):VHtmlNode = {
     var remainder = num
 
     <.table(^.cls := "binary-table",
       <.tr(
-        powersHeader("10"),
+        for { i <- (0 until digits).reverse } yield <.th(
+          ^.cls := "number-column",
+          "10", <("sup")(i.toString)
+        ),
         <.th(^.cls := "decimal-string", "Decimal")
       ),
       <.tr(

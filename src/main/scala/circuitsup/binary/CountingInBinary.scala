@@ -18,7 +18,7 @@ object CountingInBinary extends ExerciseStage {
 
   var completion: Challenge.Completion = Challenge.Open
 
-  val clock = new Clock(x => Binary.unsigned8bit(x.toByte, showHex = false))
+  val clock = new Clock(x => Binary.unsignedBinary(x.toByte, 8, showHex = false))
 
   val toggle = new BinaryToggle(Random.nextInt.toByte)(onUpdate)
 
@@ -34,7 +34,6 @@ object CountingInBinary extends ExerciseStage {
       rerender()
     }
   }
-
 
   override protected def render: DiffNode[Element, Node] = <.div(
     Challenge.textAndEx(
@@ -62,9 +61,9 @@ object CountingInBinary extends ExerciseStage {
           |as `0` or `1`. We only have two numerals to work with, to we have to work in base 2 (binary). So, our columns
           |aren't the powers of 10 but the powers of 2. In *base `2`* (binary), 127 looks like:
           |""".stripMargin),
-      Binary.unsigned8bit(127, Binary.powersHeader("2"), showHex = false),
+      Binary.unsignedBinary(127, 8, powers=true, showHex = false),
       <.p("Or in other words"),
-      Binary.unsigned8bit(127, showHex = false),
+      Binary.unsignedBinary(127, 8, showHex = false),
 
     )(Challenge.textColumn(
       <.div(^.cls := "card",

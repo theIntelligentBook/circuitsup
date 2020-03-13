@@ -6,12 +6,12 @@ import com.wbillingsley.wren.Binary
 import org.scalajs.dom
 import org.scalajs.dom.{Element, Node}
 
-class Clock(f: Int => VHtmlNode, onUpdate: Int => Unit = _ => {}) extends VHtmlComponent {
+class Clock(f: Int => VHtmlNode, bits:Int = 8, onUpdate: Int => Unit = _ => {}) extends VHtmlComponent {
 
-  var counter:Byte = 0
+  var counter:Int = 0
 
   val tick: () => Unit = { ()=>
-    counter = (counter + 1).toByte
+    counter = (counter + 1) % (0x1 << bits)
     onUpdate(counter)
     rerender()
   }

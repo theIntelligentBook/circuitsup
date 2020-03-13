@@ -228,3 +228,6 @@ table.truth-table tbody tr.active {
     font-style: italic;
     color: gray;
 }
+.binary-table td.nibble-end:not(:first-child),th.nibble-end:not(:first-child) {
+    border-right: 1px solid black;
+}
