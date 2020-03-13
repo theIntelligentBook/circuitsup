@@ -73,7 +73,7 @@ object CountingInHexadecimal extends ExerciseStage {
 
       ),
       if (isComplete) <.div(
-        <.p("As we can see, converting from binary to decimal or back isn't always intuitive. Let's have a look at an alternative."),
+        <.p("After a while, you'll get to recognise some bit patterns (especially `#F` being `1111`)."),
         nextButton()
       ) else <.p()
     ))

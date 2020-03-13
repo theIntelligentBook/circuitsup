@@ -40,8 +40,11 @@ object BinaryTopic {
 
   val levels = Seq(
     Level("Binary Numbers", Seq(
-      CountingInBinary, CountingInHexadecimal
+      CountingInBinary, CountingInHexadecimal,
     )),
+    Level("Adders", Seq(
+      HalfAdderBox
+    ))
   )
 
   val challenge:Challenge = Common.makeChallenge(BinaryRoute.apply, levels)

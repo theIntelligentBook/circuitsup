@@ -150,6 +150,23 @@
 }
 
 /*
+ * Half-adder
+ */
+.half-adder text.input {
+    dominant-baseline: middle;
+}
+.half-adder text.output {
+    text-anchor: end;
+    dominant-baseline: middle;
+}
+.half-adder text.name {
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-size: 1.2rem;
+}
+
+
+/*
  * Truth Tables
  */
 table.truth-table {
