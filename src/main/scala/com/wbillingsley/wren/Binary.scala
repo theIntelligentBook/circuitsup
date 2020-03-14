@@ -9,6 +9,9 @@ object Binary {
   }
 
   def unsignedBinary(num:Int, bits:Int, powers:Boolean=false, showHex:Boolean = true, divideNibble:Boolean=false):VHtmlNode = {
+
+    def numDigits = Math.ceil(bits / 4.0).toInt
+
     <.table(^.cls := "binary-table",
       <.tr(
         if (powers) {
@@ -30,11 +33,65 @@ object Binary {
           ^.cls := (if (divideNibble && i % 4 == 0) "number-column nibble-end" else "number-column"),
           if (num.&(1 << i) != 0) "1" else "0"
         ),
-        if (showHex) <.td(^.cls := "hex-string", (0xff & num).formatted(s"%0${bits / 4}X")) else "",
+        if (showHex) <.td(^.cls := "hex-string", (0xff & num).formatted(s"%0${numDigits}X")) else "",
         <.td(^.cls := "decimal-string", (0xff & num).toString)
       )
     )
   }
+
+
+  /** Sums a bit sequence to produce a number */
+  def sumBits(bits:Seq[Option[Boolean]]):Option[Int] = bits.zipWithIndex.foldLeft[Option[Int]](Some(0)) {
+    case (Some(total), (Some(bit), i)) =>
+      if (bit) {
+        Some(total + (1 << (bits.length - i - 1)))
+      } else Some(total)
+    case _ => None
+  }
+
+  def unsignedBinOpt(bits:Seq[Option[Boolean]], powers:Boolean=false, showHex:Boolean = true, showDecimal:Boolean = true, divideNibble:Boolean=false):VHtmlNode = {
+
+    def numDigits = Math.ceil(bits.length / 4.0).toInt
+
+    val num = sumBits(bits)
+
+    <.table(^.cls := "binary-table",
+      <.tr(
+        if (powers) {
+          for { i <- bits.indices.reverse } yield <.th(
+            ^.cls := (if (divideNibble && i % 4 == 0) "number-column nibble-end" else "number-column"),
+            "2", <("sup")(i.toString)
+          )
+        } else {
+          for { i <- bits.indices.reverse } yield <.th(
+            ^.cls := (if (divideNibble && i % 4 == 0) "number-column nibble-end" else "number-column"),
+            (1 << i).toString
+          )
+        },
+        if (showHex) <.th(^.cls := "hex-string", "Hex") else "",
+        if (showHex) <.th(^.cls := "decimal-string", "Decimal") else ""
+      ),
+      <.tr(
+        for { (b, i) <- bits.zipWithIndex } yield <.td(
+          ^.cls := (if (divideNibble && i % 4 == 0) "number-column nibble-end" else "number-column"),
+          b match {
+            case Some(true) => "1"
+            case Some(false) => "0"
+            case _ => "?"
+          }
+        ),
+        if (showHex) <.td(^.cls := "hex-string", num match {
+          case Some(n) => (0xff & n).formatted(s"%0${numDigits}X")
+          case _ => "?"
+        }) else "",
+        if (showDecimal) <.td(^.cls := "decimal-string", num match {
+          case Some(n) => (0xff & n).toString
+          case _ => "?"
+        }) else ""
+      )
+    )
+  }
+
 
   def unsignedDecimal(num:Int, digits:Int = 8):VHtmlNode = {
     var remainder = num
