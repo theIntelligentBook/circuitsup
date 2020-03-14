@@ -8,7 +8,7 @@ object Binary {
     unsignedBinary(num, 4, showHex)
   }
 
-  def unsignedBinary(num:Int, bits:Int, powers:Boolean=false, showHex:Boolean = true, divideNibble:Boolean=false):VHtmlNode = {
+  def unsignedBinary(num:Int, bits:Int, powers:Boolean=false, showHex:Boolean = true, showDecimal:Boolean=true, divideNibble:Boolean=false):VHtmlNode = {
 
     def numDigits = Math.ceil(bits / 4.0).toInt
 
@@ -26,7 +26,7 @@ object Binary {
           )
         },
         if (showHex) <.th(^.cls := "hex-string", "Hex") else "",
-        <.th(^.cls := "decimal-string", "Decimal")
+        if (showDecimal) <.th(^.cls := "decimal-string", "Decimal") else ""
       ),
       <.tr(
         for { i <- (0 until bits).reverse } yield <.td(
@@ -34,7 +34,7 @@ object Binary {
           if (num.&(1 << i) != 0) "1" else "0"
         ),
         if (showHex) <.td(^.cls := "hex-string", (0xff & num).formatted(s"%0${numDigits}X")) else "",
-        <.td(^.cls := "decimal-string", (0xff & num).toString)
+        if (showDecimal) <.td(^.cls := "decimal-string", (0xff & num).toString) else ""
       )
     )
   }
