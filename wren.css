@@ -196,8 +196,6 @@ table.truth-table tbody tr.active {
   border: 1px solid black;
   padding: 5px;
   border-radius: 5px;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
   display: inline-table;
 }
 .binary-table th {

@@ -18,7 +18,7 @@ class Clock(f: Int => VHtmlNode, bits:Int = 8, onUpdate: Int => Unit = _ => {}) 
 
   var timer:Option[Int] = None
 
-  override protected def render: DiffNode[Element, Node] = <.div(f(counter))
+  override protected def render: DiffNode[Element, Node] = <.p(f(counter))
 
   override def afterAttach(): Unit = {
     super.afterAttach()

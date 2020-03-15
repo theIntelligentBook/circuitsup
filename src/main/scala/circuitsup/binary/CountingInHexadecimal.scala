@@ -7,7 +7,7 @@ import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.{<, ^}
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.Complete
-import com.wbillingsley.wren.Binary
+import com.wbillingsley.wren.{Binary, BinaryToggle}
 import org.scalajs.dom.{Element, Node}
 
 import scala.util.Random
@@ -18,7 +18,7 @@ object CountingInHexadecimal extends ExerciseStage {
 
   val clock = new Clock(x => Binary.unsignedNibble(x.toByte), bits = 4)
 
-  val clock2 = new Clock(x => Binary.unsignedBinary(x.toByte, 8, divideNibble = true), bits = 8)
+  val clock2 = new Clock(x => Binary.showBinary(x.toByte, 8, divideNibble = true), bits = 8)
 
   val exercises:Seq[BinaryToggle] = (1 to 5).map { _ => new BinaryToggle(Random.nextInt(256), divideNibble= true, hex = true)(onUpdate) }
 
@@ -67,7 +67,7 @@ object CountingInHexadecimal extends ExerciseStage {
         <.div(^.cls := "card-body",
           <.p("Toggle the binary bits to match the target number"),
           <.ol(
-            for { ex <- exercises } yield <.li(ex)
+            for { ex <- exercises } yield <.li(<.p(ex))
           )
         )
 

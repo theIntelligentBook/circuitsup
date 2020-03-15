@@ -7,7 +7,7 @@ import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.{<, ^}
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.Complete
-import com.wbillingsley.wren.Binary
+import com.wbillingsley.wren.{Binary, BinaryToggle}
 import org.scalajs.dom.{Element, Node}
 
 import scala.util.Random
@@ -45,9 +45,9 @@ object TwosComplement extends ExerciseStage {
           |""".stripMargin
       ),
       <.p(
-        Binary.unsignedBinary(15, 4, showHex=true, showDecimal=false), " + ",
-        Binary.unsignedBinary(1, 4, showHex=true, showDecimal=false), " = ",
-        Binary.unsignedBinary(0, 4, showHex=true, showDecimal=false)
+        Binary.showBinary(15, 4, showHex=true, showDecimal=false), " + ",
+        Binary.showBinary(1, 4, showHex=true, showDecimal=false), " = ",
+        Binary.showBinary(0, 4, showHex=true, showDecimal=false)
       ),
       Common.marked(
         """
@@ -60,7 +60,7 @@ object TwosComplement extends ExerciseStage {
           |
           |Here's one where you can toggle one of the numbers' bits, and its two's complement will be worked out for you.
           |""".stripMargin),
-      <.p(toggle, " + ", Binary.unsignedBinary(twosC, 4, showDecimal=false), " = ", Binary.unsignedBinary(0, 4, showDecimal=false)),
+      <.p(toggle, " + ", Binary.showBinary(twosC, 4, showDecimal=false), " = ", Binary.showBinary(0, 4, showDecimal=false)),
       Common.marked(
         """
           |So if that's the case, is `1000` 8 or -8? And is `0111` 7 or -7?
@@ -81,8 +81,8 @@ object TwosComplement extends ExerciseStage {
           <.p("Let's show you a positive number and ask you to work out its two's complement negative number. A quick way is to invert all the bits and then add 1."),
           <.ol(
             for { ex <- exercises } yield <.li(
-              <.div(Binary.unsignedBinary(-ex.target, 8, showHex = false)),
-              <.div(ex)
+              <.p(Binary.showBinary(-ex.target, 8, showHex = false)),
+              <.p(ex)
             )
           )
         )

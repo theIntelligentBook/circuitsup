@@ -1,8 +1,7 @@
-package circuitsup.binary
+package com.wbillingsley.wren
 
 import com.wbillingsley.veautiful.DiffNode
-import com.wbillingsley.veautiful.html.{<, VHtmlComponent, VHtmlNode, ^}
-import com.wbillingsley.wren.Binary
+import com.wbillingsley.veautiful.html.{<, VHtmlComponent, ^}
 import org.scalajs.dom.{Element, Node}
 
 class BinaryToggle(val target:Int, initial:Int = 0, bits:Int = 8, divideNibble:Boolean = false, signed:Boolean = false, hex:Boolean = false, showDecimal:Boolean = true, showTarget:Boolean = true)(onUpdate: () => Unit) extends VHtmlComponent {
@@ -21,13 +20,6 @@ class BinaryToggle(val target:Int, initial:Int = 0, bits:Int = 8, divideNibble:B
     rerender()
   }
 
-  def decimal(n:Int):String = {
-    if (signed && ((n & (1 << (bits - 1))) != 0))
-      (0xff & n).toByte.toString
-    else
-      (0xff & n).toString
-  }
-
   override protected def render: DiffNode[Element, Node] = {
     <.table(^.cls := "binary-table",
       <.tr(
@@ -44,9 +36,9 @@ class BinaryToggle(val target:Int, initial:Int = 0, bits:Int = 8, divideNibble:B
           <.button(^.cls := "btn btn-outline-secondary", ^.onClick --> update(1 << i), if (((1 << i) & num) != 0) "1" else "0")
         ),
         if (hex) <.td(^.cls := "hex-string", (0xff & num).formatted(s"%0${numDigits}X")) else "",
-        if (showDecimal) <.td(^.cls := "decimal-string", decimal(num)) else "",
+        if (showDecimal) <.td(^.cls := "decimal-string", Binary.decimal(num, bits, signed)) else "",
         if (showTarget) <.td(^.cls := (if (isComplete) "target-string complete" else "target-string"),
-          if (hex) (0xff & target).formatted(s"%0${numDigits}X") else decimal(target)
+          if (hex) (0xff & target).formatted(s"%0${numDigits}X") else Binary.decimal(target, bits, signed)
         ) else ""
       )
     )

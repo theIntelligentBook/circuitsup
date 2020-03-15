@@ -145,12 +145,12 @@ object RippleCarryAdder extends ExerciseStage {
     )(Challenge.textColumn(
       <.div(^.cls := "card",
         <.div(^.cls := "card-body",
-          circuit,
-          <.div(^.cls := "row",
+          <.p(circuit),
+          <.p(^.cls := "row",
             <.div(^.cls := "col", "A: ", Binary.unsignedBinOpt(aBits.map(_.value))),
             <.div(^.cls := "col", "B: ", Binary.unsignedBinOpt(bBits.map(_.value)))
           ),
-          <.div(^.cls := "row",
+          <.p(^.cls := "row",
             <.div(^.cls := "col-2", "C", <("sub")("in"), ": ", Binary.unsignedBinOpt(Seq(cin.value), showHex=false, showDecimal=false)),
             <.div(^.cls := "col-8", "Result: ", Binary.unsignedBinOpt(oBits.map(_.value))),
             <.div(^.cls := "col-2", "C", <("sub")("out"), ": ", Binary.unsignedBinOpt(Seq(carry.value), showHex=false, showDecimal=false)),

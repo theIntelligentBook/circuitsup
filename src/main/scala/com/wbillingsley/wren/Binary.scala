@@ -5,10 +5,26 @@ import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
 object Binary {
 
   def unsignedNibble(num:Byte, showHex:Boolean = true):VHtmlNode = {
-    unsignedBinary(num, 4, showHex)
+    showBinary(num, 4, showHex=showHex, signed=false)
   }
 
-  def unsignedBinary(num:Int, bits:Int, powers:Boolean=false, showHex:Boolean = true, showDecimal:Boolean=true, divideNibble:Boolean=false):VHtmlNode = {
+
+  /**
+   * Produces a string representation of an Int, if it was only (bits) long.
+   * @param n
+   * @param bits
+   * @param signed
+   * @return
+   */
+  def decimal(n:Int, bits:Int = 8, signed:Boolean = false):String = {
+    if (signed && ((n & (1 << (bits - 1))) != 0))
+      (0xff & n).toByte.toString
+    else
+      (0xff & n).toString
+  }
+
+
+  def showBinary(num:Int, bits:Int, powers:Boolean=false, signed:Boolean=false, showHex:Boolean = true, showDecimal:Boolean=true, divideNibble:Boolean=false):VHtmlNode = {
 
     def numDigits = Math.ceil(bits / 4.0).toInt
 
@@ -34,7 +50,7 @@ object Binary {
           if (num.&(1 << i) != 0) "1" else "0"
         ),
         if (showHex) <.td(^.cls := "hex-string", (0xff & num).formatted(s"%0${numDigits}X")) else "",
-        if (showDecimal) <.td(^.cls := "decimal-string", (0xff & num).toString) else ""
+        if (showDecimal) <.td(^.cls := "decimal-string", decimal(num, bits, signed)) else ""
       )
     )
   }

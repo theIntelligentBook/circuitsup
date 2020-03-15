@@ -8,7 +8,7 @@ import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.{<, VHtmlComponent, ^}
 import com.wbillingsley.veautiful.templates.Challenge
 import com.wbillingsley.veautiful.templates.Challenge.Complete
-import com.wbillingsley.wren.Binary
+import com.wbillingsley.wren.{Binary, BinaryToggle}
 import org.scalajs.dom
 import org.scalajs.dom.{Element, Node}
 
@@ -18,7 +18,7 @@ object CountingInBinary extends ExerciseStage {
 
   var completion: Challenge.Completion = Challenge.Open
 
-  val clock = new Clock(x => Binary.unsignedBinary(x.toByte, 8, showHex = false))
+  val clock = new Clock(x => Binary.showBinary(x.toByte, 8, showHex = false))
 
   val toggle = new BinaryToggle(Random.nextInt.toByte)(onUpdate)
 
@@ -53,7 +53,7 @@ object CountingInBinary extends ExerciseStage {
           |move to the next column: `10`. So, children are taught the columns of decimal.
           |The 1s, the 10s, the 100s, the 1000s -- each power of 10. For example, 127 would break down as:
           |""".stripMargin),
-      Binary.unsignedDecimal(127),
+      <.p(Binary.unsignedDecimal(127)),
       Common.marked("""
           |1 × 10<sup>2</sup> + 2 × 10<sup>1</sup> + 7 × 10<sup>0</sup> = 100 + 20 + 7 = 127
           |
@@ -61,9 +61,9 @@ object CountingInBinary extends ExerciseStage {
           |as `0` or `1`. We only have two numerals to work with, to we have to work in base 2 (binary). So, our columns
           |aren't the powers of 10 but the powers of 2. In *base `2`* (binary), 127 looks like:
           |""".stripMargin),
-      Binary.unsignedBinary(127, 8, powers=true, showHex = false),
+      <.p(Binary.showBinary(127, 8, powers=true, showHex = false)),
       <.p("Or in other words"),
-      Binary.unsignedBinary(127, 8, showHex = false),
+      <.p(Binary.showBinary(127, 8, showHex = false)),
 
     )(Challenge.textColumn(
       <.div(^.cls := "card",
@@ -71,7 +71,7 @@ object CountingInBinary extends ExerciseStage {
         <.div(^.cls := "card-body",
           <.p("Toggle the binary bits to match the target number"),
           <.ol(
-            for { ex <- exercises } yield <.li(ex)
+            for { ex <- exercises } yield <.li(<.p(ex))
           )
         )
 
