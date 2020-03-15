@@ -46,7 +46,7 @@ object BinaryTopic {
       HalfAdderBox, FullAdderBox, RippleCarryAdder, TwosComplement
     )),
     Level("Shifts and Rotations", Seq(
-      BitShifts
+      BitShifts, BitRotations
     ))
   )
 

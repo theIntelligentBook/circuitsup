@@ -82,7 +82,7 @@ object BitShifts extends ExerciseStage {
 
       ),
       if (isComplete) <.div(
-        <.p("You might notive that a shift right generally halves the number, while a shift left generally doubles it."),
+        <.p("You might notice that a shift right generally halves the number, while a shift left generally doubles it."),
         nextButton()
       ) else <.p()
     ))

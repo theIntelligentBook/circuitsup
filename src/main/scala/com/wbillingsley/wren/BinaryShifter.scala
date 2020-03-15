@@ -64,9 +64,27 @@ class BinaryShifter(initial:Int, bits:Int = 8, ops:Seq[String]=Seq.empty, signed
     }
   }
 
+  object ROL extends Op {
+    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply, "ROL")
+    def apply() = {
+      number = if (signBit) (number << 1) | 1 else (number << 1)
+      onUpdate()
+      rerender()
+    }
+  }
+
+  object ROR extends Op {
+    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply, "ROR")
+    def apply() = {
+      number = if (bit(0)) (number >>> 1) | (1 << (bits - 1)) else (number >>> 1)
+      onUpdate()
+      rerender()
+    }
+  }
 
   val opsMap:Map[String, Op] = Map(
-    BinaryShifter.Reset -> Reset, BinaryShifter.LSL -> LSL, BinaryShifter.ASR -> ASR, BinaryShifter.LSR -> LSR
+    BinaryShifter.Reset -> Reset, BinaryShifter.LSL -> LSL, BinaryShifter.ASR -> ASR, BinaryShifter.LSR -> LSR,
+    BinaryShifter.ROL -> ROL, BinaryShifter.ROR -> ROR
   )
 
 }
@@ -78,5 +96,7 @@ object BinaryShifter {
   val ASL = LSL
   val LSR = "lsr"
   val ASR = "asr"
+  val ROL = "rol"
+  var ROR = "ror"
 
 }

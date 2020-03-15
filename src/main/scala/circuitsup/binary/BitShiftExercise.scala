@@ -9,7 +9,7 @@ class BitShiftExercise(initial:Int, target:Int, ops:Seq[String])(onUpdate: () =>
   
   val shifter = new BinaryShifter(initial, 8, ops)(move)
 
-  def isComplete:Boolean = shifter.number == target
+  def isComplete:Boolean = (0xff & shifter.number) == (target & 0xff)
 
   def reset():Unit = {
     shifter.reset()
