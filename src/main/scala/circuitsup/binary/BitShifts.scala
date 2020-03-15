@@ -46,7 +46,7 @@ object BitShifts extends ExerciseStage {
         """
           |# Bit Shifting
           |
-          |Addition isn't the only operation we can do on bytes. On this page, let's try some "shifts", where we move
+          |Some operations can be done on individual bytes. On this page, let's try some "shifts", where we move
           |all the bits in a byte either to the left or to the right.
           |
           |If we're shifting left, we'd fill the rightmost bit with a `0`. This is called "Logical Shift Left" (`LSL`)
