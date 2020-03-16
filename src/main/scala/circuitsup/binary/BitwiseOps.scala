@@ -44,9 +44,9 @@ object BitwiseOps extends ExerciseStage {
           |""".stripMargin
       ),
       <.p(
-        Binary.showBinary(13, 4, showHex=true, showDecimal=false), " & ",
+        Binary.showBinary(5, 4, showHex=true, showDecimal=false), " & ",
         Binary.showBinary(12, 4, showHex=true, showDecimal=false), " = ",
-        Binary.showBinary(4, 4, showHex=true, showDecimal=false)
+        Binary.showBinary(5 & 12, 4, showHex=true, showDecimal=false)
       ),
       Common.marked(
         """
@@ -56,7 +56,7 @@ object BitwiseOps extends ExerciseStage {
       <.p(
         Binary.showBinary(5, 4, showHex=true, showDecimal=false), " | ",
         Binary.showBinary(12, 4, showHex=true, showDecimal=false), " = ",
-        Binary.showBinary(13, 4, showHex=true, showDecimal=false)
+        Binary.showBinary(5 | 12, 4, showHex=true, showDecimal=false)
       ),
       if (isComplete) <.div(
         <.p("These are most useful if we're treating a byte as a collection of *flags* (individual bits each indicating a true/false) rather than a number."),

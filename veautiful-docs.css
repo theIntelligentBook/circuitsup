@@ -402,3 +402,6 @@ h1, h2, h3, h4 {
 .topic-block.boolean .topic-image {
     background-image: url("images/adder.png");
 }
+.topic-block.binary .topic-image {
+    background-image: url("images/halfadder.png");
+}
