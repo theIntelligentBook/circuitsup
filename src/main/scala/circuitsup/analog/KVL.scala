@@ -214,8 +214,8 @@ object KVL {
 
     val circuit = Circuit(components ++ wires ++ labels, width=600, height=400)
     val propagator = ConstraintPropagator(circuit.components.flatMap(_.constraints)
-      :+ EquationConstraint("Resistors in Series", Seq(totalR -> (() => r1.resistance + r2.resistance)))
-      :+ EquationConstraint("Ohm's Law", Seq(cs.t1.current -> (() => cs.voltage / totalR)))
+      :+ EquationConstraint("Resistors in Series", totalR, Seq(r1.resistance, r2.resistance), () => r1.resistance + r2.resistance)
+      :+ EquationConstraint("Ohm's Law", cs.t1.current, Seq(cs.voltage, totalR), () => cs.voltage / totalR)
     )
 
 

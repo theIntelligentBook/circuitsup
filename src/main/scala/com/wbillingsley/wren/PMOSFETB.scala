@@ -29,8 +29,7 @@ class PMOSFETB(pos:(Int, Int), orientation: Orientation = East) extends Componen
 
   override def constraints: Seq[Constraint] = Seq(
     SumConstraint("Kirchhoff's Current Law", Seq(source.current, drain.current), 0),
-    EquationConstraint("Source current", Seq(
-      drain.current -> (() => for {
+    EquationConstraint("Source current", drain.current, Seq(body.potential, gate.potential, source.potential, drain.potential), () => for {
         v_gb <- body.potential - gate.potential
         v_ds <- source.potential - drain.potential
       } yield {
@@ -42,8 +41,8 @@ class PMOSFETB(pos:(Int, Int), orientation: Orientation = East) extends Componen
           // Saturaion region
           muCoxWL * Math.pow(v_gb - vt0, 2) * (1 + lambda * v_ds) / 2
         }
-      })
-    ))
+      }
+    )
   )
 
   def channelWidth:Int = {

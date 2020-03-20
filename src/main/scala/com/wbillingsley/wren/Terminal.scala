@@ -52,7 +52,7 @@ case class Junction(pos:(Int, Int)) extends Connector with Component {
   )
 
   override def constraints: Seq[Constraint] = {
-    EquationConstraint("Junction's terminal current is zero", Seq(terminal.current -> (() => Some(0)))) +: terminal.constraints
+    EquationConstraint("Junction's terminal current is zero", terminal.current, Seq.empty, () => Some(0)) +: terminal.constraints
   }
 
 

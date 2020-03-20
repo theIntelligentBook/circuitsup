@@ -15,11 +15,11 @@ case class FullAdder(pos:(Int,Int), orientation:Orientation = East)(implicit col
 
   override def terminals: Seq[Terminal] = Seq(tcin, ta, tb, tcout, tr)
 
+  def inputs = Seq(ta.potential, tb.potential, tcin.potential)
+
   override def constraints: Seq[Constraint] = terminals.flatMap(_.constraints) :+
-    EquationConstraint("NOT gate", Seq(
-      tcout.potential -> (() => for {cc <- c} yield if (cc) LogicProbe.vdd else LogicProbe.vss),
-      tr.potential -> (() => for { rr <- r } yield if (rr) LogicProbe.vdd else LogicProbe.vss)
-    ))
+    EquationConstraint("Full Adder", tcout.potential, inputs, () => for {cc <- c} yield if (cc) LogicProbe.vdd else LogicProbe.vss) :+
+    EquationConstraint("Full Adder", tr.potential, inputs, () => for { rr <- r } yield if (rr) LogicProbe.vdd else LogicProbe.vss)
 
   def a:Option[Boolean] = ta.potential.value.flatMap {
     case v if v >= LogicProbe.min1 => Some(true)

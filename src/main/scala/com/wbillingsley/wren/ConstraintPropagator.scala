@@ -131,10 +131,13 @@ trait Constraint {
 
   def name:String
 
+  /** Whether it can be calculated (regardless of if it needs to be) */
   def calculable:Boolean
 
+  /** The values it can produce */
   def values:Seq[Value]
 
+  /** Perform the calculation, returning updated values */
   def calculate():Seq[Value]
 
   def failed:Boolean
@@ -145,15 +148,15 @@ trait Constraint {
 
 case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint {
 
-  override def calculable: Boolean = values.exists(_.content.nonEmpty)
+  override def calculable: Boolean = values.exists(!_.needsCalculation)
 
   override def calculate(): Seq[Value] = {
-    values.find(_.content.nonEmpty) match {
+    values.find(!_.needsCalculation) match {
       case Some(set) =>
         for {
-          v <- values.filter(_.content.isEmpty)
+          v <- values if v.needsCalculation
         } yield {
-          v.content = set.content.map({ case (vv, _) => (vv, Because(this, Seq(v -> v.version))) })
+          v.content = set.value.map({ d => (d, Because(this, Seq(set -> set.version))) })
           v
         }
       case _ => Seq.empty
@@ -171,21 +174,21 @@ case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint
 
 case class SumConstraint(name:String, values:Seq[Value], result:Double, tolerance:Double = 0.01) extends Constraint {
 
-  override def calculable: Boolean = values.count(_.content.isEmpty) == 1
+  override def calculable: Boolean = values.count(_.needsCalculation) == 1
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
 
   override def calculate(): Seq[Value] = {
     if (calculable) {
       val s = (for {
-        v <- values
-        (num, _) <- v.content
+        v <- values if !v.needsCalculation
+        num <- v.value
       } yield num).sum
 
       for {
-        v <- values if v.content.isEmpty
+        v <- values if v.needsCalculation
       } yield {
-        v.content = Some((result - s, Because(this, values.filter(_.content.isEmpty).map(x => x -> x.version))))
+        v.content = Some((result - s, Because(this, values.filterNot(_ == v).map(x => x -> x.version))))
         v
       }
     } else Seq.empty
@@ -203,32 +206,38 @@ case class SumConstraint(name:String, values:Seq[Value], result:Double, toleranc
 
 }
 
-case class EquationConstraint(name:String, eqs:Seq[(Value, () => Option[Double])], tolerance:Double = 0.01) extends Constraint {
+case class EquationConstraint(name:String, value:Value, dependencies:Seq[Value], eq:() => Option[Double], tolerance:Double = 0.01) extends Constraint {
 
-  def values = eqs.map(_._1)
+  def values = Seq(value)
 
-  override def calculable: Boolean = eqs.exists({ case (v, eq) =>
-    v.content.isEmpty && eq().nonEmpty
-  })
+  override def calculable: Boolean = !dependencies.exists(_.needsCalculation)
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
 
   override def calculate(): Seq[Value] = {
     if (calculable) {
-      for {
-        (v, eq) <- eqs if v.content.isEmpty
+      (for {
         newVal <- eq()
       } yield {
-        v.content = Some(newVal -> Because(this, values.filter(_.content.nonEmpty).map(x => x -> x.version)))
-        v
-      }
+        value.content = Some(newVal -> Because(this, dependencies.map(x => x -> x.version)))
+        value
+      }).toSeq
     } else Seq.empty
-
   }
 
   override def failed: Boolean = {
     //TODO: fixme
     false
+  }
+
+}
+
+object EquationConstraint {
+
+  def apply(name:String, eqs:Seq[(Value, () => Option[Double])]):Seq[EquationConstraint] = {
+    val values = eqs.map(_._1)
+
+    for { (v, eq) <- eqs } yield EquationConstraint(name, v, values.filterNot(_ == v), eq)
   }
 
 }

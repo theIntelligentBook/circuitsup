@@ -13,9 +13,9 @@ class NandGate(pos:(Int,Int), orientation:Orientation = East)(implicit colouring
 
   override def terminals: Seq[Terminal] = Seq(ta, tb, out)
 
-  override def constraints: Seq[Constraint] = ta.constraints ++ tb.constraints ++ out.constraints :+ EquationConstraint("NOT gate", Seq(
-    out.potential -> (() => for { v <- value } yield if (v) LogicProbe.vdd else LogicProbe.vss)
-  ))
+  override def constraints: Seq[Constraint] = ta.constraints ++ tb.constraints ++ out.constraints :+ EquationConstraint("NAND gate",
+    out.potential, Seq(ta.potential, tb.potential), () => for { v <- value } yield if (v) LogicProbe.vdd else LogicProbe.vss
+  )
 
   def a:Option[Boolean] = ta.potential.value.flatMap {
     case v if v >= LogicProbe.min1 => Some(true)

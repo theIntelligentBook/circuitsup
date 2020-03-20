@@ -14,11 +14,12 @@ case class HalfAdder(pos:(Int,Int), orientation:Orientation = East)(implicit col
 
   override def terminals: Seq[Terminal] = Seq(ta, tb, tc, tr)
 
+  def inputs = Seq(ta.potential, tb.potential)
+
   override def constraints: Seq[Constraint] = terminals.flatMap(_.constraints) :+
-    EquationConstraint("NOT gate", Seq(
-      tc.potential -> (() => for { cc <- c } yield if (cc) LogicProbe.vdd else LogicProbe.vss),
-      tr.potential -> (() => for { rr <- r } yield if (rr) LogicProbe.vdd else LogicProbe.vss)
-    ))
+    EquationConstraint("NOT gate", tc.potential, inputs, () => for { cc <- c } yield if (cc) LogicProbe.vdd else LogicProbe.vss) :+
+    EquationConstraint("NOT gate", tr.potential, inputs, () => for { rr <- r } yield if (rr) LogicProbe.vdd else LogicProbe.vss)
+
 
   def a:Option[Boolean] = ta.potential.value.flatMap {
     case v if v >= LogicProbe.min1 => Some(true)

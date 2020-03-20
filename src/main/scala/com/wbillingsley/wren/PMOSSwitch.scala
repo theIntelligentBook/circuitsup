@@ -23,21 +23,17 @@ class PMOSSwitch(pos:(Int, Int), orientation: Orientation = East)(implicit val c
 
   override def constraints: Seq[Constraint] = Seq(
     SumConstraint("Kirchhoff's Current Law", Seq(source.current, drain.current), 0),
-    EquationConstraint("nMOSFET is on", Seq(
-      drain.potential -> (() => for {
+    EquationConstraint("nMOSFET is on", drain.potential, Seq(gate.potential, source.potential), () => for {
         (vg, _) <- gate.potential.content if vg <= vt
         (p, _) <- source.potential.content
-      } yield p),
-      source.potential -> (() => for {
+    } yield p),
+    EquationConstraint("nMOSFET is on", source.potential, Seq(gate.potential, drain.potential), () => for {
         (vg, _) <- gate.potential.content if vg <= vt
         (p, _) <- drain.potential.content
-      } yield p)
-    )),
-    EquationConstraint("nMOSFET is off", Seq(
-      source.current -> (() => for {
+    } yield p),
+    EquationConstraint("nMOSFET is off", source.current, Seq(gate.potential), () => for {
         (vg, _) <- gate.potential.content if vg > vt
-      } yield 0d))
-    )
+      } yield 0d)
   ) ++ terminals.flatMap(_.constraints)
 
   override def render: VHtmlDiffNode = {

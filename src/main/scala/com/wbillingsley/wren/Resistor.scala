@@ -24,18 +24,19 @@ class Resistor(pos:(Int,Int), orientation:Orientation = East, i: Option[Double] 
   override def terminals: Seq[Terminal] = Seq(t1, t2)
 
   override def constraints: Seq[Constraint] = t1.constraints ++ t2.constraints ++ Seq(
-    SumConstraint("Kirchhoff's Current Law", Seq(t1.current, t2.current), 0),
+    SumConstraint("Kirchhoff's Current Law", Seq(t1.current, t2.current), 0)
+  ) ++
     EquationConstraint("Ohm's Law", Seq(
       t1.current -> (() => for {(r, _) <- resistance.content; (v, _) <- voltage.content} yield v / r ),
       voltage -> (() => for {(i, _) <- t1.current.content; (r, _) <- resistance.content} yield i * r ),
       resistance -> (() => for {(i, _) <- t1.current.content; (v, _) <- voltage.content} yield v / i )
-    )),
+    )) ++
     EquationConstraint("Kirchhoff's Voltage Law", Seq(
       t2.potential -> (() => for {(v1, _) <- t1.potential.content; (v, _) <- voltage.content} yield v1 - v),
       t1.potential -> (() => for {(v2, _) <- t2.potential.content; (v, _) <- voltage.content} yield v2 + v),
       voltage -> (() => for {(v1, _) <- t1.potential.content; (v2, _) <- t2.potential.content} yield v1 - v2),
     ))
-  )
+
 
   val path = "M -20 0 l 4 0 l 4 -8 l 8 16 l 8 -16 l 8 16 l 4 -8 l 4 0"
 

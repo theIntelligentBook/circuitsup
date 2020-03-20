@@ -202,7 +202,7 @@ object Ohms {
 
     val circuit = Circuit(Seq(gnd, vs, vl, cs, rl, il, w1, w2, w3, cslider), 600, 400)
     val propagator = new ConstraintPropagator(
-      circuit.components.flatMap(_.constraints) :+
+      circuit.components.flatMap(_.constraints) ++
         EquationConstraint("Ohm's Law", Seq(
           effectiveR -> (() => vs.voltage / vs.t1.current)
         ))

@@ -28,21 +28,19 @@ class NMOSFETB(pos:(Int, Int), orientation: Orientation = East) extends Componen
 
   override def constraints: Seq[Constraint] = Seq(
     SumConstraint("Kirchhoff's Current Law", Seq(source.current, drain.current), 0),
-    EquationConstraint("Source current", Seq(
-      drain.current -> (() => for {
-        v_gb <- gate.potential - body.potential
-        v_ds <- drain.potential - source.potential
-      } yield {
-        if (v_gb < vt0) 0 else
-        if (v_ds < v_gb - vt0) {
-          // Linear region
-          muCoxWL * ( (v_gb - vt0) * v_ds - Math.pow(v_ds, 2) / 2) * (1 + lambda * v_ds)
-        } else {
-          // Saturaion region
-          muCoxWL * Math.pow(v_gb - vt0, 2) * (1 + lambda * v_ds) / 2
-        }
-      })
-    ))
+    EquationConstraint("Source current", drain.current, Seq(gate.potential, body.potential, drain.potential, source.potential), () => for {
+      v_gb <- gate.potential - body.potential
+      v_ds <- drain.potential - source.potential
+    } yield {
+      if (v_gb < vt0) 0 else
+      if (v_ds < v_gb - vt0) {
+        // Linear region
+        muCoxWL * ( (v_gb - vt0) * v_ds - Math.pow(v_ds, 2) / 2) * (1 + lambda * v_ds)
+      } else {
+        // Saturaion region
+        muCoxWL * Math.pow(v_gb - vt0, 2) * (1 + lambda * v_ds) / 2
+      }
+    })
   )
 
   def channelWidth:Int = {

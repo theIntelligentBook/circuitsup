@@ -12,9 +12,9 @@ class NotGate(pos:(Int,Int), orientation:Orientation = East)(implicit colouringR
 
   override def terminals: Seq[Terminal] = Seq(in, out)
 
-  override def constraints: Seq[Constraint] = in.constraints ++ out.constraints :+ EquationConstraint("NOT gate", Seq(
-    out.potential -> (() => for { v <- value } yield if (v) LogicProbe.vdd else LogicProbe.vss)
-  ))
+  override def constraints: Seq[Constraint] = in.constraints ++ out.constraints :+ EquationConstraint("NOT gate",
+    out.potential, Seq(in.potential), () => for { v <- value } yield if (v) LogicProbe.vdd else LogicProbe.vss
+  )
 
   def a:Option[Boolean] = in.potential.value.flatMap {
     case v if v >= LogicProbe.min1 => Some(true)
