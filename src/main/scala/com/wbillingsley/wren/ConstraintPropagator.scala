@@ -4,9 +4,31 @@ sealed trait Provenance
 case object UserSet extends Provenance
 case object QuestionSet extends Provenance
 case object Unknown extends Provenance
-case class Because(constraint: Constraint, values:Seq[Value]) extends Provenance
+case class Because(constraint: Constraint, values:Seq[(Value, Int)]) extends Provenance
 
-class Value(val units:String, var content:Option[(Double, Provenance)] = None) {
+class Value(val units:String, initial:Option[(Double, Provenance)] = None) {
+
+  private var _version:Int = 0
+
+  def version = _version
+
+  private var _content:Option[(Double, Provenance)] = initial
+
+  def content:Option[(Double, Provenance)] = _content
+
+  def content_=(c:Option[(Double, Provenance)]):Unit = {
+    if (c.map(_._1) != _content.map(_._1)) {
+      _version += 1
+      _content = c
+    }
+  }
+
+  /** True if the value is empty or out of date */
+  def needsCalculation:Boolean = _content match {
+    case None => true
+    case Some((_, Because(_, deps))) => deps.exists { case (v, version) => v.version != version }
+    case _ => false
+  }
 
   def value:Option[Double] = content.map(_._1)
 
@@ -131,7 +153,7 @@ case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint
         for {
           v <- values.filter(_.content.isEmpty)
         } yield {
-          v.content = set.content.map({ case (vv, _) => (vv, Because(this, Seq(v))) })
+          v.content = set.content.map({ case (vv, _) => (vv, Because(this, Seq(v -> v.version))) })
           v
         }
       case _ => Seq.empty
@@ -163,7 +185,7 @@ case class SumConstraint(name:String, values:Seq[Value], result:Double, toleranc
       for {
         v <- values if v.content.isEmpty
       } yield {
-        v.content = Some((result - s, Because(this, values.filter(_.content.isEmpty))))
+        v.content = Some((result - s, Because(this, values.filter(_.content.isEmpty).map(x => x -> x.version))))
         v
       }
     } else Seq.empty
@@ -197,7 +219,7 @@ case class EquationConstraint(name:String, eqs:Seq[(Value, () => Option[Double])
         (v, eq) <- eqs if v.content.isEmpty
         newVal <- eq()
       } yield {
-        v.content = Some(newVal -> Because(this, values.filter(_.content.nonEmpty)))
+        v.content = Some(newVal -> Because(this, values.filter(_.content.nonEmpty).map(x => x -> x.version)))
         v
       }
     } else Seq.empty
