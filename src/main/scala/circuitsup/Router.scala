@@ -3,6 +3,7 @@ package circuitsup
 import circuitsup.analog.Analog
 import circuitsup.binary.BinaryTopic
 import circuitsup.booleanlogic.BooleanTopic
+import circuitsup.latches.LatchesTopic
 import circuitsup.mosfets.Topic2
 import circuitsup.templates.{FrontPage, Topic}
 import com.wbillingsley.veautiful.PathDSL
@@ -15,6 +16,7 @@ case class CircuitsRoute(l:Int, s:Int) extends Route
 case class MosfetsRoute(l:Int, s:Int) extends Route
 case class BooleanRoute(l:Int, s:Int) extends Route
 case class BinaryRoute(l:Int, s:Int) extends Route
+case class LatchesRoute(l:Int, s:Int) extends Route
 
 object Router extends HistoryRouter[Route] {
 
@@ -41,7 +43,8 @@ object Router extends HistoryRouter[Route] {
       CircuitsRoute(0, 0) -> Analog.topic,
       MosfetsRoute(0, 0) -> Topic2.topic,
       BooleanRoute(0, 0) -> BooleanTopic.topic,
-      BinaryRoute(0, 0) -> BinaryTopic.topic
+      BinaryRoute(0, 0) -> BinaryTopic.topic,
+      LatchesRoute(0, 0) -> LatchesTopic.topic,
     )
   )
 
@@ -54,6 +57,7 @@ object Router extends HistoryRouter[Route] {
       case MosfetsRoute(l, s) => Topic2.challenge.show(l, s)
       case BooleanRoute(l, s) => BooleanTopic.challenge.show(l, s)
       case BinaryRoute(l, s) => BinaryTopic.challenge.show(l, s)
+      case LatchesRoute(l, s) => LatchesTopic.challenge.show(l, s)
     }
   }
 
@@ -66,6 +70,7 @@ object Router extends HistoryRouter[Route] {
       case MosfetsRoute(l, s) => (/# / "mosfets" / l.toString / s.toString).stringify
       case BooleanRoute(l, s) => (/# / "boolean" / l.toString / s.toString).stringify
       case BinaryRoute(l, s) => (/# / "binary" / l.toString / s.toString).stringify
+      case LatchesRoute(l, s) => (/# / "latches" / l.toString / s.toString).stringify
     }
   }
 
@@ -83,6 +88,7 @@ object Router extends HistoryRouter[Route] {
     case Array("mosfets", l, s) => MosfetsRoute(parseInt(l, 0), parseInt(s, 0))
     case Array("boolean", l, s) => BooleanRoute(parseInt(l, 0), parseInt(s, 0))
     case Array("binary", l, s) => BinaryRoute(parseInt(l, 0), parseInt(s, 0))
+    case Array("latches", l, s) => LatchesRoute(parseInt(l, 0), parseInt(s, 0))
     case x =>
       println(s"path was ${x}")
       IntroRoute

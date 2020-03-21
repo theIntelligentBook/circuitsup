@@ -8,7 +8,7 @@ case object QuestionSet extends Provenance
 case object Unknown extends Provenance
 case class Because(constraint: Constraint, values:Seq[(Value, Int)]) extends Provenance
 
-class Value(val units:String, initial:Option[(Double, Provenance)] = None, name:Option[String] = None) {
+class Value(val units:String, initial:Option[(Double, Provenance)] = None, val name:Option[String] = None) {
 
   private var _version:Int = 0
 

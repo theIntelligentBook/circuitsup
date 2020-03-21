@@ -247,3 +247,17 @@ table.truth-table tbody tr.active {
 .binary-table td.nibble-end:not(:first-child),th.nibble-end:not(:first-child) {
     border-right: 1px solid black;
 }
+
+.logic-plot .logic-line {
+  margin-bottom: 1rem;
+}
+
+.logic-plot svg {
+    margin: 1rem;
+    background: lightgray;
+}
+
+.logic-plot .logic-line path {
+    stroke: blue;
+    fill: none;
+}
