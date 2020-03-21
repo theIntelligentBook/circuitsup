@@ -72,7 +72,6 @@ object RippleCarryAdder extends ExerciseStage {
   }
 
   def onUpdate():Unit = {
-    propagator.clearCalculations()
     propagator.resolve()
 
     for {

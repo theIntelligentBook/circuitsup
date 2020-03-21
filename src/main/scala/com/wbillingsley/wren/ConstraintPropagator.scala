@@ -28,11 +28,20 @@ class Value(val units:String, initial:Option[(Double, Provenance)] = None, name:
     _content = c
   }
 
-  /** True if the value is empty or out of date */
+  /** True if the value is only one step out of date */
   def needsCalculation:Boolean = _content match {
     case None => true
-    case Some((_, Because(_, deps))) => deps.exists { case (v, version) => v.version != version }
+    case Some((_, Because(_, deps))) =>
+      deps.exists { case (v, vversion) => v.version != vversion } &&
+        deps.forall { case (v, _) => v.fresh }
     case _ => false
+  }
+
+  /** True if this value and all its dependencies are current */
+  def fresh:Boolean = _content match {
+    case Some((_, Because(_, deps))) => deps.forall { case (v, version) => v.version == version && v.fresh }
+    case None => false
+    case _ => true
   }
 
   def value:Option[Double] = content.map(_._1)
@@ -153,10 +162,10 @@ trait Constraint {
 
 case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint {
 
-  override def calculable: Boolean = values.exists(!_.needsCalculation)
+  override def calculable: Boolean = values.exists(_.fresh)
 
   override def calculate(): Seq[Value] = {
-    values.find(!_.needsCalculation) match {
+    values.find(_.fresh) match {
       case Some(set) =>
         for {
           v <- values if v.needsCalculation
@@ -215,7 +224,7 @@ case class EquationConstraint(name:String, value:Value, dependencies:Seq[Value],
 
   def values = Seq(value)
 
-  override def calculable: Boolean = !dependencies.exists(_.needsCalculation)
+  override def calculable: Boolean = dependencies.forall(_.fresh)
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
 
@@ -283,6 +292,12 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
       done.appendAll(step().map(x => x -> x.content))
 
       if (done.length > MAX_CALCULATIONS) {
+        for {
+          (v, why) <- done
+        } {
+          println(s"Set $v to $why")
+        }
+
         throw TooManyCalculationsException(done.toSeq)
       }
     }
