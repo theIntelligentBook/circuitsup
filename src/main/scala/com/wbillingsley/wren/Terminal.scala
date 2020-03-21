@@ -14,17 +14,17 @@ sealed trait Connector {
   def pos:(Int, Int)
 }
 
-class Terminal(val pos:(Int, Int), i: Option[Double] = None) extends Connector with Component {
+class Terminal(val pos:(Int, Int), i: Option[Double] = None, name:Option[String] = None) extends Connector with Component {
 
   def x:Int = pos._1
 
   def y:Int = pos._2
 
   /** The current into this terminal */
-  val current = new Value("A", i.map((_, QuestionSet)))
+  val current = new Value("A", i.map((_, QuestionSet)), name.map(x => s"I($x)"))
 
-  /** The potential of this terminal, with respect to the circuit's reference potential */
-  val potential = new Value(units = "V", None)
+  /** 3.The potential of this terminal, with respect to the circuit's reference potential */
+  val potential = new Value(units = "V", None, name.map(x => s"V($x)"))
 
   override def terminals: Seq[Terminal] = Seq.empty
 

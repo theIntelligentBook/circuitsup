@@ -6,7 +6,9 @@ sealed trait Provenance
 case object UserSet extends Provenance
 case object QuestionSet extends Provenance
 case object Unknown extends Provenance
-case class Because(constraint: Constraint, values:Seq[(Value, Int)]) extends Provenance
+case class Because(constraint: Constraint, values:Seq[(Value, Int)]) extends Provenance {
+  override def toString = s"Because $constraint with values ${values.mkString(",")}"
+}
 
 class Value(val units:String, initial:Option[(Double, Provenance)] = None, val name:Option[String] = None) {
 
@@ -18,6 +20,8 @@ class Value(val units:String, initial:Option[(Double, Provenance)] = None, val n
 
   def content:Option[(Double, Provenance)] = _content
 
+  override def toString = name.getOrElse(super.toString)
+
   def content_=(c:Option[(Double, Provenance)]):Unit = {
     // We only update our version if the value has actually changed
     if (c.map(_._1) != _content.map(_._1)) {
@@ -26,15 +30,6 @@ class Value(val units:String, initial:Option[(Double, Provenance)] = None, val n
 
     // But we have to update the provenance (so that because clauses do not remain out of date, with old versions)
     _content = c
-  }
-
-  /** True if the value is only one step out of date */
-  def needsCalculation:Boolean = _content match {
-    case None => true
-    case Some((_, Because(_, deps))) =>
-      deps.exists { case (v, vversion) => v.version != vversion } &&
-        deps.forall { case (v, _) => v.fresh }
-    case _ => false
   }
 
   /** True if this value and all its dependencies are current */
@@ -162,13 +157,13 @@ trait Constraint {
 
 case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint {
 
-  override def calculable: Boolean = values.exists(_.needsCalculation) && values.exists(_.fresh)
+  override def calculable: Boolean = values.exists(!_.fresh) && values.exists(_.fresh)
 
   override def calculate(): Seq[Value] = {
     values.find(_.fresh) match {
       case Some(set) =>
         for {
-          v <- values if v.needsCalculation
+          v <- values if !v.fresh
         } yield {
           v.content = set.value.map({ d => (d, Because(this, Seq(set -> set.version))) })
           v
@@ -188,7 +183,7 @@ case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint
 
 case class SumConstraint(name:String, values:Seq[Value], result:Double, tolerance:Double = 0.01) extends Constraint {
 
-  override def calculable: Boolean = values.count(_.needsCalculation) == 1
+  override def calculable: Boolean = values.count(!_.fresh) == 1
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
 
@@ -200,7 +195,7 @@ case class SumConstraint(name:String, values:Seq[Value], result:Double, toleranc
       } yield num).sum
 
       for {
-        v <- values if v.needsCalculation
+        v <- values if !v.fresh
       } yield {
         v.content = Some((result - s, Because(this, values.filterNot(_ == v).map(x => x -> x.version))))
         v
@@ -224,7 +219,7 @@ case class EquationConstraint(name:String, value:Value, dependencies:Seq[Value],
 
   def values = Seq(value)
 
-  override def calculable: Boolean = dependencies.forall(_.fresh) && eq().nonEmpty
+  override def calculable: Boolean = !value.fresh && dependencies.forall(_.fresh) && eq().nonEmpty
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
 
@@ -276,12 +271,12 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
   }
 
   def canStep:Boolean = constraints.exists({ c =>
-    c.values.exists(_.needsCalculation) && c.calculable
+    c.values.exists(!_.fresh) && c.calculable
   })
 
   def step():Seq[Value] = {
     for {
-      c <- constraints if c.values.exists(_.needsCalculation) && c.calculable
+      c <- constraints if c.calculable
       v <- c.calculate()
     } yield v
   }

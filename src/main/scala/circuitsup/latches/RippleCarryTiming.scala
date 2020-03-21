@@ -94,7 +94,7 @@ object RippleCarryTiming extends ExerciseStage {
       <.div(
         Common.marked(
           s"""
-             |# Ripple Carry Timing
+             |### Ripple Carry Timing
              |
              |Electronics is fast, but it's not instant. Let's set up the Ripple Carry Adder that we saw previously again,
              |only this time let's fix all its inputs except the carry, so we can watch what happens as the carry ripples

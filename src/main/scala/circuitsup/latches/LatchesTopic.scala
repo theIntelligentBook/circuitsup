@@ -40,7 +40,7 @@ object LatchesTopic {
 
   val levels = Seq(
     Level("Timing and latches", Seq(
-      RippleCarryTiming
+      RippleCarryTiming, SRLatchLogic
     )),
   )
 

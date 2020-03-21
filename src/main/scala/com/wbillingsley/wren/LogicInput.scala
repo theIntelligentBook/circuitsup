@@ -3,7 +3,7 @@ package com.wbillingsley.wren
 import com.wbillingsley.veautiful.html.{<, SVG, VHtmlDiffNode, ^}
 import com.wbillingsley.wren.Orientation.East
 
-class LogicInput(pos:(Int,Int), orientation:Orientation = East, name:String="")(onUpdate: Option[Boolean] => Unit)(implicit colouringRule: Wire.ColouringRule = Wire.defaultColouring) extends Component {
+class LogicInput(pos:(Int,Int), orientation:Orientation = East, name:String="", initial:Option[Boolean] = None)(onUpdate: Option[Boolean] => Unit)(implicit colouringRule: Wire.ColouringRule = Wire.defaultColouring) extends Component {
 
   val t = new Terminal(pos, Some(0))
 
@@ -11,7 +11,9 @@ class LogicInput(pos:(Int,Int), orientation:Orientation = East, name:String="")(
 
   override def constraints: Seq[Constraint] = t.constraints
 
-  private var _value:Option[Boolean] = None
+  private var _value:Option[Boolean] = initial
+  updatePotential()
+
   def value:Option[Boolean] = _value
   def value_=(o:Option[Boolean]) = {
     _value = o

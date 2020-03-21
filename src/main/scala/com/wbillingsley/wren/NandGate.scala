@@ -3,18 +3,26 @@ package com.wbillingsley.wren
 import com.wbillingsley.veautiful.html.{SVG, VHtmlDiffNode, ^}
 import com.wbillingsley.wren.Orientation.East
 
-class NandGate(pos:(Int,Int), orientation:Orientation = East)(implicit colouringRule: Wire.ColouringRule = Wire.defaultColouring) extends Component {
+class NandGate(pos:(Int,Int), orientation:Orientation = East, val name:Option[String] = None)(implicit colouringRule: Wire.ColouringRule = Wire.defaultColouring) extends Component {
 
   val (x, y) = pos
 
-  val ta = new Terminal((x - 30, y - 10), Some(0))
-  val tb = new Terminal((x - 30, y + 10), Some(0))
-  val out = new Terminal((x + 40, y), Some(0))
+  val ta = new Terminal((x - 30, y - 10), Some(0), name.map(_ + " A"))
+  val tb = new Terminal((x - 30, y + 10), Some(0), name.map(_ + " B"))
+  val out = new Terminal((x + 40, y), Some(0), name.map(_ + " Out"))
 
   override def terminals: Seq[Terminal] = Seq(ta, tb, out)
 
-  override def constraints: Seq[Constraint] = ta.constraints ++ tb.constraints ++ out.constraints :+ EquationConstraint("NAND gate",
-    out.potential, Seq(ta.potential, tb.potential), () => for { v <- value } yield if (v) LogicProbe.vdd else LogicProbe.vss
+  override def constraints: Seq[Constraint] = ta.constraints ++ tb.constraints ++ out.constraints ++ Seq(
+    EquationConstraint("NAND gate lazy operation",
+      out.potential, Seq(ta.potential), () => for { aa <- a if !aa } yield LogicProbe.vdd
+    ),
+    EquationConstraint("NAND gate lazy operation",
+      out.potential, Seq(tb.potential), () => for { bb <- b if !bb } yield LogicProbe.vdd
+    ),
+    EquationConstraint("NAND gate",
+      out.potential, Seq(ta.potential, tb.potential), () => for { v <- value } yield if (v) LogicProbe.vdd else LogicProbe.vss
+    )
   )
 
   def a:Option[Boolean] = ta.potential.value.flatMap {
