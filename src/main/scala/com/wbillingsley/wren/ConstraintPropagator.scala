@@ -1,12 +1,14 @@
 package com.wbillingsley.wren
 
+import scala.collection.mutable
+
 sealed trait Provenance
 case object UserSet extends Provenance
 case object QuestionSet extends Provenance
 case object Unknown extends Provenance
 case class Because(constraint: Constraint, values:Seq[(Value, Int)]) extends Provenance
 
-class Value(val units:String, initial:Option[(Double, Provenance)] = None) {
+class Value(val units:String, initial:Option[(Double, Provenance)] = None, name:Option[String] = None) {
 
   private var _version:Int = 0
 
@@ -17,10 +19,13 @@ class Value(val units:String, initial:Option[(Double, Provenance)] = None) {
   def content:Option[(Double, Provenance)] = _content
 
   def content_=(c:Option[(Double, Provenance)]):Unit = {
+    // We only update our version if the value has actually changed
     if (c.map(_._1) != _content.map(_._1)) {
       _version += 1
-      _content = c
     }
+
+    // But we have to update the provenance (so that because clauses do not remain out of date, with old versions)
+    _content = c
   }
 
   /** True if the value is empty or out of date */
@@ -245,6 +250,11 @@ object EquationConstraint {
 
 case class ConstraintPropagator(constraints:Seq[Constraint]) {
 
+  /** Maximum number of calculations in a single resolve() call before we assume there's a cycle and stop */
+  val MAX_CALCULATIONS = 100
+
+  case class TooManyCalculationsException(done:Seq[(Value, Option[(Double, Provenance)])]) extends RuntimeException
+
   def clearCalculations():Unit = {
     for {
       c <- constraints
@@ -256,18 +266,28 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
   }
 
   def canStep:Boolean = constraints.exists({ c =>
-    c.values.exists(_.content.isEmpty) && c.calculable
+    c.values.exists(_.needsCalculation) && c.calculable
   })
 
   def step():Seq[Value] = {
     for {
-      c <- constraints if c.values.exists(_.content.isEmpty) && c.calculable
+      c <- constraints if c.values.exists(_.needsCalculation) && c.calculable
       v <- c.calculate()
     } yield v
   }
 
-  def resolve():Unit = {
-    while (canStep) step()
+  def resolve():Seq[(Value, Option[(Double, Provenance)])] = {
+    val done = mutable.Buffer.empty[(Value, Option[(Double, Provenance)])]
+
+    while (canStep) {
+      done.appendAll(step().map(x => x -> x.content))
+
+      if (done.length > MAX_CALCULATIONS) {
+        throw TooManyCalculationsException(done.toSeq)
+      }
+    }
+
+    done.toSeq
   }
 
   def violated:Seq[Constraint] = constraints.filter(_.failed)
