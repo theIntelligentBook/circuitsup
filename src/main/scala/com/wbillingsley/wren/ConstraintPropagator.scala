@@ -162,7 +162,7 @@ trait Constraint {
 
 case class EqualityConstraint(name:String, values:Seq[Value]) extends Constraint {
 
-  override def calculable: Boolean = values.exists(_.fresh)
+  override def calculable: Boolean = values.exists(_.needsCalculation) && values.exists(_.fresh)
 
   override def calculate(): Seq[Value] = {
     values.find(_.fresh) match {
@@ -195,7 +195,7 @@ case class SumConstraint(name:String, values:Seq[Value], result:Double, toleranc
   override def calculate(): Seq[Value] = {
     if (calculable) {
       val s = (for {
-        v <- values if !v.needsCalculation
+        v <- values if v.fresh
         num <- v.value
       } yield num).sum
 
@@ -224,7 +224,7 @@ case class EquationConstraint(name:String, value:Value, dependencies:Seq[Value],
 
   def values = Seq(value)
 
-  override def calculable: Boolean = dependencies.forall(_.fresh)
+  override def calculable: Boolean = dependencies.forall(_.fresh) && eq().nonEmpty
 
   def withinTolerance(a:Double, b:Double):Boolean = Math.abs(a / b) <= tolerance
 
@@ -263,6 +263,7 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
   val MAX_CALCULATIONS = 100
 
   case class TooManyCalculationsException(done:Seq[(Value, Option[(Double, Provenance)])]) extends RuntimeException
+  case class TooManyStepsException(done:Seq[(Value, Option[(Double, Provenance)])]) extends RuntimeException
 
   def clearCalculations():Unit = {
     for {
@@ -287,6 +288,7 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
 
   def resolve():Seq[(Value, Option[(Double, Provenance)])] = {
     val done = mutable.Buffer.empty[(Value, Option[(Double, Provenance)])]
+    var stepCount = 0
 
     while (canStep) {
       done.appendAll(step().map(x => x -> x.content))
@@ -300,6 +302,11 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
 
         throw TooManyCalculationsException(done.toSeq)
       }
+
+      if (stepCount > MAX_CALCULATIONS) {
+        throw TooManyStepsException(done.toSeq)
+      }
+      stepCount += 1
     }
 
     done.toSeq
