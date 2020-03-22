@@ -43,7 +43,7 @@ object LatchesTopic {
       RippleCarryTiming,
     )),
     Level("Latches", Seq(
-      SRLatchLogic, GatedSRLatch
+      SRLatchLogic, GatedSRLatch, DLatch
     )),
   )
 

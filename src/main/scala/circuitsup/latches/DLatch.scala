@@ -12,28 +12,30 @@ import com.wbillingsley.wren.Wire._
 import com.wbillingsley.wren._
 import org.scalajs.dom.{Element, Node}
 
-object GatedSRLatch extends ExerciseStage {
+object DLatch extends ExerciseStage {
 
   implicit val wireCol = Wire.voltageColoring
 
   var completion: Challenge.Completion = Open
 
-  val s:LogicInput = new LogicInput(100 ->190, East, name="S", initial=Some(false))({ v =>  onUpdate() })
-  val r:LogicInput = new LogicInput(100 ->310, East, name="R", initial=Some(false))({ v =>  onUpdate() })
-  val e:LogicInput = new LogicInput(100 ->250, East, name="E", initial=Some(false))({ v =>  onUpdate() })
+  val d:LogicInput = new LogicInput(100 ->190, East, name="D", initial=Some(false))({ v =>  onUpdate() })
+  val e:LogicInput = new LogicInput(170 ->250, East, name="E", initial=Some(false))({ v =>  onUpdate() })
 
   val nand1 = new NandGate(200 -> 200, East, Some("Nand1"))
   val nand2 = new NandGate(200 -> 300, East, Some("Nand2"))
 
-  val nand3 = new NandGate(300 -> 210, East, Some("Nand1"))
-  val nand4 = new NandGate(300 -> 290, East, Some("Nand2"))
+  val nand3 = new NandGate(300 -> 210, East, Some("Nand3"))
+  val nand4 = new NandGate(300 -> 290, East, Some("Nand4"))
+
+  val not = new NotGate(130 -> 310)
 
   val q = new LogicProbe(400 -> 210, East, "Q")
   val qbar = new LogicProbe(400 -> 290, East, "~Q")
 
   val wires:Seq[Wire] = Seq(
-    (s.t -> nand1.ta).wire,
-    (r.t -> nand2.tb).wire,
+    (d.t -> nand1.ta).wire,
+    (d.t -> not.in).wire,
+    (not.out -> nand2.tb).wire,
 
     (e.t -> nand1.tb).wireVia(e.t.x -> nand1.tb.y),
     (e.t -> nand2.ta).wireVia(e.t.x -> nand2.ta.y),
@@ -48,7 +50,7 @@ object GatedSRLatch extends ExerciseStage {
     (nand4.out -> qbar.t).wire,
   )
 
-  val circuit = new Circuit(Seq(s, r, e, nand1, nand2, nand3, nand4, q, qbar) ++ wires, 600, 600)
+  val circuit = new Circuit(Seq(d, e, nand1, nand2, nand3, nand4, not, q, qbar) ++ wires, 600, 600)
   val propagator = new ConstraintPropagator(circuit.components.flatMap(_.constraints))
   propagator.resolve()
 
@@ -64,13 +66,13 @@ object GatedSRLatch extends ExerciseStage {
     propagator.resolve()
 
     for {
-      ss <- s.value; rr <- r.value; ee <- e.value
+      ss <- d.value; ee <- e.value
     } {
-      if (ss && !ee && !rr && buildStage == 1) buildStage = 2
-      if (ss && ee && !rr && buildStage == 2) buildStage = 3
-      if (ss && !ee && !rr && buildStage == 3) buildStage = 4
-      if (!ss && !ee && rr && buildStage == 4) buildStage = 5
-      if (!ss && ee && rr && buildStage == 5) buildStage = 6
+      if (ss && !ee && buildStage == 1) buildStage = 2
+      if (ss && ee  && buildStage == 2) buildStage = 3
+      if (ss && !ee  && buildStage == 3) buildStage = 4
+      if (!ss && !ee && buildStage == 4) buildStage = 5
+      if (!ss && ee && buildStage == 5) buildStage = 6
     }
 
     if (checkCompletion) {
@@ -86,33 +88,30 @@ object GatedSRLatch extends ExerciseStage {
     <.li(
       Common.marked(
       """
-        |`E` is low. **Set `S` to `1`** and notice it has no effect on `Q`. `E` being low will keep the top left NAND gate's output
+        |`E` is low. **Set `D` to `1`** and notice it has no effect on `Q`. `E` being low will keep the top left NAND gate's output
         |high no matter what `S` is.
         |""".stripMargin),
       <.button(^.cls := "btn btn-outline-primary",
         ^.onClick --> {
-          s.value = Some(true)
-          r.value = Some(false)
+          d.value = Some(true)
           e.value = Some(false)
           onUpdate()
         },
-        "S → 1; R → 0; E → 0"
+        "D → 1; E → 0"
       )
     ),
     <.li(
       Common.marked(
         """
-          |Now **toggle `E` to `1`**. With the gate enabled, the `1` in `S` can flow through to our SR-Latch and it
-          |should move into the `Q=1` state.
+          |Now **toggle `E` to `1`**. The latch turns transparent and the `1` in `D` can flow through to `Q`.
           |""".stripMargin),
       <.button(^.cls := "btn btn-outline-primary",
         ^.onClick --> {
-          s.value = Some(true)
-          r.value = Some(false)
+          d.value = Some(true)
           e.value = Some(true)
           onUpdate()
         },
-        "S → 1; R → 0; E → 1"
+        "D → 1; E → 1"
       )
     ),
     <.li(
@@ -122,43 +121,40 @@ object GatedSRLatch extends ExerciseStage {
           |""".stripMargin),
       <.button(^.cls := "btn btn-outline-primary",
         ^.onClick --> {
-          s.value = Some(true)
-          r.value = Some(false)
+          d.value = Some(true)
           e.value = Some(false)
           onUpdate()
         },
-        "S → 1; R → 0; E → 0"
+        "D → 1; E → 0"
       )
     ),
     <.li(
       Common.marked(
         """
-          |With the gate disabled, we can change our inputs. **Set `S` to `0` and `R` to `1`**. It shouldn't have any
+          |With the gate disabled, we can change our inputs. **Set `D` to `0`**. It shouldn't have any
           |effect on `Q` yet.
           |""".stripMargin),
       <.button(^.cls := "btn btn-outline-primary",
         ^.onClick --> {
-          s.value = Some(false)
-          r.value = Some(true)
+          d.value = Some(false)
           e.value = Some(false)
           onUpdate()
         },
-        "S → 0; R → 1; E → 0"
+        "D → 0; E → 0"
       )
     ),
     <.li(
       Common.marked(
         """
-          |Now, **set `E` to `1` to let the inputs have effect**.
+          |Now, **set `E` to `1` to let the input have effect**.
           |""".stripMargin),
       <.button(^.cls := "btn btn-outline-primary",
         ^.onClick --> {
-          s.value = Some(false)
-          r.value = Some(true)
+          d.value = Some(false)
           e.value = Some(true)
           onUpdate()
         },
-        "S → 0; R → 1; E → 1"
+        "D → 0; E → 1"
       )
     ),
     <.li(
@@ -174,14 +170,14 @@ object GatedSRLatch extends ExerciseStage {
     <.div(
       Common.marked(
         s"""
-           |### Gated SR Latch
+           |### D Latch
            |
-           |On the right hand side, we've got an SR Latch, but to the left of it we've put two more NAND gates.
-           |There are now three inputs: `S` and `R` (not inverted), and `E` (enable).
+           |On the right hand side, we've taken a Gated SR-Latch, and we've added a NOT gate tying two of the inputs
+           |together. This produces a *D Latch* or *transparent latch*.
            |
-           |What we'll find is that setting `S` to `1` or `R` to `1` work as "set" or "reset" inputs, but only when
-           |`E` is high. If `E` is low, the outputs of the NAND gates on the left (the inputs to the SR Latch) will
-           |both be `1` and the SR-Latch will remain in whatever stable state it's in.
+           |Whenever the `E` input is high, the latch will be "transparent" (changes to the input, now called `D`, will
+           |flow through to the output). Whenever the `E` input is low, changes to `D` will have no effect - the device
+           |is *latched*.
            |""".stripMargin
       ),
       <.ol(
@@ -190,8 +186,7 @@ object GatedSRLatch extends ExerciseStage {
       if (isComplete) <.div(
         Common.marked(
           s"""
-             |We've now got a device that has inputs (`S` and `R`) but also a control input (`E`) for when the inputs
-             |will be "read" by the SR-Latch.
+             |We've now got a device that has one input (`D`) and a control input (`E`) for when it can take effect.
              |""".stripMargin
         ), nextButton()
       )else <.div()
