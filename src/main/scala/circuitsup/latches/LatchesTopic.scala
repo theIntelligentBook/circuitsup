@@ -39,8 +39,11 @@ object LatchesTopic {
   )
 
   val levels = Seq(
-    Level("Timing and latches", Seq(
-      RippleCarryTiming, SRLatchLogic
+    Level("Dynamic discipline", Seq(
+      RippleCarryTiming,
+    )),
+    Level("Latches", Seq(
+      SRLatchLogic, GatedSRLatch
     )),
   )
 
