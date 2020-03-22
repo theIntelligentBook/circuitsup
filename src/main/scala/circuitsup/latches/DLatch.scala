@@ -21,8 +21,8 @@ object DLatch extends ExerciseStage {
   val d:LogicInput = new LogicInput(100 ->190, East, name="D", initial=Some(false))({ v =>  onUpdate() })
   val e:LogicInput = new LogicInput(170 ->250, East, name="E", initial=Some(false))({ v =>  onUpdate() })
 
-  val nand1 = new NandGate(200 -> 200, East, Some("Nand1"))
-  val nand2 = new NandGate(200 -> 300, East, Some("Nand2"))
+  val nand1 = new NandGate(210 -> 200, East, Some("Nand1"))
+  val nand2 = new NandGate(210 -> 300, East, Some("Nand2"))
 
   val nand3 = new NandGate(300 -> 210, East, Some("Nand3"))
   val nand4 = new NandGate(300 -> 290, East, Some("Nand4"))
