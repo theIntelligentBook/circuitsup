@@ -167,6 +167,17 @@
 
 
 /*
+ * Flip-flop
+ */
+.flip-flop text.input {
+    dominant-baseline: middle;
+}
+.flip-flop text.output {
+    text-anchor: end;
+    dominant-baseline: middle;
+}
+
+/*
  * Truth Tables
  */
 table.truth-table {
