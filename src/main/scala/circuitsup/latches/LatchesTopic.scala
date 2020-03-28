@@ -42,8 +42,11 @@ object LatchesTopic {
     Level("Dynamic discipline", Seq(
       RippleCarryTiming,
     )),
-    Level("Latches", Seq(
+    Level("Latches and Flip Flops", Seq(
       SRLatchLogic, GatedSRLatch, DLatch, DFlipFlop
+    )),
+    Level("The Clock", Seq(
+      FlipFlopsAndClocks
     )),
   )
 
