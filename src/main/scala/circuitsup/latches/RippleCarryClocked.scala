@@ -12,7 +12,7 @@ import com.wbillingsley.wren.Wire._
 import com.wbillingsley.wren._
 import org.scalajs.dom.{Element, Node}
 
-object RippleCarryTiming extends ExerciseStage {
+object RippleCarryClocked extends ExerciseStage {
 
   implicit val wireCol = Wire.voltageColoring
 
@@ -24,7 +24,12 @@ object RippleCarryTiming extends ExerciseStage {
 
   val aBits = for {i <- 0 until bits} yield new LogicProbe(100 -> (adders(i).ta.y - 10), West, name=s"A${bits - i - 1}")
   val bBits = for {i <- 0 until bits} yield new LogicProbe(200 -> adders(i).tb.y, West, name=s"B${bits - i - 1}")
-  val oBits = for {i <- 0 until bits} yield new LogicProbe(400 -> adders(i).tr.y, East, s"Bit ${bits - i - 1}")
+
+  val reg = for {i <- 0 until bits } yield new FlipFlop(450 -> (adders(i).tr.y + 20))
+  val regj = for {i <- 0 until bits } yield new Junction(400 -> reg(i).clk.y)
+
+
+  val oBits = for {i <- 0 until bits} yield new LogicProbe(520 -> reg(i).q.y, East, s"Bit ${bits - i - 1}")
 
   // Set A to #f and B to #0
   for { bit <- aBits } bit.t.potential.content = Some(5d -> UserSet)
@@ -38,36 +43,55 @@ object RippleCarryTiming extends ExerciseStage {
 
   val cin = new LogicInput(150 -> (adders.last.tcin.y + 50), East, name=s"Carry in")({ _ => onUpdate() })
   val carry = new LogicProbe(400 -> 30, East, "Carry out")
+  val clock = new LogicProbe(400 -> (adders.last.tcin.y + 50), West, "Clock")
 
   val wires:Seq[Wire] = Seq(
     (cin.t -> adders.last.tcin).wireVia(adders.last.tcin.x -> cin.t.y),
-    (adders.head.tcout -> carry.t).wireVia(adders.head.tcout.x -> carry.t.y)
+    (adders.head.tcout -> carry.t).wireVia(adders.head.tcout.x -> carry.t.y),
+    (clock.t -> reg.last.clk).wireVia(clock.t.x -> reg.last.clk.y),
   ) ++ ((0 until bits).flatMap { i => Seq(
     (aBits(i).t -> adders(i).ta).wireVia(adders(i).ta.x -> aBits(i).t.y),
     (bBits(i).t -> adders(i).tb).wire,
-    (adders(i).tr -> oBits(i).t).wire
+    (adders(i).tr -> reg(i).td).wire,
+    (reg(i).q -> oBits(i).t).wire,
+    (regj(i).terminal -> reg(i).clk).wire
   ) }) ++ (for {
     (to, from) <- adders.zip(adders.tail)
-  } yield (from.tcout -> to.tcin).wireVia(from.tcout.x -> (from.tcout.y - 80), to.tcin.x -> (from.tcout.y - 80)))
+  } yield (from.tcout -> to.tcin).wireVia(from.tcout.x -> (from.tcout.y - 80), to.tcin.x -> (from.tcout.y - 80))) ++ (
+    for { (to, from) <- regj.zip(regj.tail) } yield (to.terminal -> from.terminal).wire
+  )
 
-  val circuit = new Circuit(aBits ++ bBits ++ adders ++ oBits ++ Seq(cin, carry) ++ wires, 600, 600)
+  val circuit = new Circuit(aBits ++ bBits ++ adders ++ reg ++ regj ++ oBits ++ Seq(cin, carry, clock) ++ wires, 700, 600)
   val propagator = new ConstraintPropagator(circuit.components.flatMap(_.constraints))
   propagator.resolve()
 
-  val logicPlot = LogicPlot(adders.map(_.tr.potential), names = adders.indices.map(x => x -> s"Bit ${3 - x}").toMap)
+  val logicPlot = LogicPlot(adders.map(_.tr.potential) :+ clock.t.potential, width=200, names = adders.indices.map(x => x -> s"Bit ${3 - x}").toMap + (adders.length -> "Clock"))
+  val logicPlot2 = LogicPlot(reg.map(_.q.potential) :+ clock.t.potential, width=200, names = adders.indices.map(x => x -> s"Bit ${3 - x}").toMap + (adders.length -> "Clock"))
   var lastLogic = 0d
+  var lastClock = 0d
   val animation = AnimationPlayer(16) { d =>
+
+    if (d - lastClock > 1000) {
+      lastClock = d
+      clock.t.potential.content = clock.t.potential.value match {
+        case Some(x) => if (x > 3) Some(0d -> QuestionSet) else Some(5d -> QuestionSet)
+        case _ => Some(0d -> QuestionSet)
+      }
+    }
+
     if (!isComplete && checkCompletion) {
       completion = Complete(Some(1), None)
       onCompletionUpdate()
     }
 
-    if (d - lastLogic > 160 && propagator.canStep) {
+    propagator.resolve(wires.flatMap(_.constraints))
+    if (d - lastLogic > 200 && propagator.canStep) {
       lastLogic = d
       propagator.step()
     }
 
     logicPlot.updateValues()
+    logicPlot2.updateValues()
     rerender()
   }
 
@@ -94,21 +118,29 @@ object RippleCarryTiming extends ExerciseStage {
       <.div(
         Common.marked(
           s"""
-             |### Ripple Carry Timing
+             |### Ripple Carry Adder, with clock
              |
-             |Electronics is fast, but it's not instant. Let's set up the Ripple Carry Adder that we saw previously again,
-             |only this time let's fix all its inputs except the carry, so we can watch what happens as the carry ripples
-             |through. I've also artificially slowed down the logic resolution, to make it more visible.
+             |Let's now go back to our ripple carry adder, and we'll put the outputs from the adder stages into the
+             |edge-triggered flip flops of our "register". Run the simulation, and notice that though the logic levels
+             |still take time to ripple through the adder, they are all clocked into the flip-flops at once.
              |
-             |This start/stop button will start and stop the animation (including the operation of the circuit). When
-             |you're ready, start the animation and notice the logic lines in the graph (which will start in the
-             |muddy middle)
+             |Below, we've charted the output of the adder stages, versus the output of the flip-flops.
              |
              |""".stripMargin
         ),
       ),
       animation,
-      logicPlot,
+      Challenge.split(
+        <.div(^.cls := "card mr-2",
+          <.div(^.cls := "card-header", "Unclocked"),
+          <.div(^.cls := "card-body", logicPlot)
+        )
+      )(
+        <.div(^.cls := "card",
+          <.div(^.cls := "card-header", "Clocked"),
+          <.div(^.cls := "card-body", logicPlot2)
+        )
+      ),
       <.p(
         """
           |Now, go and toggle the "carry in" on the circuit up and down, and see what happens to the chart, the outputs,
@@ -118,16 +150,7 @@ object RippleCarryTiming extends ExerciseStage {
       if (isComplete) <.div(
         <.div(Common.marked(
           """
-            |
-            |While the carry was rippling through, we saw moments in time when the outputs were *wrong* because the
-            |carry had not yet rippled all the way through the adder.
-            |
-            |The *static discipline* is that we want our inputs to be logic `0` and logic `1`, not in the ambiguous
-            |in-between zone. The *dynamic discipline* is that we want our outputs to have settled to valid values
-            |before they are read as inputs.
-            |
-            |This means we are going to need to introduce a timing signal that says *when* we can accept inputs:
-            |a *clock*.
+            | Our clock runs fairly slowly, at 1 cycle per second (1 Hertz), but the clocks in many computers might run at 3GHz.
             |""".stripMargin)),
         nextButton()
       ) else <.p()

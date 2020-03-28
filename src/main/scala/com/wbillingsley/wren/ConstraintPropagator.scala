@@ -270,7 +270,12 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
     }
   }
 
-  def canStep:Boolean = constraints.exists({ c =>
+  def canStep:Boolean = canStep(constraints)
+
+  /**
+   * Whether a particular set of constraints can be "stepped" (resolve at least one unknown variable)
+   */
+  def canStep(constraints:Seq[Constraint]):Boolean = constraints.exists({ c =>
     c.values.exists(!_.fresh) && c.calculable
   })
 
@@ -281,11 +286,14 @@ case class ConstraintPropagator(constraints:Seq[Constraint]) {
     } yield v
   }
 
-  def resolve():Seq[(Value, Option[(Double, Provenance)])] = {
+  /**
+   * Attempt to resolve variables using the given constraints
+   */
+  def resolve(constraints:Seq[Constraint] = constraints):Seq[(Value, Option[(Double, Provenance)])] = {
     val done = mutable.Buffer.empty[(Value, Option[(Double, Provenance)])]
     var stepCount = 0
 
-    while (canStep) {
+    while (canStep(constraints)) {
       done.appendAll(step().map(x => x -> x.content))
 
       if (done.length > MAX_CALCULATIONS) {

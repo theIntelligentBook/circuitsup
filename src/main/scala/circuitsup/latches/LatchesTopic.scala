@@ -46,7 +46,7 @@ object LatchesTopic {
       SRLatchLogic, GatedSRLatch, DLatch, DFlipFlop
     )),
     Level("The Clock", Seq(
-      FlipFlopsAndClocks
+      FlipFlopsAndClocks, RippleCarryClocked
     )),
   )
 
