@@ -62,7 +62,7 @@ object Router extends HistoryRouter[Route] {
   }
 
   override def path(route: Route): String = {
-    import com.wbillingsley.veautiful.PathDSL._
+    import com.wbillingsley.veautiful.PathDSL.Compose._
 
     route match {
       case IntroRoute => (/# / "").stringify

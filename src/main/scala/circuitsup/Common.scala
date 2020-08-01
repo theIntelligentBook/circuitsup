@@ -1,7 +1,6 @@
 package circuitsup
 
-import circuitsup.templates.Markup
-import com.wbillingsley.veautiful.html.{<, SVG, VHtmlNode, ^}
+import com.wbillingsley.veautiful.html.{<, Markup, SVG, VHtmlNode, ^}
 import com.wbillingsley.veautiful.templates.Challenge
 
 import scala.scalajs.js
@@ -51,7 +50,10 @@ object Common {
     <.div(^.cls := "container", ch)
   )
 
-  def marked(text: => String) = Markup.marked.MarkupNode(() => text)
+  /** Markdown converter */
+  val markdownConverter = new Markup({ s:String => js.Dynamic.global.marked(s).asInstanceOf[String] })
+
+  def marked(text: => String) = markdownConverter.Fixed(text)
 
   /** Circuits Up! Logo */
   def symbol = {
