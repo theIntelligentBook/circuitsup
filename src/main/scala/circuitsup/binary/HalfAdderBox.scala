@@ -14,7 +14,7 @@ import Wire._
 
 object HalfAdderBox extends ExerciseStage {
 
-  implicit val wireCol = Wire.voltageColoring
+  given wireCol:ColouringRule = Wire.voltageColoring
 
   var completion: Challenge.Completion = Open
 

@@ -162,9 +162,9 @@ object CMos {
 
   object Page2 extends ExerciseStage {
 
-    implicit val wireCol = Wire.voltageColoring
-    implicit val nMosCol = NMOSSwitch.voltageColouring
-    implicit val pMosCol = PMOSSwitch.voltageColouring
+    given wireCol:Wire.ColouringRule = Wire.voltageColoring
+    given nMosCol:NMOSSwitch.ColouringRule = NMOSSwitch.voltageColouring
+    given pMosCol:PMOSSwitch.ColouringRule = PMOSSwitch.voltageColouring
 
     var completion: Challenge.Completion = Open
 
@@ -257,9 +257,9 @@ object CMos {
 
   object Page3 extends ExerciseStage {
 
-    implicit val wireCol = Wire.voltageColoring
-    implicit val nMosCol = NMOSSwitch.voltageColouring
-    implicit val pMosCol = PMOSSwitch.voltageColouring
+    given wireCol:Wire.ColouringRule = Wire.voltageColoring
+    given nMosCol:NMOSSwitch.ColouringRule = NMOSSwitch.voltageColouring
+    given pMosCol:PMOSSwitch.ColouringRule = PMOSSwitch.voltageColouring
 
     var completion: Challenge.Completion = Open
 
@@ -359,7 +359,7 @@ object CMos {
 
   object Page4 extends ExerciseStage {
 
-    implicit val wireCol = Wire.voltageColoring
+    given wireCol:Wire.ColouringRule = Wire.voltageColoring
 
     var completion: Challenge.Completion = Open
 

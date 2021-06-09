@@ -6,7 +6,7 @@ import com.wbillingsley.veautiful.html.{<, ^}
 object Circuits {
 
   def page = {
-      VSlides(width=1320, height=800)(Seq(
+      VSlides(width=1320, height=800, Seq(
         <.div(
           <("iframe")(
             ^.attr("width") :="1280", ^.attr("height") := "720", ^.src := "https://www.youtube.com/embed/0bcvcJwUE-8",

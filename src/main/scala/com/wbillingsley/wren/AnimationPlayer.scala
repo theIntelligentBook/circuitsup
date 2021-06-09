@@ -36,7 +36,7 @@ case class AnimationPlayer(timeout:Int, initial:Boolean = false)(onTick: Double 
 
   def conditionalRepeat():Unit = {
     if (playing) {
-      val i = dom.window.requestAnimationFrame(tickFunc)
+      val i = dom.window.requestAnimationFrame(tickFunc(_))
     }
   }
 

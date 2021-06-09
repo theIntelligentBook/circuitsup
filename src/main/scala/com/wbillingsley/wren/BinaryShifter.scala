@@ -25,16 +25,16 @@ class BinaryShifter(initial:Int, bits:Int = 8, ops:Seq[String]=Seq.empty, signed
 
   sealed trait Op {
     def render:VHtmlNode
-    def apply:Unit
+    def apply():Unit
   }
 
   object Reset extends Op {
-    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply, "Reset")
+    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply(), "Reset")
     def apply() = reset()
   }
 
   object LSL extends Op {
-    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply, "LSL")
+    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply(), "LSL")
     def apply() = {
       number = number << 1
       onUpdate()
@@ -43,7 +43,7 @@ class BinaryShifter(initial:Int, bits:Int = 8, ops:Seq[String]=Seq.empty, signed
   }
 
   object ASR extends Op {
-    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply, "ASR")
+    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply(), "ASR")
     def apply() = {
       if (signBit) {
         number = (number >> 1) | (1 << (bits - 1))
@@ -56,7 +56,7 @@ class BinaryShifter(initial:Int, bits:Int = 8, ops:Seq[String]=Seq.empty, signed
   }
 
   object LSR extends Op {
-    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply, "LSR")
+    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply(), "LSR")
     def apply() = {
       number = number >>> 1
       onUpdate()
@@ -65,7 +65,7 @@ class BinaryShifter(initial:Int, bits:Int = 8, ops:Seq[String]=Seq.empty, signed
   }
 
   object ROL extends Op {
-    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply, "ROL")
+    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply(), "ROL")
     def apply() = {
       number = if (signBit) (number << 1) | 1 else (number << 1)
       onUpdate()
@@ -74,7 +74,7 @@ class BinaryShifter(initial:Int, bits:Int = 8, ops:Seq[String]=Seq.empty, signed
   }
 
   object ROR extends Op {
-    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply, "ROR")
+    def render = <.button(^.cls := "btn btn-secondary", ^.onClick --> apply(), "ROR")
     def apply() = {
       number = if (bit(0)) (number >>> 1) | (1 << (bits - 1)) else (number >>> 1)
       onUpdate()

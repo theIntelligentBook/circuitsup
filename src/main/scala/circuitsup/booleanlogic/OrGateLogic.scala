@@ -15,7 +15,7 @@ import Wire._
 
 object OrGateLogic extends ExerciseStage {
 
-  implicit val wireCol = Wire.voltageColoring
+  given wireCol:Wire.ColouringRule = Wire.voltageColoring
 
   var completion: Challenge.Completion = Open
 

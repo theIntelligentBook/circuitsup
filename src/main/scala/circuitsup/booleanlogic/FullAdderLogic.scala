@@ -14,7 +14,7 @@ import org.scalajs.dom.{Element, Node}
 
 object FullAdderLogic extends ExerciseStage {
 
-  implicit val wireCol = Wire.voltageColoring
+  given wireCol:ColouringRule = Wire.voltageColoring
 
   var completion: Challenge.Completion = Open
 

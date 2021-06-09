@@ -14,9 +14,9 @@ import org.scalajs.dom.{Element, Node}
 
 object NorGateMosfets extends ExerciseStage {
 
-  implicit val wireCol = Wire.voltageColoring
-  implicit val nMosCol = NMOSSwitch.voltageColouring
-  implicit val pMosCol = PMOSSwitch.voltageColouring
+  given wireCol:Wire.ColouringRule = Wire.voltageColoring
+  given nMosCol:NMOSSwitch.ColouringRule = NMOSSwitch.voltageColouring
+  given pMosCol:PMOSSwitch.ColouringRule = PMOSSwitch.voltageColouring
 
   var completion: Challenge.Completion = Open
 

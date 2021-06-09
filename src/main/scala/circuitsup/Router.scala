@@ -48,9 +48,9 @@ object Router extends HistoryRouter[Route] {
     )
   )
 
-  def rerender() = renderElements(render())
+  def rerender() = renderElements(render)
 
-  def render() = {
+  def render = {
     route match {
       case IntroRoute => frontPage.layout
       case CircuitsRoute(l, s) => Analog.challenge.show(l, s)

@@ -14,7 +14,7 @@ import org.scalajs.dom.{Element, Node}
 
 object NandGateLogic extends ExerciseStage {
 
-  implicit val wireCol = Wire.voltageColoring
+  given wireCol:Wire.ColouringRule = Wire.voltageColoring
 
   var completion: Challenge.Completion = Open
 
