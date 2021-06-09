@@ -1,9 +1,9 @@
 package com.wbillingsley.wren
 
 import com.wbillingsley.wren.Orientation.East
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
 
-class ConstraintTest extends FunSpec {
+class ConstraintTest extends AnyFunSpec {
 
   describe("Constraint propagator") {
 
