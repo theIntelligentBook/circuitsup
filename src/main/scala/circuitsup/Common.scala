@@ -51,7 +51,7 @@ object Common {
   )
 
   /** Markdown converter */
-  val markdownConverter = new Markup({ (s:String) => js.Dynamic.global.marked(s).asInstanceOf[String] })
+  val markdownConverter = new Markup({ (s:String) => js.Dynamic.global.marked.parse(s).asInstanceOf[String] })
 
   def marked(text: => String) = markdownConverter.Fixed(text)
 
