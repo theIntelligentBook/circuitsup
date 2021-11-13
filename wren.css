@@ -1,0 +1,274 @@
+.wren-canvas {
+
+}
+
+.wren-component {
+    fill: none;
+    stroke: black;
+    stroke-width: 1.7;
+}
+
+.wren-component text {
+    fill: black;
+    stroke: none;
+}
+
+.wren-component text.centre.middle {
+    dominant-baseline: middle;
+    text-anchor: middle;
+}
+.wren-component text.centre {
+    text-anchor: middle;
+}
+.wren-component text.right {
+    text-anchor: end;
+}
+
+.wren-component .current-source-arrow {
+    font-size: 36px;
+    font-weight: bolder;
+}
+
+.wren-canvas circle.terminal {
+    fill: black;
+    r: 2;
+}
+
+.current-arrow {
+    stroke: gray(0.8);
+    fill: none;
+    stroke-width: 1;
+}
+
+.voltage-markers {
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+.value-slider {
+    width: 100px;
+}
+
+.value-label.green text {
+    stroke: green;
+}
+
+/*
+ * Logic Probe
+ */
+
+.logic-probe text.display {
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-size: 24px;
+    font-family: monospace;
+}
+.logic-probe text.output-name {
+    dominant-baseline: middle;
+}
+
+.logic-probe path.red {
+    stroke: red;
+}
+.logic-probe path.blue {
+    stroke: blue;
+}
+
+/*
+ * MOSFETS
+ */
+
+.semiconductor {
+    fill: lightgray;
+}
+.semiconductor.ndoped {
+    fill: pink;
+}
+.semiconductor.pdoped {
+    fill: yellowgreen;
+}
+.semiconductor.glass {
+    fill: cadetblue;
+}
+.semiconductor.channel {
+    stroke: none;
+}
+.semiconductor-connector {
+    stroke-width: 5px;
+}
+
+/*
+ * MOSFET switches
+ */
+
+.nmos-switch path.red,circle.red {
+    stroke: red;
+}
+.nmos-switch path.blue,circle.blue {
+    stroke: blue;
+}
+
+.pmos-switch path.red,circle.red {
+    stroke: red;
+}
+.pmos-switch path.blue,circle.blue {
+    stroke: blue;
+}
+
+/*
+ * Wires
+ */
+.wire.red {
+    stroke: red;
+}
+.wire.blue {
+    stroke: blue;
+}
+
+/*
+ * Logic Input
+ */
+.logic-input button {
+    box-sizing: border-box;
+    width: 30px;
+    height: 40px;
+    border: 4px double black;
+    border-radius: 8px;
+}
+.logic-input button:hover {
+    background: powderblue;
+}
+.logic-input path.red {
+    stroke: red;
+}
+.logic-input path.blue {
+    stroke: blue;
+}
+.logic-input text.input-name {
+    text-anchor: end;
+    dominant-baseline: middle;
+}
+
+/*
+ * Half-adder
+ */
+.half-adder text.input {
+    dominant-baseline: middle;
+}
+.half-adder text.output {
+    text-anchor: end;
+    dominant-baseline: middle;
+}
+.half-adder text.name {
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-size: 1.2rem;
+}
+
+
+/*
+ * Flip-flop
+ */
+.flip-flop text.input {
+    dominant-baseline: middle;
+}
+.flip-flop text.output {
+    text-anchor: end;
+    dominant-baseline: middle;
+}
+
+/*
+ * Truth Tables
+ */
+table.truth-table {
+  border: 1px solid black;
+  margin-bottom: 1rem;
+}
+table.truth-table th,td {
+  text-align: center;
+  line-height: 1.5rem;
+  padding: 5px;
+}
+table.truth-table tbody tr {
+  border-top: 1px solid gray;
+}
+table.truth-table tbody tr:nth-child(2n) {
+  background: gainsboro;
+}
+table.truth-table tbody tr.active {
+  background: moccasin;
+}
+
+/*
+ * Binary
+ */
+
+.binary-table {
+  border: 1px solid black;
+  padding: 5px;
+  border-radius: 5px;
+  display: inline-table;
+}
+.binary-table th {
+  background: lightgray;
+  padding: 10px;
+  text-align: center;
+  min-width: 40px;
+}
+.binary-table td {
+  font-family: monospace;
+  padding: 5px;
+  font-size: 20px;
+}
+
+.binary-table th.hex-string,td.hex-string {
+  background: bisque;
+  border-left: 1px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.binary-table td.hex-string {
+  font-style: italic;
+}
+
+.binary-table th.decimal-string,td.decimal-string {
+  background: lightblue;
+  border-left: 1px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.binary-table td.decimal-string {
+  font-style: italic;
+  color: gray;
+}
+
+.binary-table th.target-string,td.target-string {
+    background: orange;
+    border-left: 1px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.binary-table th.target-string.complete,td.target-string.complete {
+    background: lightgreen;
+}
+.binary-table td.target-string.complete {
+    font-style: italic;
+    color: gray;
+}
+.binary-table td.nibble-end:not(:first-child),th.nibble-end:not(:first-child) {
+    border-right: 1px solid black;
+}
+
+.logic-plot .logic-line {
+  margin-bottom: 1rem;
+}
+
+.logic-plot svg {
+    margin: 1rem;
+    background: lightgray;
+}
+
+.logic-plot .logic-line path {
+    stroke: blue;
+    fill: none;
+}
