@@ -4,8 +4,8 @@ import circuitsup.Common
 import circuitsup.templates.ExerciseStage
 import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.<
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Complete, Open}
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.{Complete, Open}
 import com.wbillingsley.wren.{Circuit, ConstraintPropagator, CurrentSource, EquationConstraint, Ground, Resistor, Terminal, Value, ValueLabel, ValueSlider, VoltageSource, Wire}
 import com.wbillingsley.wren.Orientation.{East, North, South}
 import org.scalajs.dom.{Element, Node}
@@ -63,7 +63,7 @@ object KVL {
     }
 
 
-    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+    override protected def render = <.div(Challenge.textAndEx(
         <.div(
           Common.marked(
           s"""
@@ -148,7 +148,7 @@ object KVL {
     }
 
 
-    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+    override protected def render = <.div(Challenge.textAndEx(
       <.div(
         Common.marked(
           s"""
@@ -233,7 +233,7 @@ object KVL {
     }
 
 
-    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+    override protected def render = <.div(Challenge.textAndEx(
       <.div(
         Common.marked(
           s"""

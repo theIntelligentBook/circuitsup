@@ -53,7 +53,7 @@ case class LogicPlot(values:Seq[Value], names:Map[Int, String] = Map.empty, line
     names.getOrElse(i, values(i).name.getOrElse("Unnamed"))
   }
 
-  override protected def render: DiffNode[Element, Node] = {
+  override protected def render = {
     <.div(^.cls := "logic-plot",
       for { i <- values.indices } yield {
         <.div(^.cls := "logic-row",

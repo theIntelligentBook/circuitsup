@@ -6,9 +6,7 @@ import circuitsup.booleanlogic.BooleanTopic
 import circuitsup.latches.LatchesTopic
 import circuitsup.mosfets.Topic2
 import circuitsup.templates.{FrontPage, Topic}
-import com.wbillingsley.veautiful.PathDSL
-import com.wbillingsley.veautiful.html.{<, ^}
-import com.wbillingsley.veautiful.templates.HistoryRouter
+import com.wbillingsley.veautiful.html.{<, ^, HistoryRouter, PathDSL}
 
 sealed trait Route
 case object IntroRoute extends Route
@@ -62,7 +60,7 @@ object Router extends HistoryRouter[Route] {
   }
 
   override def path(route: Route): String = {
-    import com.wbillingsley.veautiful.PathDSL.Compose._
+    import PathDSL.Compose._
 
     route match {
       case IntroRoute => (/# / "").stringify

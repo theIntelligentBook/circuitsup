@@ -1,14 +1,14 @@
 package com.wbillingsley.wren
 
 import com.wbillingsley.veautiful.DiffNode
-import com.wbillingsley.veautiful.html.{<, VHtmlComponent, VHtmlNode, ^}
+import com.wbillingsley.veautiful.html.{<, VHtmlComponent, VHtmlContent, ^}
 import org.scalajs.dom.{Element, Node}
 
 class BinaryShifter(initial:Int, bits:Int = 8, ops:Seq[String]=Seq.empty, signed:Boolean=false, target:Option[Int] = None)(val onUpdate: () => Unit) extends VHtmlComponent {
 
   var number:Int = initial
 
-  override protected def render: DiffNode[Element, Node] = <.div(
+  override protected def render = <.div(
     Binary.showBinary(number, bits, signed=signed),
     <.div(<.div(^.cls := "btn btn-group", ops.map(opsMap(_).render)))
   )
@@ -24,7 +24,7 @@ class BinaryShifter(initial:Int, bits:Int = 8, ops:Seq[String]=Seq.empty, signed
   }
 
   sealed trait Op {
-    def render:VHtmlNode
+    def render:VHtmlContent
     def apply():Unit
   }
 

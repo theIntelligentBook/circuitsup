@@ -1,12 +1,12 @@
 package circuitsup.binary
 
 import com.wbillingsley.veautiful.DiffNode
-import com.wbillingsley.veautiful.html.{<, VHtmlComponent, VHtmlNode}
+import com.wbillingsley.veautiful.html.{<, VHtmlComponent, VHtmlContent}
 import com.wbillingsley.wren.Binary
 import org.scalajs.dom
 import org.scalajs.dom.{Element, Node}
 
-class Clock(f: Int => VHtmlNode, bits:Int = 8, onUpdate: Int => Unit = _ => {}) extends VHtmlComponent {
+class Clock(f: Int => VHtmlContent, bits:Int = 8, onUpdate: Int => Unit = _ => {}) extends VHtmlComponent {
 
   var counter:Int = 0
 
@@ -18,7 +18,7 @@ class Clock(f: Int => VHtmlNode, bits:Int = 8, onUpdate: Int => Unit = _ => {}) 
 
   var timer:Option[Int] = None
 
-  override protected def render: DiffNode[Element, Node] = <.p(f(counter))
+  override protected def render = <.p(f(counter))
 
   override def afterAttach(): Unit = {
     super.afterAttach()

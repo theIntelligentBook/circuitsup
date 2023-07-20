@@ -5,7 +5,7 @@ import com.wbillingsley.wren.Component.ColouringRule
 
 class Label(text:String, pos:(Int, Int), cssClass:String = "", colouringRule:ColouringRule = () => "") extends Component {
 
-  def render: VHtmlDiffNode = {
+  def render = {
     val (x, y) = pos
 
     SVG.g(^.cls := "wren-component label " + colouringRule(),

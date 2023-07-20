@@ -4,3 +4,10 @@ target/
 .project
 .settings/
 .idea/
+
+# VS Code and Metals
+.metals/
+.vscode/
+project/metals.sbt
+.bsp/
+project/project

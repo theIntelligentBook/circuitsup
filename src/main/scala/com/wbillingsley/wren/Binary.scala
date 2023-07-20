@@ -1,10 +1,10 @@
 package com.wbillingsley.wren
 
-import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
+import com.wbillingsley.veautiful.html.{<, VHtmlElement, ^}
 
 object Binary {
 
-  def unsignedNibble(num:Byte, showHex:Boolean = true):VHtmlNode = {
+  def unsignedNibble(num:Byte, showHex:Boolean = true) = {
     showBinary(num, 4, showHex=showHex, signed=false)
   }
 
@@ -24,7 +24,7 @@ object Binary {
   }
 
 
-  def showBinary(num:Int, bits:Int, powers:Boolean=false, signed:Boolean=false, showHex:Boolean = true, showDecimal:Boolean=true, divideNibble:Boolean=false):VHtmlNode = {
+  def showBinary(num:Int, bits:Int, powers:Boolean=false, signed:Boolean=false, showHex:Boolean = true, showDecimal:Boolean=true, divideNibble:Boolean=false) = {
 
     def numDigits = Math.ceil(bits / 4.0).toInt
 
@@ -65,7 +65,7 @@ object Binary {
     case _ => None
   }
 
-  def unsignedBinOpt(bits:Seq[Option[Boolean]], powers:Boolean=false, showHex:Boolean = true, showDecimal:Boolean = true, divideNibble:Boolean=false):VHtmlNode = {
+  def unsignedBinOpt(bits:Seq[Option[Boolean]], powers:Boolean=false, showHex:Boolean = true, showDecimal:Boolean = true, divideNibble:Boolean=false) = {
 
     def numDigits = Math.ceil(bits.length / 4.0).toInt
 
@@ -109,7 +109,7 @@ object Binary {
   }
 
 
-  def unsignedDecimal(num:Int, digits:Int = 8):VHtmlNode = {
+  def unsignedDecimal(num:Int, digits:Int = 8) = {
     var remainder = num
 
     <.table(^.cls := "binary-table",

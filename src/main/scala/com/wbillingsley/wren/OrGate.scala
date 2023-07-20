@@ -38,7 +38,7 @@ class OrGate(pos:(Int,Int), orientation:Orientation = East)(implicit colouringRu
     case _ => None
   }
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
 
     SVG.g(^.cls := "wren-component logic-probe", ^.attr("transform") := s"translate($x, $y) rotate(${orientation.deg})",

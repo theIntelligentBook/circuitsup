@@ -1,12 +1,13 @@
 package com.wbillingsley.wren
-import com.wbillingsley.veautiful.html.{<, DElement, SVG, VHtmlDiffNode, VHtmlNode, ^}
+import com.wbillingsley.veautiful.html.{<, DElement, SVG, VHtmlDiffNode, ^}
+import com.wbillingsley.veautiful.svg.{DSvgContent}
 import com.wbillingsley.wren.Component.ColouringRule
 
 import scala.scalajs.js.|
 
-class ValueLabel(name:(String, String), v:Value, pos:(Int, Int), anchorClass:String = "left ", symbol:Seq[VHtmlNode] = Seq.empty, colouringRule:ColouringRule = () => "") extends Component {
+class ValueLabel(name:(String, String), v:Value, pos:(Int, Int), anchorClass:String = "left ", symbol:Seq[DSvgContent] = Seq.empty, colouringRule:ColouringRule = () => "") extends Component {
 
-  def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
     val (n, sub) = name
 
@@ -37,7 +38,7 @@ object ValueLabel {
     s"M 0 0 l $stemLength 0 l ${-headLength} ${-headWidth} M $stemLength 0 l ${-headLength} ${headWidth}"
   }
 
-  def currentArrow(pos:(Int, Int), direction:Orientation):VHtmlNode = {
+  def currentArrow(pos:(Int, Int), direction:Orientation):DSvgContent = {
     val (x, y) = pos
 
     SVG.g(^.cls := "current-arrow", ^.attr("transform") := s"translate(${x}, ${y}) rotate(${direction.deg})",
@@ -45,7 +46,7 @@ object ValueLabel {
     )
   }
 
-  def voltageMarkers(pos:(Int, Int), neg:(Int, Int)):VHtmlNode = {
+  def voltageMarkers(pos:(Int, Int), neg:(Int, Int)):DSvgContent = {
     val (x1, y1) = pos
     val (x2, y2) = neg
 

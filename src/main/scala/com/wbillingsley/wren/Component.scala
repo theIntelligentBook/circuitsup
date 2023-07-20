@@ -1,14 +1,14 @@
 package com.wbillingsley.wren
 
-import com.wbillingsley.veautiful.html.{VHtmlComponent, VHtmlDiffNode}
+import com.wbillingsley.veautiful.svg.{DSvgComponent, DSvgContent}
 
-trait Component extends VHtmlComponent {
+trait Component extends DSvgComponent {
 
   def terminals:Seq[Terminal]
 
   def constraints:Seq[Constraint]
 
-  def render:VHtmlDiffNode
+  def render:DSvgContent
 
 }
 

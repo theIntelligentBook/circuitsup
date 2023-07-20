@@ -5,8 +5,8 @@ import circuitsup.binary.BinaryTopic.{nextButton, onCompletionUpdate}
 import circuitsup.templates.ExerciseStage
 import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.{<, ^}
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Complete, Open}
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.{Complete, Open}
 import com.wbillingsley.wren.Orientation.East
 import com.wbillingsley.wren.{AndGate, Binary, Circuit, ConstraintPropagator, HalfAdder, LogicInput, LogicProbe, TruthTable, Wire, XorGate}
 import org.scalajs.dom.{Element, Node}
@@ -65,7 +65,7 @@ object HalfAdderBox extends ExerciseStage {
     }
   }
 
-  override protected def render: DiffNode[Element, Node] = <.div(
+  override protected def render = <.div(
     Challenge.textAndEx(
       Common.marked(
         """

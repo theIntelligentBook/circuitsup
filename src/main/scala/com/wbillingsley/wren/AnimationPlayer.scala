@@ -52,7 +52,7 @@ case class AnimationPlayer(timeout:Int, initial:Boolean = false)(onTick: Double 
     conditionalRepeat()
   }
 
-  override protected def render: DiffNode[Element, Node] = <.div(
+  override protected def render = <.div(
     if (playing)
       <.button(^.cls := "btn btn-outline-primary", ^.onClick --> stop(), "Stop")
     else
