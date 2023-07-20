@@ -5,9 +5,14 @@ target/
 .settings/
 .idea/
 
-# VS Code and Metals
+# VS Code, Metals, Bloop
+.bsp/
+.bloop/
 .metals/
 .vscode/
+
 project/metals.sbt
-.bsp/
-project/project
+project/project/
+
+# Keep the deployed code out of Git in the main branch
+deployscripts/
