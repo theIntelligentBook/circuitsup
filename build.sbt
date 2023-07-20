@@ -1,7 +1,7 @@
 enablePlugins(ScalaJSPlugin)
 
 name := "Circuits Up"
-scalaVersion := "3.0.0"
+scalaVersion := "3.1.1"
 
 // This is an application with a main method
 scalaJSUseMainModuleInitializer := true
@@ -10,14 +10,11 @@ resolvers += "jitpack" at "https://jitpack.io"
 
 updateOptions := updateOptions.value.withLatestSnapshots(false)
 
+val veautifulVersion = "0.3-M6"
+
 libraryDependencies ++= Seq(
-  ("org.scala-js" %%% "scalajs-dom" % "1.1.0").cross(CrossVersion.for3Use2_13),
-
-  "com.github.wbillingsley.veautiful" %%% "veautiful" % "master-SNAPSHOT",
-  "com.github.wbillingsley.veautiful" %%% "veautiful-templates" % "master-SNAPSHOT",
-	"com.github.wbillingsley.veautiful" %%% "scatter" % "master-SNAPSHOT",
-	//"com.github.wbillingsley.veautiful" %%% "wren" % "master-SNAPSHOT"
-
+  "com.wbillingsley" %%% "doctacular" % veautifulVersion,
+	"com.wbillingsley" %%% "scatter" % veautifulVersion,
   "org.scalatest" %%% "scalatest" % "3.2.9" % "test"
 )
 

@@ -58,7 +58,7 @@ case class FlipFlop(pos:(Int,Int), orientation:Orientation = East)(implicit colo
     value
   }
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
 
     SVG.g(^.cls := "wren-component flip-flop", ^.attr("transform") := s"translate($x, $y) rotate(${orientation.deg})",

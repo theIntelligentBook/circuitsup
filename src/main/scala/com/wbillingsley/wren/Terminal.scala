@@ -56,7 +56,7 @@ case class Junction(pos:(Int, Int)) extends Connector with Component {
   }
 
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
 
     SVG.circle(^.attr("cx") := x, ^.attr("cy") := y, ^.cls := "junction")

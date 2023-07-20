@@ -5,8 +5,8 @@ import circuitsup.{CircuitsRoute, Common, Router}
 import circuitsup.templates.{ExerciseStage, ScatterPlot}
 import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.{<, ^}
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Complete, Open}
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.{Complete, Open}
 import com.wbillingsley.wren.{Circuit, Constraint, ConstraintPropagator, CurrentSource, EquationConstraint, Ground, Orientation, Resistor, Value, ValueLabel, ValueSlider, VoltageSource, Wire}
 import org.scalajs.dom.{Element, Node}
 
@@ -65,7 +65,7 @@ object Ohms {
 
     val plotData = new ScatterPlotData(r1.resistance, r1.t1.current)
 
-    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+    override protected def render = <.div(Challenge.textAndEx(
       <.div(
         Common.marked(
           """
@@ -132,7 +132,7 @@ object Ohms {
 
     val plotData = new ScatterPlotData(r1.resistance, r1.voltage)
 
-    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+    override protected def render = <.div(Challenge.textAndEx(
       <.div(
         Common.marked(
           s"""
@@ -210,7 +210,7 @@ object Ohms {
 
     val plotData = new ScatterPlotData(cs.current, effectiveR)
 
-    override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+    override protected def render = <.div(Challenge.textAndEx(
       <.div(
         Common.marked(
           s"""

@@ -2,15 +2,15 @@ package circuitsup.binary
 
 import circuitsup.{BinaryRoute, BooleanRoute, CircuitsRoute, Common, IntroRoute, Main, MosfetsRoute, Router}
 import circuitsup.templates.{Topic, YouTubeStage}
-import com.wbillingsley.veautiful.html.{<, VHtmlNode, ^}
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Complete, Level}
+import com.wbillingsley.veautiful.html.{<, VHtmlContent, ^}
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.{Complete, Level}
 
 object BinaryTopic {
 
   implicit val onCompletionUpdate: () => Unit = () => challenge.rerender()
 
-  implicit val nextButton: () => VHtmlNode = () => {
+  implicit val nextButton: () => VHtmlContent = () => {
     challenge.next match {
       case Some((l, s)) => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(BinaryRoute(l, s)), s"Next")
       case _ => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(IntroRoute), s"Home")

@@ -5,8 +5,8 @@ import circuitsup.latches.LatchesTopic.{nextButton, onCompletionUpdate}
 import circuitsup.templates.ExerciseStage
 import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.{<, ^}
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Complete, Open}
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.{Complete, Open}
 import com.wbillingsley.wren.Orientation.{East, West}
 import com.wbillingsley.wren.Wire._
 import com.wbillingsley.wren._
@@ -113,7 +113,7 @@ object RippleCarryClocked extends ExerciseStage {
       rerender()
   }
 
-  override protected def render: DiffNode[Element, Node] = <.div(
+  override protected def render = <.div(
     Challenge.textAndEx(
       <.div(
         Common.marked(

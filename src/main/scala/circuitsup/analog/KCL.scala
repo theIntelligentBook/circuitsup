@@ -3,8 +3,8 @@ package circuitsup.analog
 import circuitsup.Common
 import circuitsup.templates.ExerciseStage
 import com.wbillingsley.veautiful.html.<
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Complete, Completion, Open}
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.{Complete, Completion, Open}
 import com.wbillingsley.wren.Orientation.{East, South}
 import com.wbillingsley.wren._
 

@@ -6,8 +6,8 @@ import BinaryTopic.onCompletionUpdate
 import circuitsup.Common
 import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.{<, VHtmlComponent, ^}
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.Complete
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.Complete
 import com.wbillingsley.wren.{Binary, BinaryToggle}
 import org.scalajs.dom
 import org.scalajs.dom.{Element, Node}
@@ -35,7 +35,7 @@ object CountingInBinary extends ExerciseStage {
     }
   }
 
-  override protected def render: DiffNode[Element, Node] = <.div(
+  override protected def render = <.div(
     Challenge.textAndEx(
       Common.marked(
         """

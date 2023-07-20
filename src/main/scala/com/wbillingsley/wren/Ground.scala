@@ -11,7 +11,7 @@ case class Ground(pos:(Int,Int)) extends Component {
 
   override def constraints: Seq[Constraint] = Seq.empty
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
     SVG.g(^.cls := "wren-component ground", ^.attr("transform") := s"translate($x, $y)",
       SVG.path(^.attr("d") := "M 0 0 l 0 10 l -5 0 l 5 5 l 5 -5 l -5 0")

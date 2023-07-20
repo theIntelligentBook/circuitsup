@@ -17,7 +17,7 @@ class LogicProbe(pos:(Int,Int), orientation:Orientation = East, name:String="")(
     case _ => None
   }
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
     val wireCol = colouringRule(t.current, t.potential)
 

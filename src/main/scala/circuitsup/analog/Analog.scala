@@ -2,15 +2,15 @@ package circuitsup.analog
 
 import circuitsup.{CircuitsRoute, Common, IntroRoute, Main, Router}
 import circuitsup.templates.{ExerciseStage, Topic, YouTubeStage}
-import com.wbillingsley.veautiful.html.{<, SVG, VHtmlNode, ^}
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Complete, Level, Stage}
+import com.wbillingsley.veautiful.html.{<, SVG, VHtmlElement, DHtmlContent, ^}
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.{Complete, Level, Stage}
 
 object Analog {
 
   implicit val onCompletionUpdate: () => Unit = () => Analog.challenge.rerender()
 
-  implicit val nextButton: () => VHtmlNode = () => {
+  implicit val nextButton: () => DHtmlContent = () => {
     Analog.challenge.next match {
       case Some((l, s)) => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(l, s)), s"Next")
       case _ => <.a(^.cls := "btn btn-outline-secondary pulse-link", ^.href := Router.path(CircuitsRoute(0, 0)), s"Start")

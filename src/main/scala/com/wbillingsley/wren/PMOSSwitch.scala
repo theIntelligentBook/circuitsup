@@ -36,7 +36,7 @@ class PMOSSwitch(pos:(Int, Int), orientation: Orientation = East)(implicit val c
       } yield 0d)
   ) ++ terminals.flatMap(_.constraints)
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
 
     val gateColour = colouringRule.gateRule(this)

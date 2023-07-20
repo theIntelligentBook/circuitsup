@@ -32,7 +32,7 @@ class XnorGate(pos:(Int,Int), orientation:Orientation = East)(implicit colouring
 
   def value:Option[Boolean] = for { aa <- a; bb <- b } yield aa == bb
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
 
     SVG.g(^.cls := "wren-component logic-probe", ^.attr("transform") := s"translate($x, $y) rotate(${orientation.deg})",

@@ -6,8 +6,8 @@ import BooleanTopic.onCompletionUpdate
 import circuitsup.Common
 import com.wbillingsley.veautiful.DiffNode
 import com.wbillingsley.veautiful.html.<
-import com.wbillingsley.veautiful.templates.Challenge
-import com.wbillingsley.veautiful.templates.Challenge.{Complete, Open}
+import com.wbillingsley.veautiful.doctacular.Challenge
+import com.wbillingsley.veautiful.doctacular.Challenge.{Complete, Open}
 import com.wbillingsley.wren.Orientation.{East, North, South}
 import com.wbillingsley.wren.{AndGate, Circuit, ConstraintPropagator, Ground, LogicInput, LogicProbe, NMOSSwitch, PMOSSwitch, Terminal, TruthTable, ValueLabel, VoltageSource, Wire}
 import org.scalajs.dom.{Element, Node}
@@ -64,7 +64,7 @@ object AndGateLogic extends ExerciseStage {
     }
   }
 
-  override protected def render: DiffNode[Element, Node] = <.div(Challenge.textAndEx(
+  override protected def render = <.div(Challenge.textAndEx(
     <.div(
       Common.marked(
         s"""

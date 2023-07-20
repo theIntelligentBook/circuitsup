@@ -1,0 +1,14 @@
+{
+    "name": "Doctacular codespace config",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "scalameta.metals",
+                "scala-lang.scala"
+            ]
+        }
+    }
+}

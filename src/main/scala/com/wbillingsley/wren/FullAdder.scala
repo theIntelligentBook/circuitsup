@@ -42,7 +42,7 @@ case class FullAdder(pos:(Int,Int), orientation:Orientation = East)(implicit col
   def c:Option[Boolean] = for { aa <- a; bb <- b; cc <- cin } yield (aa && bb) || (cc && (aa ^ bb))
   def r:Option[Boolean] = for { aa <- a; bb <- b; cc <- cin } yield (aa ^ bb ^ cc)
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
 
     SVG.g(^.cls := "wren-component half-adder", ^.attr("transform") := s"translate($x, $y) rotate(${orientation.deg})",

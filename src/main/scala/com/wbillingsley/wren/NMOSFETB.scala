@@ -51,7 +51,7 @@ class NMOSFETB(pos:(Int, Int), orientation: Orientation = East) extends Componen
 
   }
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
 
     SVG.g(^.cls := "wren-component", ^.attr("transform") := s"translate($x, $y) rotate(${orientation.deg})",

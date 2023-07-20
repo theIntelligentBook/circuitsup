@@ -29,7 +29,7 @@ class LogicInput(pos:(Int,Int), orientation:Orientation = East, name:String="", 
     onUpdate(value)
   }
 
-  override def render: VHtmlDiffNode = {
+  override def render = {
     val (x, y) = pos
     val wireCol = colouringRule(t.current, t.potential)
 

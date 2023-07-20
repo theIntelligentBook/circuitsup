@@ -20,7 +20,7 @@ class BinaryToggle(val target:Int, initial:Int = 0, bits:Int = 8, divideNibble:B
     rerender()
   }
 
-  override protected def render: DiffNode[Element, Node] = {
+  override protected def render = {
     <.table(^.cls := "binary-table",
       <.tr(
         for { i <- (0 until bits).reverse } yield <.th(

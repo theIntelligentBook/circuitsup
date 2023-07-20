@@ -19,7 +19,7 @@ class BitShiftExercise(initial:Int, target:Int, ops:Seq[String])(onUpdate: () =>
     onUpdate()
   }
   
-  override protected def render: DiffNode[Element, Node] = {
+  override protected def render = {
     <.p(
       <.p(s"Here's a target bit pattern:"),
       <.p(Binary.showBinary(target, 8)),
